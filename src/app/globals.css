@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-deep-950: #061a2e;
+  --color-deep-900: #0a2540;
+  --color-deep-800: #0c3052;
+  --color-deep-700: #0f3f6a;
+  --color-deep-600: #145088;
+  --color-deep-500: #1a65a8;
+  --color-deep-400: #3a8fd4;
+  --color-deep-300: #6bb3e8;
+  --color-deep-200: #a3d4f4;
+  --color-deep-100: #d4ecfa;
+  --color-deep-50: #edf6fd;
+
+  --color-pool-500: #38bdf8;
+  --color-pool-400: #5ccdfb;
+  --color-pool-300: #7dd8fc;
+  --color-pool-200: #b0e8fd;
+  --color-pool-100: #e0f5fe;
+
+  --color-coral-600: #c9432e;
+  --color-coral-500: #e05438;
+  --color-coral-400: #e87460;
+  --color-coral-300: #f09a8c;
+  --color-coral-200: #f5c2b9;
+  --color-coral-100: #fae5e1;
+  --color-coral-50: #fdf2f0;
+
+  --color-sand-950: #1c1917;
+  --color-sand-900: #292524;
+  --color-sand-800: #44403c;
+  --color-sand-700: #57534e;
+  --color-sand-600: #78716c;
+  --color-sand-500: #a8a29e;
+  --color-sand-400: #c8c3bd;
+  --color-sand-300: #ddd9d4;
+  --color-sand-200: #ece9e4;
+  --color-sand-100: #f5f3f0;
+  --color-sand-50: #faf9f7;
+
+  --font-sans: var(--font-outfit);
+  --font-serif: var(--font-source-serif);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-sand-50);
+  color: var(--color-sand-950);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Serif headlines */
+.font-editorial {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* Grain texture overlay */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* Water wave animation */
+@keyframes wave-drift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.wave-line {
+  animation: wave-drift 12s linear infinite;
+}
+
+/* Lane line pattern */
+.lane-lines {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 119px,
+    var(--color-deep-100) 119px,
+    var(--color-deep-100) 120px
+  );
+}
+
+/* Stagger animation */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s ease-out both;
+}
+
+/* Horizontal scroll without scrollbar */
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
