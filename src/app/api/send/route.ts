@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import { PRICES } from "@/lib/schedule";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -49,6 +50,16 @@ export async function POST(req: Request) {
     (message && message.length > 2000)
   ) {
     return NextResponse.json({ error: "Przekroczono maksymalną długość pola" }, { status: 400 });
+  }
+
+  const VALID_GROUPS = Object.keys(PRICES);
+  if (!VALID_GROUPS.includes(group)) {
+    return NextResponse.json({ error: "Nieznana grupa" }, { status: 400 });
+  }
+
+  const numFreq = Number(frequency);
+  if (![1, 2, 3].includes(numFreq)) {
+    return NextResponse.json({ error: "Nieprawidłowa częstotliwość" }, { status: 400 });
   }
 
   const { error } = await resend.emails.send({

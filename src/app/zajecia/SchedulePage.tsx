@@ -20,7 +20,9 @@ const GROUPS = [
 
 export default function SchedulePage() {
   const searchParams = useSearchParams();
-  const initialGroup = searchParams.get("group") ?? "Krewetki";
+  const paramGroup = searchParams.get("group") ?? "";
+  const VALID_GROUP_NAMES = Object.keys(PRICES);
+  const initialGroup = VALID_GROUP_NAMES.includes(paramGroup) ? paramGroup : "Krewetki";
 
   const [selectedGroup, setSelectedGroup] = useState(initialGroup);
   const [frequency, setFrequency] = useState<1 | 2 | 3>(1);
