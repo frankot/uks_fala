@@ -2,7 +2,8 @@ import { Resend } from "resend";
 import { NextResponse } from "next/server";
 import { PRICES } from "@/lib/schedule";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 interface ContactPayload {
   name: string;
@@ -60,6 +61,18 @@ export async function POST(req: Request) {
   const numFreq = Number(frequency);
   if (![1, 2, 3].includes(numFreq)) {
     return NextResponse.json({ error: "Nieprawidłowa częstotliwość" }, { status: 400 });
+  }
+
+  if (!resend) {
+    console.warn("Resend API key missing. Skipping email send.");
+    return NextResponse.json(
+      {
+        ok: true,
+        placeholder: true,
+        message: "Brak konfiguracji wysylki e-mail. Zgloszenie zapisane lokalnie.",
+      },
+      { status: 202 }
+    );
   }
 
   const { error } = await resend.emails.send({
