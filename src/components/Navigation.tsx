@@ -15,7 +15,7 @@ export default function Navigation() {
 
   return (
     <header
-      className={`fixed top-2 rounded left-0 right-0 z-50 w-4/5 mx-auto  transition-all duration-300 ${
+      className={`fixed top-2 rounded left-0 right-0 z-50 max-w-[1240px] mx-auto  transition-all duration-300 ${
         scrolled
           ? "bg-white/90 backdrop-blur-md shadow-sm shadow-deep-900/5"
           : "bg-transparent"
