@@ -1,3 +1,4 @@
+import Link from "next/link";
 import WaveDivider from "./WaveDivider";
 
 const groups = [
@@ -150,16 +151,16 @@ export default function TrainingGroups() {
                   </div>
                 </div>
 
-                <a
-                  href="#kontakt"
+                <Link
+                  href={`/zajecia?group=${encodeURIComponent(group.name)}`}
                   className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-sand-100 py-2.5 text-[13px] font-bold text-sand-700 transition-all group-hover:bg-deep-700 group-hover:text-white"
                 >
-                  Zapytaj o miejsce
+                  Zarezerwuj
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0">
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
-                </a>
+                </Link>
               </article>
             ))}
           </div>
