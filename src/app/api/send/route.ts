@@ -30,7 +30,10 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Nieprawidłowy format danych" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Nieprawidłowy format danych" },
+      { status: 400 },
+    );
   }
 
   const { name, email, phone, group, frequency, message } = body;
@@ -40,7 +43,10 @@ export async function POST(req: Request) {
   }
 
   if (!EMAIL_RE.test(email)) {
-    return NextResponse.json({ error: "Nieprawidłowy adres e-mail" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Nieprawidłowy adres e-mail" },
+      { status: 400 },
+    );
   }
 
   if (
@@ -50,7 +56,10 @@ export async function POST(req: Request) {
     group.length > 50 ||
     (message && message.length > 2000)
   ) {
-    return NextResponse.json({ error: "Przekroczono maksymalną długość pola" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Przekroczono maksymalną długość pola" },
+      { status: 400 },
+    );
   }
 
   const VALID_GROUPS = Object.keys(PRICES);
@@ -60,7 +69,10 @@ export async function POST(req: Request) {
 
   const numFreq = Number(frequency);
   if (![1, 2, 3].includes(numFreq)) {
-    return NextResponse.json({ error: "Nieprawidłowa częstotliwość" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Nieprawidłowa częstotliwość" },
+      { status: 400 },
+    );
   }
 
   if (!resend) {
@@ -69,9 +81,10 @@ export async function POST(req: Request) {
       {
         ok: true,
         placeholder: true,
-        message: "Brak konfiguracji wysylki e-mail. Zgloszenie zapisane lokalnie.",
+        message:
+          "Brak konfiguracji wysylki e-mail. Zgloszenie zapisane lokalnie.",
       },
-      { status: 202 }
+      { status: 202 },
     );
   }
 
