@@ -116,6 +116,7 @@ export default function SchedulePage() {
                       <button
                         key={g.name}
                         onClick={() => setSelectedGroup(g.name)}
+                        aria-pressed={isActive}
                         className={`flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition-all ${
                           isActive
                             ? "border-deep-700 bg-deep-700 shadow-md shadow-deep-900/10"
@@ -292,6 +293,7 @@ export default function SchedulePage() {
                 )}
               </div>
 
+              <div aria-live="polite">
               {status === "ok" ? (
                 <div className="mt-8 rounded-xl bg-pool-100 p-6 text-center">
                   <svg className="mx-auto mb-3 text-deep-600" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -381,6 +383,7 @@ export default function SchedulePage() {
                   </button>
                 </form>
               )}
+              </div>
             </div>
           </div>
         </div>
