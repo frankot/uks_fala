@@ -3,6 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+const navLinks = [
+  { href: "/", label: "Strona główna" },
+  { href: "#o-nas", label: "O nas" },
+  { href: "/zajecia", label: "Grafik" },
+  { href: "#trenerzy", label: "Trenerzy" },
+  { href: "#kontakt", label: "Kontakt" },
+];
+
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -53,17 +61,17 @@ export default function Navigation() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex" aria-label="Nawigacja główna">
-            {["O nas", "Grupy", "Trenerzy", "Kontakt"].map((label) => (
+            {navLinks.map((item) => (
               <Link
-                key={label}
-                href={`#${label.toLowerCase().replace(" ", "-")}`}
+                key={item.href}
+                href={item.href}
                 className={`rounded-full px-4 py-2 text-[14px] font-medium transition-all ${
                   scrolled
                     ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
                     : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                {label}
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -117,12 +125,7 @@ export default function Navigation() {
         {mobileOpen && (
           <nav className="border-t border-white/10 pb-5 pt-3 md:hidden" aria-label="Nawigacja mobilna">
             <div className="flex flex-col gap-1">
-              {[
-                { href: "#o-nas", label: "O nas" },
-                { href: "#grupy", label: "Grupy" },
-                { href: "#trenerzy", label: "Trenerzy" },
-                { href: "#kontakt", label: "Kontakt" },
-              ].map((item) => (
+              {navLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
