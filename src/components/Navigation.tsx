@@ -50,17 +50,24 @@ export default function Navigation() {
               </svg>
             </div>
             <div className="leading-tight">
-              <span className={`block text-[17px] font-bold tracking-tight transition-colors ${scrolled ? "text-deep-900" : "text-white"}`}>
+              <span
+                className={`block text-[17px] font-bold tracking-tight transition-colors ${scrolled ? "text-deep-900" : "text-white"}`}
+              >
                 UKS Fala
               </span>
-              <span className={`block text-[10px] font-semibold uppercase tracking-[0.15em] transition-colors ${scrolled ? "text-sand-500" : "text-white/50"}`}>
+              <span
+                className={`block text-[10px] font-semibold uppercase tracking-[0.15em] transition-colors ${scrolled ? "text-sand-500" : "text-white/50"}`}
+              >
                 Nieporęt
               </span>
             </div>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Nawigacja główna">
+          <nav
+            className="hidden items-center gap-1 md:flex"
+            aria-label="Nawigacja główna"
+          >
             {navLinks.map((item) => (
               <Link
                 key={item.href}
@@ -98,13 +105,23 @@ export default function Navigation() {
           <button
             type="button"
             className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors md:hidden ${
-              scrolled ? "text-sand-800 hover:bg-sand-100" : "text-white hover:bg-white/10"
+              scrolled
+                ? "text-sand-800 hover:bg-sand-100"
+                : "text-white hover:bg-white/10"
             }`}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Menu nawigacji"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               {mobileOpen ? (
                 <>
                   <line x1="6" y1="6" x2="18" y2="18" />
@@ -123,7 +140,10 @@ export default function Navigation() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <nav className="border-t border-white/10 pb-5 pt-3 md:hidden" aria-label="Nawigacja mobilna">
+          <nav
+            className="border-t border-white/10 pb-5 pt-3 md:hidden"
+            aria-label="Nawigacja mobilna"
+          >
             <div className="flex flex-col gap-1">
               {navLinks.map((item) => (
                 <Link
