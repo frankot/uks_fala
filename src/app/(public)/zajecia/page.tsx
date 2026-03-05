@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import { getScheduleData } from "@/lib/queries/schedule";
 import SchedulePage from "./SchedulePage";
 
 export const metadata: Metadata = {
@@ -10,16 +9,12 @@ export const metadata: Metadata = {
     "Sprawdź harmonogram treningów wszystkich grup pływackich UKS Fala. Wybierz grupę i zarezerwuj miejsce online.",
 };
 
-export default function ZajeciaPage() {
+export default async function ZajeciaPage() {
+  const data = await getScheduleData();
+
   return (
-    <>
-      <Navigation />
-      <main>
-        <Suspense fallback={<div className="h-screen bg-sand-50" />}>
-          <SchedulePage />
-        </Suspense>
-      </main>
-      <Footer />
-    </>
+    <Suspense fallback={<div className="h-screen bg-sand-50" />}>
+      <SchedulePage data={data} />
+    </Suspense>
   );
 }

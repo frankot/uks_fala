@@ -1,34 +1,33 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import {
-  SCHEDULE, PRICES, GROUP_COLORS, DAYS, TIME_SLOTS,
-} from "@/lib/schedule";
+import type { ScheduleData } from "@/lib/queries/schedule";
 
-const GROUPS = [
-  { num: "01", name: "Krewetki",       age: "3–5 lat" },
-  { num: "02", name: "Neonki",         age: "4–6 lat" },
-  { num: "03", name: "Koniki Morskie", age: "5–7 lat" },
-  { num: "04", name: "Płotki",         age: "6–8 lat" },
-  { num: "05", name: "Okonki",         age: "7–9 lat" },
-  { num: "06", name: "Delfiny",        age: "8–10 lat" },
-  { num: "07", name: "Barrakudy",      age: "9–12 lat" },
-  { num: "08", name: "Rekiny",         age: "11–15 lat" },
+const DAYS = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+const TIME_SLOTS = [
+  "15:30", "16:00", "16:30", "17:00", "17:30",
+  "18:00", "18:30", "19:00", "19:30",
 ];
 
-function getDayIndicesForGroup(group: string): number[] {
-  return [...new Set(
-    SCHEDULE.filter((s) => s.group === group).map((s) => s.day)
-  )].sort((a, b) => a - b);
+interface Props {
+  data: ScheduleData;
 }
 
-export default function SchedulePage() {
+export default function SchedulePage({ data }: Props) {
+  const { groups: GROUPS, schedule: SCHEDULE, prices: PRICES, groupColors: GROUP_COLORS } = data;
+
+  function getDayIndicesForGroup(group: string): number[] {
+    return [...new Set(
+      SCHEDULE.filter((s) => s.group === group).map((s) => s.day)
+    )].sort((a, b) => a - b);
+  }
+
   const searchParams = useSearchParams();
   const paramGroup = searchParams.get("group") ?? "";
   const VALID_GROUP_NAMES = Object.keys(PRICES);
-  const initialGroup = VALID_GROUP_NAMES.includes(paramGroup) ? paramGroup : "Krewetki";
+  const initialGroup = VALID_GROUP_NAMES.includes(paramGroup) ? paramGroup : GROUPS[0]?.name ?? "Krewetki";
 
   const [selectedGroup, setSelectedGroup] = useState(initialGroup);
   const [selectedDays, setSelectedDays] = useState<Set<number>>(

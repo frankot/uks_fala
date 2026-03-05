@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  hashedPassword String
+  name           String?
+  role           Role     @default(ADMIN)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  SUPERADMIN
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  number      String
+  ageRange    String
+  colorPreset String
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  slots  TrainingSlot[]
+  prices GroupPrice[]
+}
+
+model TrainingSlot {
+  id      String @id @default(cuid())
+  groupId String
+  day     Int
+  hour    String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, day, hour])
+}
+
+model GroupPrice {
+  id        String @id @default(cuid())
+  groupId   String
+  frequency Int
+  price     Int
+  group     Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, frequency])
+}
+
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String
+  images      String[]
+  published   Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String
+  images      String[]
+  published   Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
