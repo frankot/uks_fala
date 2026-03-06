@@ -157,6 +157,7 @@ export default function GrafikTab({ groups }: Props) {
       {formOpen && (
         <GroupForm
           group={editGroup}
+          allGroups={groups}
           onClose={() => {
             setFormOpen(false);
             setEditGroup(undefined);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { createGroup, updateGroup, type GroupFormData } from "@/lib/actions/groups";
 import { type ColorPresetKey } from "@/lib/color-presets";
 import ColorPicker from "./ColorPicker";
@@ -31,12 +31,25 @@ interface GroupWithRelations {
 
 interface Props {
   group?: GroupWithRelations;
+  allGroups?: GroupWithRelations[];
   onClose: () => void;
 }
 
-export default function GroupForm({ group, onClose }: Props) {
+export default function GroupForm({ group, allGroups, onClose }: Props) {
   const router = useRouter();
   const isEdit = !!group;
+
+  // Build map of occupied slots from other groups
+  const occupiedSlots = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const g of allGroups ?? []) {
+      if (isEdit && g.id === group.id) continue;
+      for (const s of g.slots) {
+        map.set(`${s.day}-${s.hour}`, g.name);
+      }
+    }
+    return map;
+  }, [allGroups, isEdit, group?.id]);
 
   const [name, setName] = useState(group?.name ?? "");
   const [number, setNumber] = useState(group?.number ?? "");
@@ -91,8 +104,8 @@ export default function GroupForm({ group, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 py-8">
-      <div className="mx-4 w-full max-w-2xl rounded-2xl border border-sand-200 bg-white shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-start  justify-center overflow-y-auto bg-black/40 py-8">
+      <div className="mx-4 w-full max-w-4xl rounded-2xl border border-sand-200 bg-white shadow-xl">
         <div className="flex items-center justify-between border-b border-sand-200 px-6 py-4">
           <h3 className="text-[1.1rem] font-bold text-sand-900">
             {isEdit ? "Edytuj grupę" : "Dodaj grupę"}
@@ -108,7 +121,7 @@ export default function GroupForm({ group, onClose }: Props) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 ">
           {/* Basic info */}
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="sm:col-span-2">
@@ -171,9 +184,88 @@ export default function GroupForm({ group, onClose }: Props) {
             onChange={(key) => setColorPreset(key)}
           />
 
-          <SlotEditor value={slots} onChange={setSlots} />
+          <SlotEditor value={slots} onChange={setSlots} occupiedSlots={occupiedSlots} />
 
           <PriceEditor value={prices} onChange={setPrices} />
+
+          {/* Preview */}
+          {(name || slots.length > 0 || prices.length > 0) && (
+            <div>
+              <p className="text-[12px] font-bold uppercase tracking-wider text-sand-500 mb-2">
+                Podgląd
+              </p>
+              <div className="rounded-xl border border-sand-200 bg-sand-50 p-4 space-y-3">
+                {/* Group info */}
+                <div className="flex flex-wrap gap-x-6 gap-y-1 text-[13px] text-sand-700">
+                  {name && (
+                    <span>
+                      <span className="font-semibold text-sand-900">{name}</span>
+                      {number && <span className="text-sand-400"> #{number}</span>}
+                    </span>
+                  )}
+                  {ageRange && <span>Wiek: {ageRange}</span>}
+                </div>
+
+                {/* Slots table */}
+                {slots.length > 0 && (() => {
+                  const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+                  const slotsByDay = slots.reduce<Record<number, string[]>>((acc, s) => {
+                    (acc[s.day] ??= []).push(s.hour);
+                    return acc;
+                  }, {});
+                  const activeDays = Object.keys(slotsByDay)
+                    .map(Number)
+                    .sort((a, b) => a - b);
+
+                  return (
+                    <div className="overflow-x-auto rounded-lg border border-sand-200">
+                      <table className="w-full border-collapse text-[12px]">
+                        <thead>
+                          <tr className="border-b border-sand-200 bg-sand-100">
+                            <th className="px-3 py-1.5 text-left font-bold uppercase tracking-wider text-sand-400">
+                              Dzień
+                            </th>
+                            <th className="px-3 py-1.5 text-left font-bold uppercase tracking-wider text-sand-400">
+                              Godziny
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {activeDays.map((dayIdx) => (
+                            <tr key={dayIdx} className="border-b border-sand-100 last:border-0">
+                              <td className="px-3 py-1.5 font-medium text-sand-700">
+                                {DAYS[dayIdx]}
+                              </td>
+                              <td className="px-3 py-1.5 text-sand-600">
+                                {slotsByDay[dayIdx].sort().join(", ")}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })()}
+
+                {/* Prices summary */}
+                {prices.length > 0 && (
+                  <div className="flex flex-wrap gap-3">
+                    {prices
+                      .slice()
+                      .sort((a, b) => a.frequency - b.frequency)
+                      .map((p) => (
+                        <span
+                          key={p.frequency}
+                          className="rounded-lg bg-white px-3 py-1 text-[12px] font-medium text-sand-700 border border-sand-200"
+                        >
+                          {p.frequency}×/tydz. — {p.price} zł
+                        </span>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {error && (
             <p className="rounded-xl bg-coral-50 px-4 py-3 text-[14px] text-coral-600">

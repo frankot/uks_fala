@@ -14,11 +14,16 @@ interface Slot {
 interface Props {
   value: Slot[];
   onChange: (slots: Slot[]) => void;
+  occupiedSlots?: Map<string, string>;
 }
 
-export default function SlotEditor({ value, onChange }: Props) {
+export default function SlotEditor({ value, onChange, occupiedSlots }: Props) {
   function isSelected(day: number, hour: string) {
     return value.some((s) => s.day === day && s.hour === hour);
+  }
+
+  function getOccupiedBy(day: number, hour: string): string | undefined {
+    return occupiedSlots?.get(`${day}-${hour}`);
   }
 
   function toggle(day: number, hour: string) {
@@ -35,16 +40,16 @@ export default function SlotEditor({ value, onChange }: Props) {
         Terminy treningów
       </p>
       <div className="overflow-x-auto rounded-xl border border-sand-200">
-        <table className="w-full min-w-[480px] border-collapse text-sm">
+        <table className="w-full border-collapse text-sm table-fixed">
           <thead>
             <tr className="border-b border-sand-200 bg-sand-50">
-              <th className="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-sand-400 w-[70px]">
+              <th className="px-3 py-2.5 text-left text-[11px] font-bold uppercase tracking-wider text-sand-400 w-16">
                 Godz.
               </th>
               {DAYS.map((day) => (
                 <th
                   key={day}
-                  className="px-2 py-2 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600"
+                  className="px-2 py-2.5 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600"
                 >
                   {day}
                 </th>
@@ -54,22 +59,34 @@ export default function SlotEditor({ value, onChange }: Props) {
           <tbody>
             {TIME_SLOTS.map((hour) => (
               <tr key={hour} className="border-b border-sand-100">
-                <td className="px-3 py-1.5 text-[12px] font-medium text-sand-500">
+                <td className="px-3 py-2 text-[13px] font-medium text-sand-500">
                   {hour}
                 </td>
                 {DAYS.map((_, dayIdx) => {
                   const selected = isSelected(dayIdx, hour);
+                  const occupiedBy = getOccupiedBy(dayIdx, hour);
                   return (
-                    <td key={dayIdx} className="px-2 py-1.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => toggle(dayIdx, hour)}
-                        className={`h-7 w-full max-w-[48px] rounded-md transition-all ${
-                          selected
-                            ? "bg-coral-500 shadow-sm"
-                            : "bg-sand-100 hover:bg-sand-200"
-                        }`}
-                      />
+                    <td key={dayIdx} className="px-1.5 py-2 text-center">
+                      {occupiedBy ? (
+                        <div
+                          className="flex h-8 w-full items-center justify-center rounded-md bg-deep-700/15 cursor-not-allowed"
+                          title={occupiedBy}
+                        >
+                          <span className="truncate px-1 text-[10px] font-bold text-deep-600 select-none">
+                            {occupiedBy}
+                          </span>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => toggle(dayIdx, hour)}
+                          className={`h-8 w-full rounded-md transition-all ${
+                            selected
+                              ? "bg-coral-500 shadow-sm"
+                              : "bg-sand-100 hover:bg-sand-200"
+                          }`}
+                        />
+                      )}
                     </td>
                   );
                 })}
@@ -78,9 +95,15 @@ export default function SlotEditor({ value, onChange }: Props) {
           </tbody>
         </table>
       </div>
-      <p className="mt-1.5 text-[11px] text-sand-400">
-        Kliknij komórkę aby dodać/usunąć termin. Zaznaczono: {value.length}
-      </p>
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-sand-400">
+        <span>Kliknij komórkę aby dodać/usunąć termin. Zaznaczono: {value.length}</span>
+        {occupiedSlots && occupiedSlots.size > 0 && (
+          <span className="flex items-center gap-1">
+            <span className="inline-block h-3 w-3 rounded-sm bg-deep-700/15" />
+            Zajęte przez inne grupy
+          </span>
+        )}
+      </div>
     </div>
   );
 }
