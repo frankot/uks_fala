@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { createGroup, updateGroup, type GroupFormData } from "@/lib/actions/groups";
+import {
+  createGroup,
+  updateGroup,
+  type GroupFormData,
+} from "@/lib/actions/groups";
 import { type ColorPresetKey } from "@/lib/color-presets";
 import ColorPicker from "./ColorPicker";
 import SlotEditor from "./SlotEditor";
@@ -57,10 +61,11 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
   const [colorPreset, setColorPreset] = useState(group?.colorPreset ?? "pool");
   const [sortOrder, setSortOrder] = useState(group?.sortOrder ?? 0);
   const [slots, setSlots] = useState<Slot[]>(
-    group?.slots.map((s) => ({ day: s.day, hour: s.hour })) ?? []
+    group?.slots.map((s) => ({ day: s.day, hour: s.hour })) ?? [],
   );
   const [prices, setPrices] = useState<PriceEntry[]>(
-    group?.prices.map((p) => ({ frequency: p.frequency, price: p.price })) ?? []
+    group?.prices.map((p) => ({ frequency: p.frequency, price: p.price })) ??
+      [],
   );
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -114,7 +119,16 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
             onClick={onClose}
             className="rounded-lg p-1.5 text-sand-400 transition-colors hover:bg-sand-100 hover:text-sand-600"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -173,7 +187,9 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
               <input
                 type="number"
                 value={sortOrder}
-                onChange={(e) => setSortOrder(parseInt(e.target.value, 10) || 0)}
+                onChange={(e) =>
+                  setSortOrder(parseInt(e.target.value, 10) || 0)
+                }
                 className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
               />
             </div>
@@ -184,7 +200,11 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
             onChange={(key) => setColorPreset(key)}
           />
 
-          <SlotEditor value={slots} onChange={setSlots} occupiedSlots={occupiedSlots} />
+          <SlotEditor
+            value={slots}
+            onChange={setSlots}
+            occupiedSlots={occupiedSlots}
+          />
 
           <PriceEditor value={prices} onChange={setPrices} />
 
@@ -199,53 +219,64 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
                 <div className="flex flex-wrap gap-x-6 gap-y-1 text-[13px] text-sand-700">
                   {name && (
                     <span>
-                      <span className="font-semibold text-sand-900">{name}</span>
-                      {number && <span className="text-sand-400"> #{number}</span>}
+                      <span className="font-semibold text-sand-900">
+                        {name}
+                      </span>
+                      {number && (
+                        <span className="text-sand-400"> #{number}</span>
+                      )}
                     </span>
                   )}
                   {ageRange && <span>Wiek: {ageRange}</span>}
                 </div>
 
                 {/* Slots table */}
-                {slots.length > 0 && (() => {
-                  const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
-                  const slotsByDay = slots.reduce<Record<number, string[]>>((acc, s) => {
-                    (acc[s.day] ??= []).push(s.hour);
-                    return acc;
-                  }, {});
-                  const activeDays = Object.keys(slotsByDay)
-                    .map(Number)
-                    .sort((a, b) => a - b);
+                {slots.length > 0 &&
+                  (() => {
+                    const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+                    const slotsByDay = slots.reduce<Record<number, string[]>>(
+                      (acc, s) => {
+                        (acc[s.day] ??= []).push(s.hour);
+                        return acc;
+                      },
+                      {},
+                    );
+                    const activeDays = Object.keys(slotsByDay)
+                      .map(Number)
+                      .sort((a, b) => a - b);
 
-                  return (
-                    <div className="overflow-x-auto rounded-lg border border-sand-200">
-                      <table className="w-full border-collapse text-[12px]">
-                        <thead>
-                          <tr className="border-b border-sand-200 bg-sand-100">
-                            <th className="px-3 py-1.5 text-left font-bold uppercase tracking-wider text-sand-400">
-                              Dzień
-                            </th>
-                            <th className="px-3 py-1.5 text-left font-bold uppercase tracking-wider text-sand-400">
-                              Godziny
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {activeDays.map((dayIdx) => (
-                            <tr key={dayIdx} className="border-b border-sand-100 last:border-0">
-                              <td className="px-3 py-1.5 font-medium text-sand-700">
-                                {DAYS[dayIdx]}
-                              </td>
-                              <td className="px-3 py-1.5 text-sand-600">
-                                {slotsByDay[dayIdx].sort().join(", ")}
-                              </td>
+                    return (
+                      <div className="overflow-x-auto rounded-lg border border-sand-200">
+                        <table className="w-full border-collapse text-[12px]">
+                          <thead>
+                            <tr className="border-b border-sand-200 bg-sand-100">
+                              <th className="px-3 py-1.5 text-left font-bold uppercase tracking-wider text-sand-400">
+                                Dzień
+                              </th>
+                              <th className="px-3 py-1.5 text-left font-bold uppercase tracking-wider text-sand-400">
+                                Godziny
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  );
-                })()}
+                          </thead>
+                          <tbody>
+                            {activeDays.map((dayIdx) => (
+                              <tr
+                                key={dayIdx}
+                                className="border-b border-sand-100 last:border-0"
+                              >
+                                <td className="px-3 py-1.5 font-medium text-sand-700">
+                                  {DAYS[dayIdx]}
+                                </td>
+                                <td className="px-3 py-1.5 text-sand-600">
+                                  {slotsByDay[dayIdx].sort().join(", ")}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })()}
 
                 {/* Prices summary */}
                 {prices.length > 0 && (
@@ -286,7 +317,11 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
               disabled={saving}
               className="rounded-xl bg-deep-700 px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-deep-800 disabled:opacity-60"
             >
-              {saving ? "Zapisywanie..." : isEdit ? "Zapisz zmiany" : "Dodaj grupę"}
+              {saving
+                ? "Zapisywanie..."
+                : isEdit
+                  ? "Zapisz zmiany"
+                  : "Dodaj grupę"}
             </button>
           </div>
         </form>

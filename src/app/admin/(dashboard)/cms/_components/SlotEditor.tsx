@@ -2,8 +2,15 @@
 
 const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
 const TIME_SLOTS = [
-  "15:30", "16:00", "16:30", "17:00", "17:30",
-  "18:00", "18:30", "19:00", "19:30",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
 ];
 
 interface Slot {
@@ -96,7 +103,9 @@ export default function SlotEditor({ value, onChange, occupiedSlots }: Props) {
         </table>
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-sand-400">
-        <span>Kliknij komórkę aby dodać/usunąć termin. Zaznaczono: {value.length}</span>
+        <span>
+          Kliknij komórkę aby dodać/usunąć termin. Zaznaczono: {value.length}
+        </span>
         {occupiedSlots && occupiedSlots.size > 0 && (
           <span className="flex items-center gap-1">
             <span className="inline-block h-3 w-3 rounded-sm bg-deep-700/15" />
