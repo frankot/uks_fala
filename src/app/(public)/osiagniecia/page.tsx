@@ -48,7 +48,15 @@ export default async function OsiagnieciaPage({
                 >
                   {/* Trophy icon */}
                   <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-coral-50">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coral-500">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      className="text-coral-500"
+                    >
                       <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 7 7 7 7" />
                       <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 17 7 17 7" />
                       <path d="M4 22h16" />

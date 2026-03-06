@@ -36,7 +36,16 @@ export default async function AchievementDetailPage({
           href="/osiagniecia"
           className="mb-8 inline-flex items-center gap-2 text-[13px] font-semibold text-sand-500 transition-colors hover:text-deep-700"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
@@ -47,7 +56,15 @@ export default async function AchievementDetailPage({
         <div className="rounded-2xl border border-sand-200 bg-white p-8 shadow-sm">
           {/* Trophy */}
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-coral-50">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coral-500">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-coral-500"
+            >
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 7 7 7 7" />
               <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 17 7 17 7" />
               <path d="M4 22h16" />
@@ -79,7 +96,9 @@ export default async function AchievementDetailPage({
 
           {/* Images */}
           {item.images.length > 0 && (
-            <div className={`mt-6 ${item.images.length === 1 ? "" : "grid gap-3 sm:grid-cols-2"}`}>
+            <div
+              className={`mt-6 ${item.images.length === 1 ? "" : "grid gap-3 sm:grid-cols-2"}`}
+            >
               {item.images.map((url, i) => (
                 <img
                   key={i}
@@ -94,11 +113,17 @@ export default async function AchievementDetailPage({
           {/* Content */}
           {item.content && (
             <div className="mt-6 space-y-3 border-t border-sand-100 pt-6">
-              {item.content.split(/\n\n+/).filter(Boolean).map((p, i) => (
-                <p key={i} className="text-[15px] leading-[1.75] text-sand-700">
-                  {p}
-                </p>
-              ))}
+              {item.content
+                .split(/\n\n+/)
+                .filter(Boolean)
+                .map((p, i) => (
+                  <p
+                    key={i}
+                    className="text-[15px] leading-[1.75] text-sand-700"
+                  >
+                    {p}
+                  </p>
+                ))}
             </div>
           )}
         </div>
@@ -109,7 +134,16 @@ export default async function AchievementDetailPage({
             href="/osiagniecia"
             className="inline-flex items-center gap-2 text-[13px] font-semibold text-sand-500 transition-colors hover:text-deep-700"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="19" y1="12" x2="5" y2="12" />
               <polyline points="12 19 5 12 12 5" />
             </svg>

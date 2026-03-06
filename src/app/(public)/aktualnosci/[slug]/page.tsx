@@ -38,7 +38,16 @@ export default async function NewsDetailPage({
           href="/aktualnosci"
           className="mb-8 inline-flex items-center gap-2 text-[13px] font-semibold text-sand-500 transition-colors hover:text-deep-700"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
@@ -66,7 +75,9 @@ export default async function NewsDetailPage({
 
         {/* Images */}
         {item.images.length > 0 && (
-          <div className={`mt-8 ${item.images.length === 1 ? "" : "grid gap-3 sm:grid-cols-2"}`}>
+          <div
+            className={`mt-8 ${item.images.length === 1 ? "" : "grid gap-3 sm:grid-cols-2"}`}
+          >
             {item.images.map((url: string, i: number) => (
               <img
                 key={i}
@@ -93,7 +104,16 @@ export default async function NewsDetailPage({
             href="/aktualnosci"
             className="inline-flex items-center gap-2 text-[13px] font-semibold text-sand-500 transition-colors hover:text-deep-700"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="19" y1="12" x2="5" y2="12" />
               <polyline points="12 19 5 12 12 5" />
             </svg>
