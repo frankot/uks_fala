@@ -26,17 +26,8 @@ export default async function AktualnosciSection() {
         {/* Cards grid */}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {news.map((item) => {
-            const Wrapper = isPlaceholder ? "div" : Link;
-            const wrapperProps = isPlaceholder
-              ? {}
-              : { href: `/aktualnosci/${item.slug}` };
-
-            return (
-              <Wrapper
-                key={item.id}
-                {...(wrapperProps as Record<string, string>)}
-                className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-deep-900/8"
-              >
+            const cardContent = (
+              <>
                 {item.images[0] ? (
                   <div className="aspect-[16/10] overflow-hidden">
                     <img
@@ -78,7 +69,24 @@ export default async function AktualnosciSection() {
                     </span>
                   )}
                 </div>
-              </Wrapper>
+              </>
+            );
+
+            return isPlaceholder ? (
+              <div
+                key={item.id}
+                className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-deep-900/8"
+              >
+                {cardContent}
+              </div>
+            ) : (
+              <Link
+                key={item.id}
+                href={`/aktualnosci/${item.slug}`}
+                className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-deep-900/8"
+              >
+                {cardContent}
+              </Link>
             );
           })}
         </div>

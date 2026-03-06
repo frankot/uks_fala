@@ -29,17 +29,8 @@ export default async function OsiagnieciaSection() {
         {/* Cards grid */}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {achievements.map((item) => {
-            const Wrapper = isPlaceholder ? "div" : Link;
-            const wrapperProps = isPlaceholder
-              ? {}
-              : { href: `/osiagniecia/${item.slug}` };
-
-            return (
-              <Wrapper
-                key={item.id}
-                {...(wrapperProps as Record<string, string>)}
-                className="group rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-white/[0.06] hover:border-white/[0.1]"
-              >
+            const cardContent = (
+              <>
                 {/* Trophy icon */}
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-coral-500/10">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-coral-400">
@@ -66,7 +57,24 @@ export default async function OsiagnieciaSection() {
                 <p className="mt-2 text-[14px] leading-relaxed text-white/50 line-clamp-3">
                   {item.description}
                 </p>
-              </Wrapper>
+              </>
+            );
+
+            return isPlaceholder ? (
+              <div
+                key={item.id}
+                className="group rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-white/[0.06] hover:border-white/[0.1]"
+              >
+                {cardContent}
+              </div>
+            ) : (
+              <Link
+                key={item.id}
+                href={`/osiagniecia/${item.slug}`}
+                className="group rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-white/[0.06] hover:border-white/[0.1]"
+              >
+                {cardContent}
+              </Link>
             );
           })}
         </div>
