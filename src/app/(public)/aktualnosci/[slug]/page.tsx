@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import HeroStrip from "@/components/HeroStrip";
 import { getNewsBySlug } from "@/lib/queries/news";
 
 export async function generateMetadata({
@@ -31,47 +32,15 @@ export default async function NewsDetailPage({
   const paragraphs: string[] = item.content.split(/\n\n+/).filter(Boolean);
 
   return (
-    <article className="pt-32 pb-24 md:pt-40 md:pb-32">
-      <div className="mx-auto max-w-3xl px-5 sm:px-8">
-        {/* Back */}
-        <Link
-          href="/aktualnosci"
-          className="mb-8 inline-flex items-center gap-2 text-[13px] font-semibold text-sand-500 transition-colors hover:text-deep-700"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
-          Wszystkie aktualnosci
-        </Link>
-
-        {/* Date */}
-        <span className="text-[13px] font-medium text-sand-400">
-          {new Date(item.publishedAt).toLocaleDateString("pl-PL", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-        </span>
-
-        {/* Title */}
-        <h1 className="mt-3 font-editorial text-[clamp(1.8rem,4vw,2.8rem)] font-bold leading-[1.1] tracking-[-0.02em] text-sand-950">
-          {item.title}
-        </h1>
-
-        {/* Lead */}
-        <p className="mt-6 text-[18px] leading-[1.75] text-sand-600 font-medium">
-          {item.description}
-        </p>
+    <article>
+      <HeroStrip
+        backHref="/aktualnosci"
+        backLabel="Wszystkie aktualności"
+        tag="Aktualności"
+        title={item.title}
+        description={item.description}
+      />
+      <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12">
 
         {/* Images */}
         {item.images.length > 0 && (

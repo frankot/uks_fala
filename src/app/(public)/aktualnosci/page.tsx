@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import HeroStrip from "@/components/HeroStrip";
 import { getAllNews } from "@/lib/queries/news";
 
 export const metadata = {
@@ -18,20 +19,15 @@ export default async function AktualnosciPage({
   const { items, totalPages } = await getAllNews(page);
 
   return (
-    <section className="pt-32 pb-24 md:pt-40 md:pb-32">
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
-        {/* Header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-px w-10 bg-pool-400" />
-            <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-pool-500">
-              Aktualnosci
-            </span>
-          </div>
-          <h1 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-sand-950">
-            Wiadomosci z klubu
-          </h1>
-        </div>
+    <section>
+      <HeroStrip
+        backHref="/"
+        backLabel="Strona główna"
+        tag="Aktualności"
+        title="Wiadomości z klubu"
+        subtitle="UKS Fala"
+      />
+      <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-12">
 
         {items.length === 0 ? (
           <p className="text-center text-sand-500 py-12">

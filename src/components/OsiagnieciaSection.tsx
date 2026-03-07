@@ -7,7 +7,7 @@ export default async function OsiagnieciaSection() {
   const isPlaceholder = achievements.length > 0 && !achievements[0].slug;
 
   return (
-    <section className="relative bg-deep-900 py-24 md:py-32 overflow-hidden">
+    <section className="relative bg-deep-900 py-24 md:py-20 overflow-hidden">
       {/* Grain texture overlay */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.03]"

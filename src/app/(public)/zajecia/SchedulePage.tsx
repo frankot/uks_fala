@@ -1,8 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef, useMemo } from "react";
-import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import HeroStrip from "@/components/HeroStrip";
 import type { ScheduleData } from "@/lib/queries/schedule";
 
 const DAYS = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
@@ -36,10 +36,10 @@ export default function SchedulePage({ data }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Reset selected days when group changes
-  useEffect(() => {
-    setSelectedDays(new Set(getDayIndicesForGroup(selectedGroup)));
-  }, [selectedGroup]);
+  function selectGroup(groupName: string) {
+    setSelectedGroup(groupName);
+    setSelectedDays(new Set(getDayIndicesForGroup(groupName)));
+  }
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -95,37 +95,14 @@ export default function SchedulePage({ data }: Props) {
 
   return (
     <div className="min-h-screen bg-sand-50">
-      {/* Hero strip */}
-      <div className="relative overflow-hidden bg-deep-900 pt-28 pb-16">
-        <div className="grain absolute inset-0" />
-        <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-pool-500/10 blur-[80px]" />
-        <div className="absolute -bottom-10 left-20 h-40 w-40 rounded-full bg-coral-500/10 blur-[60px]" />
-        <div className="relative z-10 mx-auto max-w-[1240px] px-5 sm:px-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-[13px] font-semibold text-deep-200/50 transition-colors hover:text-deep-200"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            Strona główna
-          </Link>
-          <div className="mt-4 flex items-center gap-3">
-            <div className="h-px w-10 bg-pool-400" />
-            <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-pool-400">
-              Harmonogram
-            </span>
-          </div>
-          <h1 className="font-editorial mt-3 text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.06] tracking-[-0.02em] text-white">
-            Plan zajęć
-            <span className="block text-pool-300">UKS Fala</span>
-          </h1>
-          <p className="mt-4 max-w-xl text-[16px] leading-[1.7] text-deep-200/60">
-            Wybierz grupę i dni treningów, aby zobaczyć harmonogram i cenę miesięczną.
-          </p>
-        </div>
-      </div>
+      <HeroStrip
+        backHref="/"
+        backLabel="Strona główna"
+        tag="Harmonogram"
+        title="Plan zajęć"
+        subtitle="UKS Fala"
+        description="Wybierz grupę i dni treningów, aby zobaczyć harmonogram i cenę miesięczną."
+      />
 
       {/* Main content */}
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-12">
@@ -175,7 +152,7 @@ export default function SchedulePage({ data }: Props) {
                           <button
                             key={g.name}
                             onClick={() => {
-                              setSelectedGroup(g.name);
+                              selectGroup(g.name);
                               setIsDropdownOpen(false);
                             }}
                             className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all ${
@@ -314,7 +291,7 @@ export default function SchedulePage({ data }: Props) {
                                     if (slot.group === selectedGroup) {
                                       toggleDay(dayIdx);
                                     } else {
-                                      setSelectedGroup(slot.group);
+                                      selectGroup(slot.group);
                                     }
                                   }}
                                   className={`mx-auto block w-full rounded-lg px-2 py-1.5 text-[11px] font-bold transition-all ${

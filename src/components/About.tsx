@@ -1,8 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function About() {
   return (
-    <section id="o-nas" className="relative py-24 md:py-32">
+    <section id="o-nas" className="relative py-24 md:pt-10 md:pb-32">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
         <div className="grid items-center gap-16 md:grid-cols-12 md:gap-12">
           {/* Left — text (takes more space, asymmetric) */}
@@ -35,6 +36,27 @@ export default function About() {
                 bezpieczeństwie.
               </p>
             </div>
+
+            <Link
+              href="/o-nas"
+              className="group mt-8 inline-flex items-center gap-2 text-[15px] font-semibold text-deep-500 transition-colors hover:text-deep-700"
+            >
+              Dowiedz się więcej o klubie
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-transform group-hover:translate-x-0.5"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </Link>
 
             {/* Credential strip */}
             <div className="mt-10 flex flex-wrap items-center gap-4">

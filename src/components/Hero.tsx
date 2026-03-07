@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-[90vh] overflow-hidden bg-deep-900">
+    <section className="relative min-h-[80vh] overflow-hidden bg-deep-900">
       {/* Grain texture */}
       <div className="grain absolute inset-0" />
 
@@ -29,7 +29,7 @@ export default function Hero() {
       <div className="absolute inset-0 opacity-[0.04] lane-lines" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex min-h-[90vh] max-w-[1240px] flex-col justify-center px-5 pt-20 pb-24 sm:px-8">
+      <div className="relative z-10 mx-auto flex min-h-[80vh] max-w-[1240px] flex-col justify-center px-5 pt-20 pb-24 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
           {/* Left — text */}
           <div className="lg:col-span-7">

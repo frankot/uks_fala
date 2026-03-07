@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const navLinks = [
-  { href: "#o-nas", label: "O nas" },
+  { href: "/o-nas", label: "O nas" },
   { href: "/aktualnosci", label: "Aktualnosci" },
   { href: "/osiagniecia", label: "Osiagniecia" },
-  { href: "/zajecia", label: "Grafik" },
+  { href: "/zajecia", label: "Zajęcia" },
   { href: "#trenerzy", label: "Trenerzy" },
   { href: "#kontakt", label: "Kontakt" },
 ];
@@ -94,12 +94,12 @@ export default function Navigation() {
             >
               530 077 078
             </a>
-            <a
-              href="#kontakt"
+            <Link
+              href="/zajecia"
               className="inline-flex h-10 items-center rounded-full bg-coral-500 px-6 text-[13px] font-bold uppercase tracking-wider text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20"
             >
               Zapisz dziecko
-            </a>
+            </Link>
           </div>
 
           {/* Mobile hamburger */}
@@ -163,13 +163,13 @@ export default function Navigation() {
                 >
                   Tel: 530 077 078
                 </a>
-                <a
+                <Link
                   href="#kontakt"
                   className="inline-flex h-11 items-center justify-center rounded-full bg-coral-500 text-[13px] font-bold uppercase tracking-wider text-white"
                   onClick={() => setMobileOpen(false)}
                 >
                   Zapisz dziecko
-                </a>
+                </Link>
               </div>
             </div>
           </nav>

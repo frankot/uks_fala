@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -14,15 +14,14 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isCmsActive = pathname.startsWith("/admin/cms");
-  const [cmsOpen, setCmsOpen] = useState(isCmsActive);
+  const [manuallyExpanded, setManuallyExpanded] = useState(false);
   const currentTab = searchParams.get("tab") || "grafik";
 
-  useEffect(() => {
-    if (isCmsActive) setCmsOpen(true);
-  }, [isCmsActive]);
+  // Derive state: always open when on CMS page, or respect manual toggle
+  const cmsOpen = isCmsActive || manuallyExpanded;
 
   return (
-    <aside className="hidden md:flex w-[240px] shrink-0 flex-col border-r border-sand-200 bg-white">
+    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-sand-200 bg-white">
       <div className="flex h-16 items-center gap-2 border-b border-sand-200 px-6">
         <div className="h-8 w-8 rounded-lg bg-deep-700 flex items-center justify-center">
           <span className="text-[11px] font-bold text-white">UF</span>
@@ -36,7 +35,12 @@ export default function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-1">
         {/* CMS collapsible */}
         <button
-          onClick={() => setCmsOpen(!cmsOpen)}
+          onClick={() => {
+            // Don't allow collapsing when actively viewing a CMS page
+            if (!isCmsActive) {
+              setManuallyExpanded(!manuallyExpanded);
+            }
+          }}
           className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors ${
             isCmsActive
               ? "bg-deep-50 text-deep-700"
