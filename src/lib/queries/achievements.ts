@@ -95,8 +95,7 @@ const FALLBACK_ACHIEVEMENTS = [
     id: "fallback-achievement-7",
     title: "Kwalifikacja do finalu wojewodzkiego",
     slug: "kwalifikacja-do-finalu-wojewodzkiego",
-    description:
-      "Trzech zawodnikow z minima czasowymi na final wojewodzki.",
+    description: "Trzech zawodnikow z minima czasowymi na final wojewodzki.",
     content:
       "Po serii startow kontrolnych potwierdzilismy trzy kwalifikacje do finalu. Wyniki byly zgodne z zalozeniami treningowymi na ten etap sezonu.",
     images: [] as string[],
@@ -189,7 +188,9 @@ export async function getAllAchievements(page = 1, perPage = 9) {
 export async function getAchievementBySlug(slug: string) {
   const item = await prisma.achievement.findUnique({ where: { slug } });
   if (item) return item;
-  return FALLBACK_ACHIEVEMENTS.find((fallback) => fallback.slug === slug) ?? null;
+  return (
+    FALLBACK_ACHIEVEMENTS.find((fallback) => fallback.slug === slug) ?? null
+  );
 }
 
 export async function getAllAchievementsAdmin() {

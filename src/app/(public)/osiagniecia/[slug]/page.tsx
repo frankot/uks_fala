@@ -42,7 +42,6 @@ export default async function AchievementDetailPage({
       <div className="mx-auto max-w-2xl px-5 sm:px-8 py-12">
         {/* Card */}
         <div className="rounded-2xl border border-sand-200 bg-white p-8 shadow-sm">
-
           {/* Images */}
           {item.images.length > 0 && (
             <div

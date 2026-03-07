@@ -41,7 +41,6 @@ export default async function NewsDetailPage({
         description={item.description}
       />
       <div className="mx-auto max-w-3xl px-5 sm:px-8 py-12">
-
         {/* Images */}
         {item.images.length > 0 && (
           <div

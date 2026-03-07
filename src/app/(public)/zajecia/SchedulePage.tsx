@@ -5,10 +5,24 @@ import { useState, useEffect, useRef } from "react";
 import HeroStrip from "@/components/HeroStrip";
 import type { ScheduleData } from "@/lib/queries/schedule";
 
-const DAYS = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+const DAYS = [
+  "Poniedziałek",
+  "Wtorek",
+  "Środa",
+  "Czwartek",
+  "Piątek",
+  "Sobota",
+];
 const TIME_SLOTS = [
-  "15:30", "16:00", "16:30", "17:00", "17:30",
-  "18:00", "18:30", "19:00", "19:30",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
 ];
 
 interface Props {
@@ -16,22 +30,29 @@ interface Props {
 }
 
 export default function SchedulePage({ data }: Props) {
-  const { groups: GROUPS, schedule: SCHEDULE, prices: PRICES, groupColors: GROUP_COLORS } = data;
+  const {
+    groups: GROUPS,
+    schedule: SCHEDULE,
+    prices: PRICES,
+    groupColors: GROUP_COLORS,
+  } = data;
 
   function getDayIndicesForGroup(group: string): number[] {
-    return [...new Set(
-      SCHEDULE.filter((s) => s.group === group).map((s) => s.day)
-    )].sort((a, b) => a - b);
+    return [
+      ...new Set(SCHEDULE.filter((s) => s.group === group).map((s) => s.day)),
+    ].sort((a, b) => a - b);
   }
 
   const searchParams = useSearchParams();
   const paramGroup = searchParams.get("group") ?? "";
   const VALID_GROUP_NAMES = Object.keys(PRICES);
-  const initialGroup = VALID_GROUP_NAMES.includes(paramGroup) ? paramGroup : GROUPS[0]?.name ?? "Krewetki";
+  const initialGroup = VALID_GROUP_NAMES.includes(paramGroup)
+    ? paramGroup
+    : (GROUPS[0]?.name ?? "Krewetki");
 
   const [selectedGroup, setSelectedGroup] = useState(initialGroup);
   const [selectedDays, setSelectedDays] = useState<Set<number>>(
-    () => new Set(getDayIndicesForGroup(initialGroup))
+    () => new Set(getDayIndicesForGroup(initialGroup)),
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -45,7 +66,10 @@ export default function SchedulePage({ data }: Props) {
   useEffect(() => {
     if (!isDropdownOpen) return;
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     }
@@ -64,18 +88,30 @@ export default function SchedulePage({ data }: Props) {
   }
 
   const groupDayIndices = getDayIndicesForGroup(selectedGroup);
-  const currentPrice = (PRICES[selectedGroup] ?? {})[selectedDays.size as 1 | 2 | 3];
+  const currentPrice = (PRICES[selectedGroup] ?? {})[
+    selectedDays.size as 1 | 2 | 3
+  ];
   const colors = GROUP_COLORS[selectedGroup];
   const activeGroup = GROUPS.find((g) => g.name === selectedGroup)!;
 
   // Form state
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
+    "idle",
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("sending");
-    const days = [...selectedDays].sort((a, b) => a - b).map((d) => DAYS[d]).join(", ");
+    const days = [...selectedDays]
+      .sort((a, b) => a - b)
+      .map((d) => DAYS[d])
+      .join(", ");
     try {
       const res = await fetch("/api/send", {
         method: "POST",
@@ -107,11 +143,9 @@ export default function SchedulePage({ data }: Props) {
       {/* Main content */}
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-12">
         <div className="lg:grid lg:grid-cols-[300px_1fr] lg:gap-10">
-
           {/* ——— SIDEBAR ——— */}
           <aside className="mb-10 lg:mb-0">
             <div className="sticky top-24 space-y-8">
-
               {/* Group selector — dropdown */}
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sand-500 mb-3">
@@ -123,7 +157,9 @@ export default function SchedulePage({ data }: Props) {
                     onClick={() => setIsDropdownOpen((v) => !v)}
                     className="flex w-full items-center gap-3 rounded-xl border-2 border-deep-700 bg-deep-700 px-4 py-3 text-left shadow-md shadow-deep-900/10 transition-all hover:bg-deep-600"
                   >
-                    <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold bg-white/15 text-white`}>
+                    <span
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold bg-white/15 text-white`}
+                    >
                       {activeGroup.num}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -135,7 +171,14 @@ export default function SchedulePage({ data }: Props) {
                       </p>
                     </div>
                     <svg
-                      width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className={`shrink-0 text-deep-200 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
                     >
                       <polyline points="6 9 12 15 18 9" />
@@ -161,21 +204,39 @@ export default function SchedulePage({ data }: Props) {
                                 : "hover:bg-sand-50"
                             }`}
                           >
-                            <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                              isActive ? "bg-white/15 text-white" : `${c.bg} ${c.text}`
-                            }`}>
+                            <span
+                              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+                                isActive
+                                  ? "bg-white/15 text-white"
+                                  : `${c.bg} ${c.text}`
+                              }`}
+                            >
                               {g.num}
                             </span>
                             <div className="min-w-0">
-                              <p className={`truncate text-[13px] font-bold ${isActive ? "text-white" : "text-sand-900"}`}>
+                              <p
+                                className={`truncate text-[13px] font-bold ${isActive ? "text-white" : "text-sand-900"}`}
+                              >
                                 {g.name}
                               </p>
-                              <p className={`text-[11px] ${isActive ? "text-deep-200" : "text-sand-500"}`}>
+                              <p
+                                className={`text-[11px] ${isActive ? "text-deep-200" : "text-sand-500"}`}
+                              >
                                 {g.age}
                               </p>
                             </div>
                             {isActive && (
-                              <svg className="ml-auto shrink-0 text-pool-300" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <svg
+                                className="ml-auto shrink-0 text-pool-300"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
                                 <polyline points="20 6 9 17 4 12" />
                               </svg>
                             )}
@@ -207,16 +268,31 @@ export default function SchedulePage({ data }: Props) {
                             : "border-sand-200 bg-white hover:border-sand-300 hover:bg-sand-50"
                         } ${isLast ? "cursor-not-allowed opacity-50" : ""}`}
                       >
-                        <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-all ${
-                          isSelected ? "border-coral-500 bg-coral-500" : "border-sand-300 bg-white"
-                        }`}>
+                        <span
+                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-all ${
+                            isSelected
+                              ? "border-coral-500 bg-coral-500"
+                              : "border-sand-300 bg-white"
+                          }`}
+                        >
                           {isSelected && (
-                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                            <svg
+                              width="9"
+                              height="9"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="white"
+                              strokeWidth="3.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
                               <polyline points="20 6 9 17 4 12" />
                             </svg>
                           )}
                         </span>
-                        <span className={`text-[13px] font-semibold ${isSelected ? "text-sand-900" : "text-sand-500"}`}>
+                        <span
+                          className={`text-[13px] font-semibold ${isSelected ? "text-sand-900" : "text-sand-500"}`}
+                        >
                           {DAYS[dayIdx]}
                         </span>
                       </button>
@@ -233,18 +309,17 @@ export default function SchedulePage({ data }: Props) {
                 {currentPrice ? (
                   <p className="font-editorial text-[2.5rem] font-bold leading-none text-deep-800">
                     {currentPrice}{" "}
-                    <span className="text-[1.2rem] font-semibold text-deep-400">zł</span>
+                    <span className="text-[1.2rem] font-semibold text-deep-400">
+                      zł
+                    </span>
                   </p>
                 ) : (
-                  <p className="text-[15px] text-sand-500">
-                    Zapytaj o cenę
-                  </p>
+                  <p className="text-[15px] text-sand-500">Zapytaj o cenę</p>
                 )}
                 <p className="mt-2 text-[12px] text-sand-500">
                   Ceny orientacyjne, mogą ulec zmianie.
                 </p>
               </div>
-
             </div>
           </aside>
 
@@ -258,7 +333,10 @@ export default function SchedulePage({ data }: Props) {
                       Godzina
                     </th>
                     {DAYS.map((day) => (
-                      <th key={day} className="px-3 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600">
+                      <th
+                        key={day}
+                        className="px-3 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600"
+                      >
                         {day}
                       </th>
                     ))}
@@ -275,15 +353,17 @@ export default function SchedulePage({ data }: Props) {
                       </td>
                       {DAYS.map((_, dayIdx) => {
                         const slots = SCHEDULE.filter(
-                          (s) => s.day === dayIdx && s.hour === hour
+                          (s) => s.day === dayIdx && s.hour === hour,
                         );
                         return (
                           <td key={dayIdx} className="px-2 py-2 text-center">
                             {slots.map((slot) => {
                               const c = GROUP_COLORS[slot.group];
-                              const isSelectedGroup = slot.group === selectedGroup;
+                              const isSelectedGroup =
+                                slot.group === selectedGroup;
                               const isDaySelected = selectedDays.has(dayIdx);
-                              const isHighlighted = isSelectedGroup && isDaySelected;
+                              const isHighlighted =
+                                isSelectedGroup && isDaySelected;
                               return (
                                 <button
                                   key={slot.group}
@@ -298,8 +378,8 @@ export default function SchedulePage({ data }: Props) {
                                     isHighlighted
                                       ? `${c.bg} ${c.text} ring-2 ${c.ring} shadow-sm scale-105`
                                       : isSelectedGroup
-                                      ? `${c.bg} ${c.text} opacity-50 hover:opacity-75`
-                                      : `${c.bg} ${c.text} opacity-40 hover:opacity-70`
+                                        ? `${c.bg} ${c.text} opacity-50 hover:opacity-75`
+                                        : `${c.bg} ${c.text} opacity-40 hover:opacity-70`
                                   }`}
                                 >
                                   {slot.group}
@@ -316,7 +396,8 @@ export default function SchedulePage({ data }: Props) {
             </div>
 
             <p className="mt-3 text-[12px] text-sand-400">
-              * Harmonogram orientacyjny — może ulec zmianie. Kliknij grupę aby ją wybrać; kliknij zaznaczoną grupę, aby odhaczyć dany dzień.
+              * Harmonogram orientacyjny — może ulec zmianie. Kliknij grupę aby
+              ją wybrać; kliknij zaznaczoną grupę, aby odhaczyć dany dzień.
             </p>
 
             {/* ——— RESERVATION FORM ——— */}
@@ -336,122 +417,200 @@ export default function SchedulePage({ data }: Props) {
 
               {/* Pre-filled summary */}
               <div className="mt-6 flex flex-wrap gap-3">
-                <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2 ${colors.bg} ${colors.text}`}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <div
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 ${colors.bg} ${colors.text}`}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                     <circle cx="9" cy="7" r="4" />
                   </svg>
                   <span className="text-[13px] font-bold">{selectedGroup}</span>
                 </div>
                 <div className="inline-flex items-center gap-2 rounded-full bg-coral-100 px-4 py-2 text-coral-600">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                     <line x1="16" y1="2" x2="16" y2="6" />
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
                   <span className="text-[13px] font-bold">
-                    {[...selectedDays].sort((a, b) => a - b).map((d) => DAYS[d]).join(", ")}
+                    {[...selectedDays]
+                      .sort((a, b) => a - b)
+                      .map((d) => DAYS[d])
+                      .join(", ")}
                   </span>
                   {currentPrice && (
                     <>
                       <span className="text-[13px] text-coral-400">·</span>
-                      <span className="text-[13px] font-bold">{currentPrice} zł/mies.</span>
+                      <span className="text-[13px] font-bold">
+                        {currentPrice} zł/mies.
+                      </span>
                     </>
                   )}
                 </div>
               </div>
 
               <div aria-live="polite">
-              {status === "ok" ? (
-                <div className="mt-8 rounded-xl bg-pool-100 p-6 text-center">
-                  <svg className="mx-auto mb-3 text-deep-600" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <p className="font-editorial text-xl font-bold text-deep-800">Wysłano!</p>
-                  <p className="mt-1 text-[15px] text-deep-600">Odpiszemy najszybciej jak to możliwe.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <div>
-                      <label htmlFor="res-name" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                        Imię i nazwisko *
-                      </label>
-                      <input
-                        id="res-name"
-                        type="text"
-                        required
-                        value={form.name}
-                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                        className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                        placeholder="Anna Kowalska"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="res-email" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                        E-mail *
-                      </label>
-                      <input
-                        id="res-email"
-                        type="email"
-                        required
-                        value={form.email}
-                        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                        className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                        placeholder="anna@example.com"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="res-phone" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                      Telefon <span className="text-sand-400 normal-case font-normal">(opcjonalnie)</span>
-                    </label>
-                    <input
-                      id="res-phone"
-                      type="tel"
-                      value={form.phone}
-                      onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-                      className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                      placeholder="+48 500 000 000"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="res-message" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                      Dodatkowe informacje <span className="text-sand-400 normal-case font-normal">(opcjonalnie)</span>
-                    </label>
-                    <textarea
-                      id="res-message"
-                      rows={3}
-                      value={form.message}
-                      onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                      className="mt-2 block w-full resize-none rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                      placeholder="Wiek dziecka, pytania, preferowane dni..."
-                    />
-                  </div>
-
-                  {status === "error" && (
-                    <p className="rounded-xl bg-coral-50 px-4 py-3 text-[14px] text-coral-600">
-                      Coś poszło nie tak. Spróbuj ponownie lub napisz bezpośrednio na biuro@uksfala.com.pl
+                {status === "ok" ? (
+                  <div className="mt-8 rounded-xl bg-pool-100 p-6 text-center">
+                    <svg
+                      className="mx-auto mb-3 text-deep-600"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <p className="font-editorial text-xl font-bold text-deep-800">
+                      Wysłano!
                     </p>
-                  )}
+                    <p className="mt-1 text-[15px] text-deep-600">
+                      Odpiszemy najszybciej jak to możliwe.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label
+                          htmlFor="res-name"
+                          className="block text-[12px] font-bold uppercase tracking-wider text-sand-500"
+                        >
+                          Imię i nazwisko *
+                        </label>
+                        <input
+                          id="res-name"
+                          type="text"
+                          required
+                          value={form.name}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, name: e.target.value }))
+                          }
+                          className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                          placeholder="Anna Kowalska"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="res-email"
+                          className="block text-[12px] font-bold uppercase tracking-wider text-sand-500"
+                        >
+                          E-mail *
+                        </label>
+                        <input
+                          id="res-email"
+                          type="email"
+                          required
+                          value={form.email}
+                          onChange={(e) =>
+                            setForm((f) => ({ ...f, email: e.target.value }))
+                          }
+                          className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                          placeholder="anna@example.com"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="res-phone"
+                        className="block text-[12px] font-bold uppercase tracking-wider text-sand-500"
+                      >
+                        Telefon{" "}
+                        <span className="text-sand-400 normal-case font-normal">
+                          (opcjonalnie)
+                        </span>
+                      </label>
+                      <input
+                        id="res-phone"
+                        type="tel"
+                        value={form.phone}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, phone: e.target.value }))
+                        }
+                        className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                        placeholder="+48 500 000 000"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="res-message"
+                        className="block text-[12px] font-bold uppercase tracking-wider text-sand-500"
+                      >
+                        Dodatkowe informacje{" "}
+                        <span className="text-sand-400 normal-case font-normal">
+                          (opcjonalnie)
+                        </span>
+                      </label>
+                      <textarea
+                        id="res-message"
+                        rows={3}
+                        value={form.message}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, message: e.target.value }))
+                        }
+                        className="mt-2 block w-full resize-none rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                        placeholder="Wiek dziecka, pytania, preferowane dni..."
+                      />
+                    </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === "sending"}
-                    className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-coral-500 text-[15px] font-bold text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20 disabled:opacity-60"
-                  >
-                    {status === "sending" ? "Wysyłanie…" : "Wyślij zgłoszenie"}
-                    {status !== "sending" && (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5">
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                        <polyline points="12 5 19 12 12 19" />
-                      </svg>
+                    {status === "error" && (
+                      <p className="rounded-xl bg-coral-50 px-4 py-3 text-[14px] text-coral-600">
+                        Coś poszło nie tak. Spróbuj ponownie lub napisz
+                        bezpośrednio na biuro@uksfala.com.pl
+                      </p>
                     )}
-                  </button>
-                </form>
-              )}
+
+                    <button
+                      type="submit"
+                      disabled={status === "sending"}
+                      className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-coral-500 text-[15px] font-bold text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20 disabled:opacity-60"
+                    >
+                      {status === "sending"
+                        ? "Wysyłanie…"
+                        : "Wyślij zgłoszenie"}
+                      {status !== "sending" && (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="transition-transform group-hover:translate-x-0.5"
+                        >
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                          <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                      )}
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>

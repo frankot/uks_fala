@@ -28,7 +28,6 @@ export default async function AktualnosciPage({
         subtitle="UKS Fala"
       />
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8 py-12">
-
         {items.length === 0 ? (
           <p className="text-center text-sand-500 py-12">
             Brak aktualnosci do wyswietlenia.

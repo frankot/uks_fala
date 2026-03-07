@@ -31,9 +31,9 @@ export default function About() {
               </p>
               <p className="text-[17px] leading-[1.75] text-sand-600">
                 Łączymy naukę pływania z&nbsp;wychowaniem przez sport. Każde
-                dziecko rozwija się we własnym tempie, a&nbsp;nasi trenerzy dbają
-                o&nbsp;to, by postępy przychodziły z&nbsp;radością i&nbsp;w&nbsp;pełnym
-                bezpieczeństwie.
+                dziecko rozwija się we własnym tempie, a&nbsp;nasi trenerzy
+                dbają o&nbsp;to, by postępy przychodziły z&nbsp;radością
+                i&nbsp;w&nbsp;pełnym bezpieczeństwie.
               </p>
             </div>
 
@@ -62,7 +62,16 @@ export default function About() {
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-3 rounded-full bg-deep-50 px-4 py-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-deep-500">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
@@ -72,7 +81,16 @@ export default function About() {
               </div>
               <div className="flex items-center gap-3 rounded-full bg-sand-100 px-4 py-2">
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-sand-800">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>

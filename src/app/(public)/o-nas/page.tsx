@@ -51,7 +51,16 @@ const milestones = [
 const values = [
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
         <path d="m9 12 2 2 4-4" />
       </svg>
@@ -62,7 +71,16 @@ const values = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
         <circle cx="9" cy="7" r="4" />
         <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -75,7 +93,16 @@ const values = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 9 7 12 7s5-3 7.5-3a2.5 2.5 0 0 1 0 5H18" />
         <path d="M6 9v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9" />
         <path d="M12 7v14" />
@@ -87,7 +114,16 @@ const values = [
   },
   {
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
       </svg>
     ),
@@ -120,41 +156,54 @@ export default function ONasPage() {
               </h2>
               <div className="mt-6 space-y-5">
                 <p className="text-[17px] leading-[1.8] text-sand-600">
-                  <strong className="text-deep-500">Uczniowski Klub Sportowy Fala Nieporęt</strong> to 
-                  klub sportowy działający przy basenie OSiR w&nbsp;Nieporęcie (ul.&nbsp;Koncertowa&nbsp;4, 
-                  Stanisławów Pierwszy). Jesteśmy licencjonowanym klubem zrzeszonym w&nbsp;Polskim 
-                  Związku Pływackim, co pozwala naszym zawodnikom na starty w&nbsp;oficjalnych 
-                  zawodach na każdym szczeblu.
+                  <strong className="text-deep-500">
+                    Uczniowski Klub Sportowy Fala Nieporęt
+                  </strong>{" "}
+                  to klub sportowy działający przy basenie OSiR
+                  w&nbsp;Nieporęcie (ul.&nbsp;Koncertowa&nbsp;4, Stanisławów
+                  Pierwszy). Jesteśmy licencjonowanym klubem zrzeszonym
+                  w&nbsp;Polskim Związku Pływackim, co pozwala naszym zawodnikom
+                  na starty w&nbsp;oficjalnych zawodach na każdym szczeblu.
                 </p>
                 <p className="text-[17px] leading-[1.8] text-sand-600">
-                  Prowadzimy naukę pływania dla dzieci od&nbsp;4 roku życia — od&nbsp;pierwszego 
-                  kontaktu z&nbsp;wodą, przez doskonalenie techniki wszystkich stylów pływackich, 
-                  aż po przygotowanie sportowe do&nbsp;startów w&nbsp;zawodach. Nasza oferta obejmuje 
-                  grupy początkujące, średnio zaawansowane oraz sekcję sportową.
+                  Prowadzimy naukę pływania dla dzieci od&nbsp;4 roku życia —
+                  od&nbsp;pierwszego kontaktu z&nbsp;wodą, przez doskonalenie
+                  techniki wszystkich stylów pływackich, aż po przygotowanie
+                  sportowe do&nbsp;startów w&nbsp;zawodach. Nasza oferta
+                  obejmuje grupy początkujące, średnio zaawansowane oraz sekcję
+                  sportową.
                 </p>
                 <p className="text-[17px] leading-[1.8] text-sand-600">
-                  Łączymy profesjonalne szkolenie z&nbsp;wychowaniem przez sport. Dla&nbsp;nas 
-                  każde dziecko jest ważne — niezależnie od&nbsp;poziomu umiejętności. Dbamy o&nbsp;to, 
-                  by postępy przychodziły z&nbsp;radością, motywacją i&nbsp;w&nbsp;pełnym bezpieczeństwie.
+                  Łączymy profesjonalne szkolenie z&nbsp;wychowaniem przez
+                  sport. Dla&nbsp;nas każde dziecko jest ważne — niezależnie
+                  od&nbsp;poziomu umiejętności. Dbamy o&nbsp;to, by postępy
+                  przychodziły z&nbsp;radością, motywacją i&nbsp;w&nbsp;pełnym
+                  bezpieczeństwie.
                 </p>
               </div>
 
               {/* Stats strip */}
               <div className="mt-10 grid grid-cols-3 gap-4">
                 <div className="rounded-2xl bg-deep-50 p-5 text-center">
-                  <p className="font-editorial text-3xl font-bold text-deep-700">10+</p>
+                  <p className="font-editorial text-3xl font-bold text-deep-700">
+                    10+
+                  </p>
                   <p className="mt-1 text-[13px] font-medium text-deep-500">
                     lat doświadczenia
                   </p>
                 </div>
                 <div className="rounded-2xl bg-deep-50 p-5 text-center">
-                  <p className="font-editorial text-3xl font-bold text-deep-700">200+</p>
+                  <p className="font-editorial text-3xl font-bold text-deep-700">
+                    200+
+                  </p>
                   <p className="mt-1 text-[13px] font-medium text-deep-500">
                     pływaków rocznie
                   </p>
                 </div>
                 <div className="rounded-2xl bg-deep-50 p-5 text-center">
-                  <p className="font-editorial text-3xl font-bold text-deep-700">6</p>
+                  <p className="font-editorial text-3xl font-bold text-deep-700">
+                    6
+                  </p>
                   <p className="mt-1 text-[13px] font-medium text-deep-500">
                     grup treningowych
                   </p>
@@ -204,8 +253,9 @@ export default function ONasPage() {
               <span className="block text-deep-300">i&nbsp;jak działamy</span>
             </h2>
             <p className="mt-5 text-[17px] leading-[1.75] text-deep-200/60">
-              Naszą misją jest zapewnienie każdemu dziecku dostępu do&nbsp;profesjonalnej 
-              nauki pływania w&nbsp;bezpiecznym i&nbsp;wspierającym środowisku.
+              Naszą misją jest zapewnienie każdemu dziecku dostępu
+              do&nbsp;profesjonalnej nauki pływania w&nbsp;bezpiecznym
+              i&nbsp;wspierającym środowisku.
             </p>
           </div>
 
@@ -304,14 +354,16 @@ export default function ONasPage() {
               </h2>
               <div className="mt-6 space-y-4">
                 <p className="text-[17px] leading-[1.8] text-sand-600">
-                  Nasze zajęcia odbywają się na basenie <strong className="text-sand-800">Ośrodka Sportu 
-                  i&nbsp;Rekreacji w&nbsp;Nieporęcie</strong> (ul.&nbsp;Koncertowa&nbsp;4, 
-                  Stanisławów Pierwszy).
+                  Nasze zajęcia odbywają się na basenie{" "}
+                  <strong className="text-sand-800">
+                    Ośrodka Sportu i&nbsp;Rekreacji w&nbsp;Nieporęcie
+                  </strong>{" "}
+                  (ul.&nbsp;Koncertowa&nbsp;4, Stanisławów Pierwszy).
                 </p>
                 <p className="text-[17px] leading-[1.8] text-sand-600">
-                  Basen dysponuje 25-metrowym torem pływackim z&nbsp;podziałem na 
-                  tory — idealne warunki zarówno do&nbsp;nauki, jak i&nbsp;treningów 
-                  sportowych.
+                  Basen dysponuje 25-metrowym torem pływackim z&nbsp;podziałem
+                  na tory — idealne warunki zarówno do&nbsp;nauki, jak
+                  i&nbsp;treningów sportowych.
                 </p>
               </div>
 
@@ -325,7 +377,16 @@ export default function ONasPage() {
                 ].map((feature) => (
                   <div key={feature} className="flex items-center gap-3">
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-deep-500">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
@@ -364,7 +425,7 @@ export default function ONasPage() {
                 Dołącz do UKS Fala
               </h2>
               <p className="mx-auto mt-4 max-w-md text-[17px] leading-[1.7] text-deep-200/60">
-                Zapisy na nowy semestr są otwarte. Skontaktuj się z&nbsp;nami 
+                Zapisy na nowy semestr są otwarte. Skontaktuj się z&nbsp;nami
                 i&nbsp;dobierzemy najlepszą grupę dla Twojego dziecka.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">

@@ -172,7 +172,10 @@ export async function getAllNews(page = 1, perPage = 9) {
   ]);
 
   if (total === 0) {
-    const fallbackItems = FALLBACK_NEWS.slice((page - 1) * perPage, page * perPage);
+    const fallbackItems = FALLBACK_NEWS.slice(
+      (page - 1) * perPage,
+      page * perPage,
+    );
     const fallbackTotal = FALLBACK_NEWS.length;
 
     return {
