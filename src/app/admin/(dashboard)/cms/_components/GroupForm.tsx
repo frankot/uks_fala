@@ -67,6 +67,14 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
     group?.prices.map((p) => ({ frequency: p.frequency, price: p.price })) ??
       [],
   );
+  const uniqueDays = new Set(slots.map((s) => s.day)).size;
+
+  function handleSlotsChange(newSlots: Slot[]) {
+    const days = new Set(newSlots.map((s) => s.day)).size;
+    setSlots(newSlots);
+    setPrices((prev) => prev.filter((p) => p.frequency <= days));
+  }
+
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -202,11 +210,11 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
 
           <SlotEditor
             value={slots}
-            onChange={setSlots}
+            onChange={handleSlotsChange}
             occupiedSlots={occupiedSlots}
           />
 
-          <PriceEditor value={prices} onChange={setPrices} />
+          <PriceEditor value={prices} onChange={setPrices} maxFrequency={uniqueDays} />
 
           {/* Preview */}
           {(name || slots.length > 0 || prices.length > 0) && (

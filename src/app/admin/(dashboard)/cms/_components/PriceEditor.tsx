@@ -8,15 +8,14 @@ interface PriceEntry {
 interface Props {
   value: PriceEntry[];
   onChange: (prices: PriceEntry[]) => void;
+  maxFrequency?: number;
 }
 
-const LABELS: Record<number, string> = {
-  1: "1× / tydzień",
-  2: "2× / tydzień",
-  3: "3× / tydzień",
-};
+function getLabel(freq: number): string {
+  return `${freq}× / tydzień`;
+}
 
-export default function PriceEditor({ value, onChange }: Props) {
+export default function PriceEditor({ value, onChange, maxFrequency = 0 }: Props) {
   function getPrice(freq: number): string {
     const entry = value.find((p) => p.frequency === freq);
     return entry ? String(entry.price) : "";
@@ -37,11 +36,14 @@ export default function PriceEditor({ value, onChange }: Props) {
       <p className="text-[12px] font-bold uppercase tracking-wider text-sand-500 mb-2">
         Cennik (zł / miesiąc)
       </p>
+      {maxFrequency === 0 && (
+        <p className="text-[13px] text-sand-400 italic">Najpierw wybierz terminy treningów.</p>
+      )}
       <div className="space-y-3">
-        {[1, 2, 3].map((freq) => (
+        {Array.from({ length: maxFrequency }, (_, i) => i + 1).map((freq) => (
           <div key={freq} className="flex items-center gap-3">
             <label className="w-[120px] shrink-0 text-[13px] font-medium text-sand-700">
-              {LABELS[freq]}
+              {getLabel(freq)}
             </label>
             <input
               type="number"

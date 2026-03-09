@@ -1,6 +1,10 @@
 "use client";
 
-import { COLOR_PRESETS, COLOR_PRESET_KEYS, type ColorPresetKey } from "@/lib/color-presets";
+import {
+  COLOR_PRESETS,
+  COLOR_PRESET_KEYS,
+  type ColorPresetKey,
+} from "@/lib/color-presets";
 
 interface Props {
   value: string;
