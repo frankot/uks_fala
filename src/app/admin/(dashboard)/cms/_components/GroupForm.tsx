@@ -214,7 +214,11 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
             occupiedSlots={occupiedSlots}
           />
 
-          <PriceEditor value={prices} onChange={setPrices} maxFrequency={uniqueDays} />
+          <PriceEditor
+            value={prices}
+            onChange={setPrices}
+            maxFrequency={uniqueDays}
+          />
 
           {/* Preview */}
           {(name || slots.length > 0 || prices.length > 0) && (

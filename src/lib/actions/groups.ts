@@ -11,7 +11,7 @@ const SlotSchema = z.object({
 });
 
 const PriceSchema = z.object({
-  frequency: z.number().int().min(1).max(3),
+  frequency: z.number().int().min(1).max(6),
   price: z.number().int().positive(),
 });
 

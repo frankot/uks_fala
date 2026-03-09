@@ -15,7 +15,11 @@ function getLabel(freq: number): string {
   return `${freq}× / tydzień`;
 }
 
-export default function PriceEditor({ value, onChange, maxFrequency = 0 }: Props) {
+export default function PriceEditor({
+  value,
+  onChange,
+  maxFrequency = 0,
+}: Props) {
   function getPrice(freq: number): string {
     const entry = value.find((p) => p.frequency === freq);
     return entry ? String(entry.price) : "";
@@ -37,7 +41,9 @@ export default function PriceEditor({ value, onChange, maxFrequency = 0 }: Props
         Cennik (zł / miesiąc)
       </p>
       {maxFrequency === 0 && (
-        <p className="text-[13px] text-sand-400 italic">Najpierw wybierz terminy treningów.</p>
+        <p className="text-[13px] text-sand-400 italic">
+          Najpierw wybierz terminy treningów.
+        </p>
       )}
       <div className="space-y-3">
         {Array.from({ length: maxFrequency }, (_, i) => i + 1).map((freq) => (
