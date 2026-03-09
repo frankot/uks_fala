@@ -1,3 +1,5 @@
+import { SessionProvider } from "./SessionProvider";
+
 export const metadata = {
   title: "Admin — UKS Fala",
 };
@@ -7,6 +9,6 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <SessionProvider>{children}</SessionProvider>;
 }
 
