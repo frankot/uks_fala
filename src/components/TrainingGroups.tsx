@@ -101,9 +101,7 @@ export default function TrainingGroups() {
               </div>
               <h2 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-sand-950">
                 Znajdź grupę
-                <span className="block text-deep-500">
-                  dla swojego dziecka
-                </span>
+                <span className="block text-deep-500">dla swojego dziecka</span>
               </h2>
             </div>
             <p className="mt-5 text-[17px] leading-[1.75] text-sand-600 md:mt-0 md:text-right">
@@ -125,7 +123,9 @@ export default function TrainingGroups() {
                 </span>
 
                 {/* Level badge */}
-                <span className={`relative inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${group.accent}`}>
+                <span
+                  className={`relative inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${group.accent}`}
+                >
                   {group.level}
                 </span>
 
@@ -155,8 +155,18 @@ export default function TrainingGroups() {
                   href={`/zajecia?group=${encodeURIComponent(group.name)}`}
                   className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-sand-100 py-2.5 text-[13px] font-bold text-sand-700 transition-all group-hover:bg-deep-700 group-hover:text-white"
                 >
-                  Zarezerwuj
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0">
+                  Zapisz dziecko
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="opacity-0 -translate-x-1 transition-all group-hover:opacity-100 group-hover:translate-x-0"
+                  >
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
                   </svg>

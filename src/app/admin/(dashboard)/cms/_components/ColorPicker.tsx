@@ -13,7 +13,7 @@ export default function ColorPicker({ value, onChange }: Props) {
       <p className="text-[12px] font-bold uppercase tracking-wider text-sand-500 mb-2">
         Kolor grupy
       </p>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         {COLOR_PRESET_KEYS.map((key) => {
           const preset = COLOR_PRESETS[key];
           const isSelected = value === key;

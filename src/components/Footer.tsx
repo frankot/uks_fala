@@ -138,9 +138,14 @@ export default function Footer() {
           <p className="text-[12px] text-deep-400/60">
             &copy; {new Date().getFullYear()} UKS Fala Nieporęt. Wszelkie prawa zastrzeżone.
           </p>
-          <p className="text-[12px] text-deep-400/40">
-            Polityka prywatności
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-[12px] text-deep-400/40">
+              Polityka prywatności
+            </p>
+            <p className="text-[12px] text-deep-400/40">
+              Created by STRUS.DEV
+            </p>
+          </div>
         </div>
       </div>
     </footer>
