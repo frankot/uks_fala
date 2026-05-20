@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { deleteImage } from "@/lib/upload";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -43,11 +44,22 @@ export async function updateCoach(id: string, data: CoachFormData) {
 
   const parsed = CoachSchema.parse(data);
 
+  const existing = await prisma.coach.findUnique({
+    where: { id },
+    select: { imageUrl: true },
+  });
+
+  const newImage = parsed.imageUrl || null;
+
+  if (existing?.imageUrl && existing.imageUrl !== newImage) {
+    await deleteImage(existing.imageUrl).catch(() => {});
+  }
+
   await prisma.coach.update({
     where: { id },
     data: {
       ...parsed,
-      imageUrl: parsed.imageUrl || null,
+      imageUrl: newImage,
     },
   });
 
@@ -58,7 +70,16 @@ export async function deleteCoach(id: string) {
   const session = await auth();
   if (!session) throw new Error("Unauthorized");
 
+  const item = await prisma.coach.findUnique({
+    where: { id },
+    select: { imageUrl: true },
+  });
+
   await prisma.coach.delete({ where: { id } });
+
+  if (item?.imageUrl) {
+    await deleteImage(item.imageUrl).catch(() => {});
+  }
 
   revalidate();
 }

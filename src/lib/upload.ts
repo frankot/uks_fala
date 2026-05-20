@@ -1,21 +1,48 @@
+"use server";
+
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export async function deleteImage(url: string): Promise<void> {
+  const parts = url.split("/upload/");
+  if (parts.length !== 2) return;
+
+  const rest = parts[1].replace(/^v\d+\//, "");
+  const publicId = rest.replace(/\.[^.]+$/, "");
+
+  await cloudinary.uploader.destroy(publicId);
+}
+
 export async function uploadImage(
   file: File,
-  folder?: string
+  folder?: string,
 ): Promise<string> {
-  const formData = new FormData();
-  formData.append("file", file);
-  if (folder) formData.append("folder", folder);
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
 
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: formData,
-  });
+  const result = await new Promise<{ secure_url: string }>(
+    (resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: folder || "uks-fala",
+            resource_type: "image",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else if (!result)
+              reject(new Error("Cloudinary returned no result"));
+            else resolve(result as { secure_url: string });
+          },
+        )
+        .end(buffer);
+    },
+  );
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: "Upload failed" }));
-    throw new Error(err.error || "Upload failed");
-  }
-
-  const data = await res.json();
-  return data.url;
+  return result.secure_url;
 }

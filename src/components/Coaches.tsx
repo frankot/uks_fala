@@ -1,17 +1,9 @@
 import Link from "next/link";
 import { getCoachesPublic } from "@/lib/queries/coaches";
+import CoachCard from "@/components/CoachCard";
 
 export default async function Coaches() {
   const coaches = await getCoachesPublic(3);
-
-  function getInitials(name: string) {
-    return name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  }
 
   return (
     <section id="trenerzy" className="relative overflow-hidden bg-sand-100 py-24 md:py-32">
@@ -39,48 +31,7 @@ export default async function Coaches() {
         {/* Coach cards — horizontal on desktop */}
         <div className="grid gap-5 md:grid-cols-3">
           {coaches.map((coach) => (
-            <article
-              key={coach.id}
-              className="group relative overflow-hidden rounded-3xl bg-white transition-all hover:shadow-xl hover:shadow-deep-900/6"
-            >
-              {/* Photo or initial placeholder */}
-              <div className="relative flex h-52 items-center justify-center bg-gradient-to-br from-deep-700 to-deep-900">
-                {coach.imageUrl ? (
-                  <img
-                    src={coach.imageUrl}
-                    alt={coach.name}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <span className="font-editorial text-6xl font-bold text-white/20 select-none">
-                    {getInitials(coach.name)}
-                  </span>
-                )}
-                {/* Decorative wave */}
-                <svg
-                  className="absolute bottom-0 left-0 w-full text-white"
-                  viewBox="0 0 400 30"
-                  preserveAspectRatio="none"
-                >
-                  <path
-                    d="M0,15 C100,30 200,0 300,15 C350,22 380,25 400,20 L400,30 L0,30 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </div>
-
-              <div className="p-7">
-                <h3 className="text-lg font-bold text-sand-950">
-                  {coach.name}
-                </h3>
-                <p className="mt-1 text-[13px] font-semibold text-deep-500">
-                  {coach.role}
-                </p>
-                <p className="mt-4 text-[15px] leading-[1.7] text-sand-500">
-                  {coach.bio}
-                </p>
-              </div>
-            </article>
+            <CoachCard key={coach.id} coach={coach} />
           ))}
         </div>
 

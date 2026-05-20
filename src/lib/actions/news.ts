@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slugify";
+import { deleteImage } from "@/lib/upload";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -45,6 +46,16 @@ export async function updateNews(id: string, data: NewsFormData) {
 
   const parsed = NewsSchema.parse(data);
 
+  const existing = await prisma.news.findUnique({
+    where: { id },
+    select: { images: true },
+  });
+
+  if (existing) {
+    const removed = existing.images.filter((url) => !parsed.images.includes(url));
+    await Promise.allSettled(removed.map(deleteImage));
+  }
+
   await prisma.news.update({
     where: { id },
     data: parsed,
@@ -57,7 +68,16 @@ export async function deleteNews(id: string) {
   const session = await auth();
   if (!session) throw new Error("Unauthorized");
 
+  const item = await prisma.news.findUnique({
+    where: { id },
+    select: { images: true },
+  });
+
   await prisma.news.delete({ where: { id } });
+
+  if (item) {
+    await Promise.allSettled(item.images.map(deleteImage));
+  }
 
   revalidate();
 }
