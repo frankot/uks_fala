@@ -16,24 +16,22 @@ export default function About() {
             </div>
 
             <h2 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-sand-950">
-              Pływanie to nasza pasja
+              Pływanie, które daje dzieciom
               <span className="block text-deep-500">
-                — i&nbsp;przekazujemy ją dalej
+                coś{" "}
+                <span className="text-pool-500">więcej</span>
+                {" "} <br />niż umiejętności
+                <span className="text-pool-400">.</span>
               </span>
             </h2>
 
             <div className="mt-8 space-y-5">
               <p className="text-[17px] leading-[1.75] text-sand-600">
-                UKS Fala Nieporęt to klub sportowy działający przy basenie OSiR
-                w&nbsp;Nieporęcie. Od ponad dekady uczymy dzieci i&nbsp;młodzież
-                pływania — od pokonywania lęku przed wodą, przez doskonalenie
-                techniki, aż po przygotowanie do startów w&nbsp;zawodach.
+       W UKS Fala Nieporęt od ponad 10 lat pomagamy dzieciom oswoić wodę, rozwijać pewność siebie i odkrywać sportową pasję - od pierwszych zajęć po sekcję zawodniczą i starty w zawodach.
               </p>
               <p className="text-[17px] leading-[1.75] text-sand-600">
-                Łączymy naukę pływania z&nbsp;wychowaniem przez sport. Każde
-                dziecko rozwija się we własnym tempie, a&nbsp;nasi trenerzy
-                dbają o&nbsp;to, by postępy przychodziły z&nbsp;radością
-                i&nbsp;w&nbsp;pełnym bezpieczeństwie.
+   Tworzymy miejsce, w którym liczy się nie tylko technika, ale też atmosfera, relacje i radość z treningów. Profesjonalni trenerzy, nowoczesny program i podejście dopasowane do każdego dziecka sprawiają, że nasi zawodnicy rosną nie tylko jako pływacy, ale też jako młodzi ludzie.
+Bezpiecznie. Mądrze. Z pasją. <br />Tak buduje się miłość do sportu na lata.
               </p>
             </div>
 

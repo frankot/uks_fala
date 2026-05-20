@@ -2,14 +2,17 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getAllNewsAdmin } from "@/lib/queries/news";
 import { getAllAchievementsAdmin } from "@/lib/queries/achievements";
+import { getAllCoachesAdmin } from "@/lib/queries/coaches";
 import GrafikTab from "./_components/GrafikTab";
 import AktualnosciTab from "./_components/AktualnosciTab";
 import OsiagnieciaTab from "./_components/OsiagnieciaTab";
+import TrenerzyTab from "./_components/TrenerzyTab";
 
 const TABS = [
   { key: "grafik", label: "Grafik" },
   { key: "aktualnosci", label: "Aktualnosci" },
   { key: "osiagniecia", label: "Osiagniecia" },
+  { key: "trenerzy", label: "Trenerzy" },
 ];
 
 export default async function CmsPage({
@@ -30,6 +33,8 @@ export default async function CmsPage({
   const news = tab === "aktualnosci" ? await getAllNewsAdmin() : [];
   const achievements =
     tab === "osiagniecia" ? await getAllAchievementsAdmin() : [];
+  const coaches =
+    tab === "trenerzy" ? await getAllCoachesAdmin() : [];
 
   return (
     <div className="">
@@ -66,6 +71,11 @@ export default async function CmsPage({
       {tab === "osiagniecia" && (
         <OsiagnieciaTab
           achievements={JSON.parse(JSON.stringify(achievements))}
+        />
+      )}
+      {tab === "trenerzy" && (
+        <TrenerzyTab
+          coaches={JSON.parse(JSON.stringify(coaches))}
         />
       )}
     </div>

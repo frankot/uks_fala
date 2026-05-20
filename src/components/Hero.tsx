@@ -47,10 +47,14 @@ export default function Hero() {
             {/* Headline — editorial serif, massive */}
             <h1 className="font-editorial animate-fade-up" style={{ animationDelay: "0.1s" }}>
               <span className="block text-[clamp(2.8rem,7vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.03em] text-white">
-                Uczymy dzieci
+                Uczymy dzieci pływać
               </span>
-              <span className="mt-2 block text-[clamp(2.8rem,7vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.03em] text-white">
-                pływać
+              <span className="mt-3 block text-[clamp(1.4rem,3.2vw,2rem)] font-light leading-[1.25] tracking-[-0.01em] text-deep-200">
+                <span className="text-pool-400/50">—</span> z{" "}
+                <span className="font-semibold italic text-pool-300">odwagą</span>,{" "}
+                <span className="font-semibold italic text-coral-300">radością</span>{" "}
+                i{" "}
+                <span className="font-semibold italic text-pool-300">sportową pasją</span>
                 <span className="text-pool-400">.</span>
               </span>
             </h1>
@@ -60,8 +64,9 @@ export default function Hero() {
               className="animate-fade-up mt-7 max-w-[480px] text-[17px] leading-[1.7] text-deep-200 sm:text-lg"
               style={{ animationDelay: "0.2s" }}
             >
-              Szkoła pływania i sekcja sportowa w&nbsp;Nieporęcie. Od pierwszego
-              kontaktu z&nbsp;wodą po starty w&nbsp;zawodach — od ponad 10&nbsp;lat.
+           Najwyższej jakości zajęcia pływania w Nieporęcie: od
+pierwszych chwil w wodzie po sekcję sportową i starty w zawodach.
+Nowoczesny program, świetni trenerzy i najmocniejsza sekcja pływacka w gminie.
             </p>
 
             {/* CTAs */}
@@ -103,15 +108,15 @@ export default function Hero() {
             <div className="relative">
               {/* Decorative large number */}
               <div className="font-editorial absolute -top-16 -right-8 text-[200px] font-bold leading-none text-white/[0.03] select-none">
-                10
+                15
               </div>
 
               {/* Stats cards */}
               <div className="relative space-y-4">
                 {[
-                  { value: "10+", label: "Lat doświadczenia", sub: "od 2015 roku" },
-                  { value: "200+", label: "Młodych pływaków", sub: "w sezonie 2024/25" },
-                  { value: "9", label: "Grup wiekowych", sub: "od 3 do 15 lat" },
+                  { value: "15", label: "Lat doświadczenia", sub: "od 2010 roku" },
+                  { value: "1000+", label: "Najmłodszych pływaków", sub: "przez 15 lat" },
+                  { value: "100+", label: "Zdobytych medali", sub: "na zawodach pływackich" },
                 ].map((stat, i) => (
                   <div
                     key={stat.label}
@@ -140,9 +145,9 @@ export default function Hero() {
           style={{ animationDelay: "0.4s" }}
         >
           {[
-            { value: "10+", label: "Lat doświadczenia" },
-            { value: "200+", label: "Pływaków" },
-            { value: "9", label: "Grup wiekowych" },
+            { value: "15", label: "Lat doświadczenia" },
+            { value: "1000+", label: "Pływaków" },
+            { value: "100+", label: "Medali" },
           ].map((stat) => (
             <div
               key={stat.label}

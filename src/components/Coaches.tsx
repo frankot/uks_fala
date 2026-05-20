@@ -1,28 +1,18 @@
-const coaches = [
-  {
-    name: "Bartosz Krawczak",
-    role: "Trener główny / Prezes klubu",
-    bio: "Wieloletni trener pływania z uprawnieniami instruktorskimi. Założyciel UKS Fala, odpowiada za strategię szkoleniową i rozwój sekcji sportowej.",
-    initial: "BK",
-    color: "from-deep-700 to-deep-900",
-  },
-  {
-    name: "Trener / Trenerka",
-    role: "Instruktor — grupy początkujące",
-    bio: "Certyfikowany instruktor z doświadczeniem w prowadzeniu grup dziecięcych. Specjalizacja: nauka podstaw i oswajanie z wodą.",
-    initial: "T1",
-    color: "from-deep-600 to-deep-800",
-  },
-  {
-    name: "Trener / Trenerka",
-    role: "Instruktor — grupy zaawansowane",
-    bio: "Doświadczony szkoleniowiec pracujący z grupami zaawansowanymi. Przygotowuje młodych pływaków do startów w zawodach.",
-    initial: "T2",
-    color: "from-deep-500 to-deep-700",
-  },
-];
+import Link from "next/link";
+import { getCoachesPublic } from "@/lib/queries/coaches";
 
-export default function Coaches() {
+export default async function Coaches() {
+  const coaches = await getCoachesPublic(3);
+
+  function getInitials(name: string) {
+    return name
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  }
+
   return (
     <section id="trenerzy" className="relative overflow-hidden bg-sand-100 py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
@@ -48,17 +38,24 @@ export default function Coaches() {
 
         {/* Coach cards — horizontal on desktop */}
         <div className="grid gap-5 md:grid-cols-3">
-          {coaches.map((coach, i) => (
+          {coaches.map((coach) => (
             <article
-              key={i}
+              key={coach.id}
               className="group relative overflow-hidden rounded-3xl bg-white transition-all hover:shadow-xl hover:shadow-deep-900/6"
             >
-              {/* Photo placeholder — large initial instead of generic icon */}
-              <div className={`relative flex h-52 items-center justify-center bg-gradient-to-br ${coach.color}`}>
-                {/* Replace with real coach photo */}
-                <span className="font-editorial text-6xl font-bold text-white/20 select-none">
-                  {coach.initial}
-                </span>
+              {/* Photo or initial placeholder */}
+              <div className="relative flex h-52 items-center justify-center bg-gradient-to-br from-deep-700 to-deep-900">
+                {coach.imageUrl ? (
+                  <img
+                    src={coach.imageUrl}
+                    alt={coach.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="font-editorial text-6xl font-bold text-white/20 select-none">
+                    {getInitials(coach.name)}
+                  </span>
+                )}
                 {/* Decorative wave */}
                 <svg
                   className="absolute bottom-0 left-0 w-full text-white"
@@ -85,6 +82,29 @@ export default function Coaches() {
               </div>
             </article>
           ))}
+        </div>
+
+        {/* Only show CTA if there are more coaches than shown */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/trenerzy"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-deep-200 px-6 py-3 text-[13px] font-bold text-deep-700 transition-all hover:bg-deep-700 hover:text-white hover:border-deep-700"
+          >
+            Zobacz wszystkich
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>

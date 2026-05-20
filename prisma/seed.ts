@@ -27,6 +27,45 @@ async function main() {
   });
 
   console.log(`Admin user seeded: ${email}`);
+
+  const coaches = [
+    {
+      name: "Bartosz Krawczak",
+      role: "Trener główny / Prezes klubu",
+      bio: "Wieloletni trener pływania z uprawnieniami instruktorskimi. Założyciel UKS Fala, odpowiada za strategię szkoleniową i rozwój sekcji sportowej.",
+      sortOrder: 0,
+      published: true,
+    },
+    {
+      name: "Anna Kowalska",
+      role: "Instruktor — grupy początkujące",
+      bio: "Certyfikowany instruktor z doświadczeniem w prowadzeniu grup dziecięcych. Specjalizacja: nauka podstaw i oswajanie z wodą.",
+      sortOrder: 1,
+      published: true,
+    },
+    {
+      name: "Piotr Nowak",
+      role: "Instruktor — grupy zaawansowane",
+      bio: "Doświadczony szkoleniowiec pracujący z grupami zaawansowanymi. Przygotowuje młodych pływaków do startów w zawodach.",
+      sortOrder: 2,
+      published: true,
+    },
+    {
+      name: "Marta Wiśniewska",
+      role: "Instruktor — zajęcia korekcyjne",
+      bio: "Specjalista od pływania korekcyjnego i terapii w wodzie. Prowadzi indywidualne zajęcia doskonalące technikę i pomagające w rehabilitacji.",
+      sortOrder: 3,
+      published: true,
+    },
+  ];
+
+  // Clear existing coaches and re-seed
+  await prisma.coach.deleteMany();
+  for (const coach of coaches) {
+    await prisma.coach.create({ data: coach });
+  }
+
+  console.log(`Seeded ${coaches.length} coaches`);
 }
 
 main()

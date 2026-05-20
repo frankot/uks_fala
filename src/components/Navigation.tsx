@@ -8,7 +8,7 @@ const navLinks = [
   { href: "/aktualnosci", label: "Aktualnosci" },
   { href: "/osiagniecia", label: "Osiagniecia" },
   { href: "/zajecia", label: "Zajęcia" },
-  { href: "#trenerzy", label: "Trenerzy" },
+  { href: "/trenerzy", label: "Trenerzy" },
   { href: "#kontakt", label: "Kontakt" },
 ];
 
