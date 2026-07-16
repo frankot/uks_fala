@@ -42,7 +42,7 @@ export default function CoachCard({ coach, className = "" }: CoachCardProps) {
         )}
         {/* Decorative wave */}
         <svg
-          className="absolute bottom-0 left-0 w-full text-white"
+          className="absolute -bottom-px left-0 block h-8 w-full text-white"
           viewBox="0 0 400 30"
           preserveAspectRatio="none"
         >

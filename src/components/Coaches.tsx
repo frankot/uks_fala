@@ -3,7 +3,7 @@ import { getCoachesPublic } from "@/lib/queries/coaches";
 import CoachCard from "@/components/CoachCard";
 
 export default async function Coaches() {
-  const coaches = await getCoachesPublic(3);
+  const coaches = await getCoachesPublic(4);
 
   return (
     <section id="trenerzy" className="relative overflow-hidden bg-sand-100 py-24 md:py-32">
@@ -29,7 +29,7 @@ export default async function Coaches() {
         </div>
 
         {/* Coach cards — horizontal on desktop */}
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {coaches.map((coach) => (
             <CoachCard key={coach.id} coach={coach} />
           ))}

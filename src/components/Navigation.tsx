@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ContactLink from "./ContactLink";
@@ -21,9 +21,25 @@ const tripLinks = [
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [tripsOpen, setTripsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const solidNav = scrolled || mobileOpen;
 
   return (
-    <header className="fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md transition-all duration-300 sm:left-4 sm:right-4">
+    <header
+      className={`fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded transition-all duration-300 sm:left-4 sm:right-4 ${
+        solidNav
+          ? "bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md"
+          : "bg-transparent"
+      }`}
+    >
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
         <div className="flex h-16 items-center justify-between md:h-[72px]">
           {/* Logo */}
@@ -33,7 +49,7 @@ export default function Navigation() {
             aria-label="UKS Fala Nieporęt"
           >
             <Image
-              src="/fala-logo-only-transparent.png"
+              src="/logo-black/fala-symbol-transparent.png"
               alt=""
               width={43}
               height={50}
@@ -41,7 +57,7 @@ export default function Navigation() {
               className="h-12 w-auto transition-transform group-hover:scale-105 md:h-14"
             />
             <Image
-              src="/fala-company-name-transparent.png"
+              src="/logo-black/fala-wordmark-transparent.png"
               alt="UKS Fala Nieporęt"
               width={106}
               height={40}
@@ -59,7 +75,11 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-full px-3 py-2 text-[14px] font-medium text-sand-700 transition-all hover:bg-sand-100 hover:text-deep-700"
+                className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                  solidNav
+                    ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                    : "text-white/75 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 {item.label}
               </Link>
@@ -68,7 +88,11 @@ export default function Navigation() {
             <div className="group relative">
               <button
                 type="button"
-                className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium text-sand-700 transition-all hover:bg-sand-100 hover:text-deep-700"
+                className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                  solidNav
+                    ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                    : "text-white/75 hover:bg-white/10 hover:text-white"
+                }`}
                 aria-haspopup="menu"
               >
                 Wyjazdy
@@ -101,7 +125,13 @@ export default function Navigation() {
               </div>
             </div>
 
-            <ContactLink className="rounded-full px-3 py-2 text-[14px] font-medium text-sand-700 transition-all hover:bg-sand-100 hover:text-deep-700">
+            <ContactLink
+              className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                solidNav
+                  ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                  : "text-white/75 hover:bg-white/10 hover:text-white"
+              }`}
+            >
               Kontakt
             </ContactLink>
           </nav>
@@ -110,7 +140,9 @@ export default function Navigation() {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+48530077078"
-              className="text-[13px] font-semibold tracking-wide text-sand-600 transition-colors"
+              className={`text-[13px] font-semibold tracking-wide transition-colors ${
+                solidNav ? "text-sand-600" : "text-white/65"
+              }`}
             >
               +48 530 077 078
             </a>
@@ -125,7 +157,11 @@ export default function Navigation() {
           {/* Mobile hamburger */}
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-sand-800 transition-colors hover:bg-sand-100 md:hidden"
+            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors md:hidden ${
+              solidNav
+                ? "text-sand-800 hover:bg-sand-100"
+                : "text-white hover:bg-white/10"
+            }`}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Menu nawigacji"
