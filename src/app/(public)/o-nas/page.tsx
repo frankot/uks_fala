@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import HeroStrip from "@/components/HeroStrip";
+import ContactLink from "@/components/ContactLink";
 
 export const metadata: Metadata = {
   title: "O nas — UKS Fala Nieporęt",
@@ -429,12 +430,9 @@ export default function ONasPage() {
                 i&nbsp;dobierzemy najlepszą grupę dla Twojego dziecka.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-                <Link
-                  href="/#kontakt"
-                  className="inline-flex h-13 items-center justify-center gap-2 rounded-full bg-coral-500 px-8 text-[15px] font-bold text-white shadow-xl shadow-coral-500/20 transition-all hover:bg-coral-600 hover:shadow-coral-500/30 hover:-translate-y-0.5 sm:h-14"
-                >
+                <ContactLink className="inline-flex h-13 items-center justify-center gap-2 rounded-full bg-coral-500 px-8 text-[15px] font-bold text-white shadow-xl shadow-coral-500/20 transition-all hover:bg-coral-600 hover:shadow-coral-500/30 hover:-translate-y-0.5 sm:h-14">
                   Zapisz dziecko
-                </Link>
+                </ContactLink>
                 <Link
                   href="/zajecia"
                   className="inline-flex h-13 items-center justify-center rounded-full border border-white/15 px-8 text-[15px] font-semibold text-white/80 backdrop-blur-sm transition-all hover:bg-white/5 hover:text-white sm:h-14"

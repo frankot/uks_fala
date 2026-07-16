@@ -245,7 +245,7 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
                 {/* Slots table */}
                 {slots.length > 0 &&
                   (() => {
-                    const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+                    const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
                     const slotsByDay = slots.reduce<Record<number, string[]>>(
                       (acc, s) => {
                         (acc[s.day] ??= []).push(s.hour);

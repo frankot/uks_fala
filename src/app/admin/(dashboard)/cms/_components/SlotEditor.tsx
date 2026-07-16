@@ -1,6 +1,6 @@
 "use client";
 
-const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
 const TIME_SLOTS = [
   "15:30",
   "16:00",

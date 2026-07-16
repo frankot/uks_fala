@@ -11,7 +11,7 @@ const DAYS = [
   "Środa",
   "Czwartek",
   "Piątek",
-  "Sobota",
+  "Niedziela",
 ];
 const TIME_SLOTS = [
   "15:30",
@@ -137,7 +137,7 @@ export default function SchedulePage({ data }: Props) {
         tag="Harmonogram"
         title="Plan zajęć"
         subtitle="UKS Fala"
-        description="Wybierz grupę i dni treningów, aby zobaczyć harmonogram i cenę miesięczną."
+        description="Zajęcia odbywają się 6 dni w tygodniu — bez sobót. Wybierz grupę i dni treningów, aby zobaczyć harmonogram i cenę miesięczną."
       />
 
       {/* Main content */}

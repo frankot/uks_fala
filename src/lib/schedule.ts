@@ -1,10 +1,10 @@
 export type Slot = {
   group: string;
-  day: number; // 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat
+  day: number; // 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sun
   hour: string; // "HH:MM"
 };
 
-export const DAYS = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+export const DAYS = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Niedziela"];
 
 export const TIME_SLOTS = [
   "15:30", "16:00", "16:30", "17:00", "17:30",
@@ -21,12 +21,12 @@ export const SCHEDULE: Slot[] = [
   { group: "Neonki", day: 1, hour: "16:00" },
   { group: "Neonki", day: 3, hour: "16:00" },
 
-  // Koniki Morskie (03) — Mon, Wed 16:30, Sat 15:30
+  // Koniki Morskie (03) — Mon, Wed 16:30, Sun 15:30
   { group: "Koniki Morskie", day: 0, hour: "16:30" },
   { group: "Koniki Morskie", day: 2, hour: "16:30" },
   { group: "Koniki Morskie", day: 5, hour: "15:30" },
 
-  // Płotki (04) — Tue, Thu 16:30, Sat 16:00
+  // Płotki (04) — Tue, Thu 16:30, Sun 16:00
   { group: "Płotki", day: 1, hour: "16:30" },
   { group: "Płotki", day: 3, hour: "16:30" },
   { group: "Płotki", day: 5, hour: "16:00" },
@@ -41,13 +41,13 @@ export const SCHEDULE: Slot[] = [
   { group: "Delfiny", day: 3, hour: "17:00" },
   { group: "Delfiny", day: 4, hour: "17:00" },
 
-  // Barrakudy (07) — Mon, Wed 17:30, Fri 17:30, Sat 16:30
+  // Barrakudy (07) — Mon, Wed 17:30, Fri 17:30, Sun 16:30
   { group: "Barrakudy", day: 0, hour: "17:30" },
   { group: "Barrakudy", day: 2, hour: "17:30" },
   { group: "Barrakudy", day: 4, hour: "17:30" },
   { group: "Barrakudy", day: 5, hour: "16:30" },
 
-  // Rekiny (08) — Mon–Fri 18:00, Sat 18:00
+  // Rekiny (08) — Mon–Fri 18:00, Sun 18:00
   { group: "Rekiny", day: 0, hour: "18:00" },
   { group: "Rekiny", day: 1, hour: "18:00" },
   { group: "Rekiny", day: 2, hour: "18:00" },

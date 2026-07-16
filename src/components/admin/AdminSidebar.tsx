@@ -8,6 +8,8 @@ const CMS_LINKS = [
   { label: "Aktualnosci", tab: "aktualnosci", icon: "news" },
   { label: "Osiagniecia", tab: "osiagniecia", icon: "trophy" },
   { label: "Trenerzy", tab: "trenerzy", icon: "users" },
+  { label: "Obozy", tab: "obozy", icon: "camp" },
+  { label: "Półkolonie", tab: "polkolonie", icon: "sun" },
 ];
 
 function TabIcon({ icon }: { icon: string }) {
@@ -49,6 +51,29 @@ function TabIcon({ icon }: { icon: string }) {
           <circle cx="9" cy="7" r="4" />
           <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      );
+    case "camp":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 20h18" />
+          <path d="m6 20 6-14 6 14" />
+          <path d="M9 20h6" />
+          <path d="M12 6v14" />
+        </svg>
+      );
+    case "sun":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
         </svg>
       );
     default:

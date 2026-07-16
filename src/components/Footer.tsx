@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import ContactLink from "./ContactLink";
 
 export default function Footer() {
   return (
@@ -10,32 +12,26 @@ export default function Footer() {
         {/* Top — brand + tagline */}
         <div className="mb-14 flex flex-col justify-between gap-8 md:flex-row md:items-start">
           <div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-deep-700">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M2 13c2-2.5 4-3.5 6-3.5s4 1 6 3.5 4 3.5 6 3.5 4-1 6-3.5"
-                    stroke="white"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M2 8c2-2.5 4-3.5 6-3.5s4 1 6 3.5 4 3.5 6 3.5 4-1 6-3.5"
-                    stroke="rgba(255,255,255,0.3)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-              <div className="leading-tight">
-                <span className="block text-[17px] font-bold text-white">
-                  UKS Fala
-                </span>
-                <span className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-deep-400">
-                  Nieporęt
-                </span>
-              </div>
-            </div>
+            <Link
+              href="/"
+              className="flex w-fit items-center gap-2.5"
+              aria-label="UKS Fala Nieporęt"
+            >
+              <Image
+                src="/fala-logo-only-transparent.png"
+                alt=""
+                width={43}
+                height={50}
+                className="h-12 w-auto"
+              />
+              <Image
+                src="/fala-company-name-transparent.png"
+                alt="UKS Fala Nieporęt"
+                width={106}
+                height={40}
+                className="h-8 w-auto drop-shadow-[0_1px_4px_rgba(255,255,255,0.12)]"
+              />
+            </Link>
             <p className="mt-5 max-w-xs text-[15px] leading-[1.7] text-deep-300/60">
               Uczniowski Klub Sportowy Fala Nieporęt. Szkoła pływania i sekcja
               sportowa dla dzieci i młodzieży.
@@ -93,10 +89,9 @@ export default function Footer() {
             </h4>
             <ul className="mt-5 space-y-3">
               {[
-                { href: "#o-nas", label: "O nas" },
-                { href: "#grupy", label: "Grupy szkoleniowe" },
-                { href: "#trenerzy", label: "Trenerzy" },
-                { href: "#kontakt", label: "Kontakt" },
+                { href: "/o-nas", label: "O nas" },
+                { href: "/zajecia", label: "Grupy szkoleniowe" },
+                { href: "/trenerzy", label: "Trenerzy" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -107,6 +102,11 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <ContactLink className="text-[14px] text-deep-300/60 transition-colors hover:text-white">
+                  Kontakt
+                </ContactLink>
+              </li>
             </ul>
           </div>
 
@@ -126,9 +126,20 @@ export default function Footer() {
                 </span>
               </li>
               <li>
-                <span className="text-[14px] text-deep-300/60">
-                  Obozy i półkolonie
-                </span>
+                <Link
+                  href="/obozy"
+                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
+                >
+                  Obozy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/polkolonie"
+                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
+                >
+                  Półkolonie
+                </Link>
               </li>
               <li>
                 <span className="text-[14px] text-deep-300/60">
@@ -148,7 +159,7 @@ export default function Footer() {
                   href="tel:+48530077078"
                   className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
                 >
-                  530 077 078
++48 530 077 078
                 </a>
               </li>
               <li>

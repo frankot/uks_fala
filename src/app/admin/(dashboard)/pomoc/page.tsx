@@ -111,7 +111,7 @@ export default function PomocPage() {
             W tej samej formatce, poniżej pól podstawowych, znajduje się sekcja <strong>Terminy treningów</strong>.
           </p>
           <ol className="list-decimal list-inside space-y-2 text-[14px] text-sand-700 leading-relaxed">
-            <li>Widzisz tabelkę: wiersze to godziny (od 15:30 do 19:30), kolumny to dni tygodnia (<strong>Pon</strong>, <strong>Wt</strong>, <strong>Śr</strong>, <strong>Czw</strong>, <strong>Pt</strong>, <strong>Sob</strong>)</li>
+            <li>Widzisz tabelkę: wiersze to godziny (od 15:30 do 19:30), kolumny to dni tygodnia (<strong>Pon</strong>, <strong>Wt</strong>, <strong>Śr</strong>, <strong>Czw</strong>, <strong>Pt</strong>, <strong>Niedz</strong>)</li>
             <li>Kliknij komórkę, aby dodać termin — komórka zmieni kolor na koralowy</li>
             <li>Kliknij ponownie, aby usunąć termin — komórka wróci do jasnego koloru</li>
             <li>Pod tabelką widoczny jest licznik: <strong>„Zaznaczono: X”</strong></li>

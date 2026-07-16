@@ -3,16 +3,20 @@ import { prisma } from "@/lib/prisma";
 import { getAllNewsAdmin } from "@/lib/queries/news";
 import { getAllAchievementsAdmin } from "@/lib/queries/achievements";
 import { getAllCoachesAdmin } from "@/lib/queries/coaches";
+import { getAllSeasonalOffersAdmin } from "@/lib/queries/seasonal-offers";
 import GrafikTab from "./_components/GrafikTab";
 import AktualnosciTab from "./_components/AktualnosciTab";
 import OsiagnieciaTab from "./_components/OsiagnieciaTab";
 import TrenerzyTab from "./_components/TrenerzyTab";
+import SeasonalOffersTab from "./_components/SeasonalOffersTab";
 
 const TABS = [
   { key: "grafik", label: "Grafik" },
   { key: "aktualnosci", label: "Aktualnosci" },
   { key: "osiagniecia", label: "Osiagniecia" },
   { key: "trenerzy", label: "Trenerzy" },
+  { key: "obozy", label: "Obozy" },
+  { key: "polkolonie", label: "Półkolonie" },
 ];
 
 export default async function CmsPage({
@@ -35,6 +39,11 @@ export default async function CmsPage({
     tab === "osiagniecia" ? await getAllAchievementsAdmin() : [];
   const coaches =
     tab === "trenerzy" ? await getAllCoachesAdmin() : [];
+  const camps = tab === "obozy" ? await getAllSeasonalOffersAdmin("OBOZ") : [];
+  const dayCamps =
+    tab === "polkolonie"
+      ? await getAllSeasonalOffersAdmin("POLKOLONIA")
+      : [];
 
   return (
     <div className="">
@@ -76,6 +85,18 @@ export default async function CmsPage({
       {tab === "trenerzy" && (
         <TrenerzyTab
           coaches={JSON.parse(JSON.stringify(coaches))}
+        />
+      )}
+      {tab === "obozy" && (
+        <SeasonalOffersTab
+          type="OBOZ"
+          offers={JSON.parse(JSON.stringify(camps))}
+        />
+      )}
+      {tab === "polkolonie" && (
+        <SeasonalOffersTab
+          type="POLKOLONIA"
+          offers={JSON.parse(JSON.stringify(dayCamps))}
         />
       )}
     </div>

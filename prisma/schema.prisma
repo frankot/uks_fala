@@ -22,6 +22,11 @@ enum Role {
   SUPERADMIN
 }
 
+enum SeasonalOfferType {
+  OBOZ
+  POLKOLONIA
+}
+
 model Group {
   id          String   @id @default(cuid())
   name        String   @unique
@@ -93,4 +98,33 @@ model Achievement {
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model SeasonalOffer {
+  id              String            @id @default(cuid())
+  type            SeasonalOfferType
+  title           String
+  slug            String            @unique
+  summary         String
+  locationName    String
+  locationAddress String?
+  startDate       DateTime?
+  endDate         DateTime?
+  ageRange        String?
+  price           String?
+  priceNote       String?
+  accommodation   String?
+  meals           String?
+  transport       String?
+  program         String
+  included        String?
+  signupInfo      String?
+  images          String[]
+  published       Boolean           @default(false)
+  featured        Boolean           @default(false)
+  sortOrder       Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([type, published, sortOrder])
 }

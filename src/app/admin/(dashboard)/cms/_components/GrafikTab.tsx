@@ -33,7 +33,7 @@ interface Group {
   prices: Price[];
 }
 
-const DAYS_SHORT = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob"];
+const DAYS_SHORT = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
 
 interface Props {
   groups: Group[];

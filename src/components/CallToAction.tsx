@@ -2,7 +2,7 @@
 
 export default function CallToAction() {
   return (
-    <section id="kontakt" className="relative py-24 md:py-32">
+    <section id="kontakt" className="relative scroll-mt-28 py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
         <div className="relative overflow-hidden rounded-[2rem] bg-deep-900">
           {/* Grain */}
@@ -27,7 +27,8 @@ export default function CallToAction() {
               </h2>
               <p className="mt-5 max-w-md text-[17px] leading-[1.7] text-deep-200/60">
                 Nowy semestr startuje już wkrótce. Skontaktuj się z&nbsp;nami,
-                żeby dobrać odpowiednią grupę i&nbsp;zarezerwować miejsce.
+                żeby dobrać odpowiednią grupę i&nbsp;zarezerwować miejsce. Do
+                naszych grup możesz dołączyć przez cały rok!
               </p>
 
               {/* Contact methods */}
@@ -45,7 +46,7 @@ export default function CallToAction() {
                     <p className="text-[12px] font-semibold uppercase tracking-wider text-deep-300/50">
                       Zadzwoń
                     </p>
-                    <p className="text-lg font-bold">530 077 078</p>
+                    <p className="text-lg font-bold">+48 530 077 078</p>
                   </div>
                 </a>
 

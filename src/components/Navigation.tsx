@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import ContactLink from "./ContactLink";
 
 const navLinks = [
   { href: "/o-nas", label: "O nas" },
@@ -9,59 +11,43 @@ const navLinks = [
   { href: "/osiagniecia", label: "Osiagniecia" },
   { href: "/zajecia", label: "Zajęcia" },
   { href: "/trenerzy", label: "Trenerzy" },
-  { href: "#kontakt", label: "Kontakt" },
+];
+
+const tripLinks = [
+  { href: "/obozy", label: "Obozy" },
+  { href: "/polkolonie", label: "Półkolonie" },
 ];
 
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const [tripsOpen, setTripsOpen] = useState(false);
 
   return (
-    <header
-      className={`fixed top-2 rounded left-0 right-0 z-50 max-w-[1240px] mx-auto  transition-all duration-300 ${
-        scrolled
-          ? "bg-white/90 backdrop-blur-md shadow-sm shadow-deep-900/5"
-          : "bg-transparent"
-      }`}
-    >
+    <header className="fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md transition-all duration-300 sm:left-4 sm:right-4">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
         <div className="flex h-16 items-center justify-between md:h-[72px]">
           {/* Logo */}
-          <Link href="/" className="group flex items-center gap-3">
-            <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-deep-700 transition-transform group-hover:scale-105">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M2 13c2-2.5 4-3.5 6-3.5s4 1 6 3.5 4 3.5 6 3.5 4-1 6-3.5"
-                  stroke="white"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M2 8c2-2.5 4-3.5 6-3.5s4 1 6 3.5 4 3.5 6 3.5 4-1 6-3.5"
-                  stroke="rgba(255,255,255,0.4)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-            <div className="leading-tight">
-              <span
-                className={`block text-[17px] font-bold tracking-tight transition-colors ${scrolled ? "text-deep-900" : "text-white"}`}
-              >
-                UKS Fala
-              </span>
-              <span
-                className={`block text-[10px] font-semibold uppercase tracking-[0.15em] transition-colors ${scrolled ? "text-sand-500" : "text-white/50"}`}
-              >
-                Nieporęt
-              </span>
-            </div>
+          <Link
+            href="/"
+            className="group flex items-center gap-2.5"
+            aria-label="UKS Fala Nieporęt"
+          >
+            <Image
+              src="/fala-logo-only-transparent.png"
+              alt=""
+              width={43}
+              height={50}
+              priority
+              className="h-12 w-auto transition-transform group-hover:scale-105 md:h-14"
+            />
+            <Image
+              src="/fala-company-name-transparent.png"
+              alt="UKS Fala Nieporęt"
+              width={106}
+              height={40}
+              priority
+              className="h-8 w-auto transition-all md:h-9"
+            />
           </Link>
 
           {/* Desktop nav */}
@@ -73,26 +59,60 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-full px-4 py-2 text-[14px] font-medium transition-all ${
-                  scrolled
-                    ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
-                    : "text-white/70 hover:bg-white/10 hover:text-white"
-                }`}
+                className="rounded-full px-3 py-2 text-[14px] font-medium text-sand-700 transition-all hover:bg-sand-100 hover:text-deep-700"
               >
                 {item.label}
               </Link>
             ))}
+
+            <div className="group relative">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium text-sand-700 transition-all hover:bg-sand-100 hover:text-deep-700"
+                aria-haspopup="menu"
+              >
+                Wyjazdy
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-transform group-hover:rotate-180"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <div className="invisible absolute left-0 top-full min-w-44 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white p-2 shadow-xl shadow-deep-900/10">
+                  {tripLinks.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <ContactLink className="rounded-full px-3 py-2 text-[14px] font-medium text-sand-700 transition-all hover:bg-sand-100 hover:text-deep-700">
+              Kontakt
+            </ContactLink>
           </nav>
 
           {/* Desktop right */}
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="tel:+48530077078"
-              className={`text-[13px] font-semibold tracking-wide transition-colors ${
-                scrolled ? "text-sand-600" : "text-white/60"
-              }`}
+              className="text-[13px] font-semibold tracking-wide text-sand-600 transition-colors"
             >
-              530 077 078
+              +48 530 077 078
             </a>
             <Link
               href="/zajecia"
@@ -105,11 +125,7 @@ export default function Navigation() {
           {/* Mobile hamburger */}
           <button
             type="button"
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors md:hidden ${
-              scrolled
-                ? "text-sand-800 hover:bg-sand-100"
-                : "text-white hover:bg-white/10"
-            }`}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-sand-800 transition-colors hover:bg-sand-100 md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Menu nawigacji"
@@ -142,7 +158,7 @@ export default function Navigation() {
         {/* Mobile menu */}
         {mobileOpen && (
           <nav
-            className="border-t border-white/10 pb-5 pt-3 md:hidden"
+            className="border-t border-deep-900/10 pb-5 pt-3 md:hidden"
             aria-label="Nawigacja mobilna"
           >
             <div className="flex flex-col gap-1">
@@ -150,26 +166,69 @@ export default function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-xl px-4 py-3 text-[15px] font-medium text-white/80 transition-colors hover:bg-white/5 hover:text-white"
+                  className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
                   onClick={() => setMobileOpen(false)}
                 >
                   {item.label}
                 </Link>
               ))}
+
+              <button
+                type="button"
+                className="flex items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                onClick={() => setTripsOpen((open) => !open)}
+                aria-expanded={tripsOpen}
+              >
+                Wyjazdy
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`transition-transform ${tripsOpen ? "rotate-180" : ""}`}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {tripsOpen && (
+                <div className="ml-4 flex flex-col border-l border-sand-200 pl-3">
+                  {tripLinks.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-600 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              <ContactLink
+                className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                onClick={() => setMobileOpen(false)}
+              >
+                Kontakt
+              </ContactLink>
+
               <div className="mt-3 flex flex-col gap-3 px-4">
                 <a
                   href="tel:+48530077078"
-                  className="text-sm font-medium text-white/50"
+                  className="text-sm font-medium text-sand-500"
                 >
-                  Tel: 530 077 078
+                  Tel: +48 530 077 078
                 </a>
-                <Link
-                  href="#kontakt"
+                <ContactLink
                   className="inline-flex h-11 items-center justify-center rounded-full bg-coral-500 text-[13px] font-bold uppercase tracking-wider text-white"
                   onClick={() => setMobileOpen(false)}
                 >
                   Zapisz dziecko
-                </Link>
+                </ContactLink>
               </div>
             </div>
           </nav>

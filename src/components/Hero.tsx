@@ -1,5 +1,6 @@
 import WaveDivider from "./WaveDivider";
 import Image from "next/image";
+import ContactLink from "./ContactLink";
 
 export default function Hero() {
   return (
@@ -34,7 +35,7 @@ export default function Hero() {
           {/* Left — text */}
           <div className="lg:col-span-7">
             {/* Enrollment badge */}
-            <div className="animate-fade-up mb-8 inline-flex items-center gap-2.5 rounded-full border border-pool-400/20 bg-pool-500/10 px-4 py-2 backdrop-blur-sm">
+            <div className="animate-fade-up relative mb-8 inline-flex items-center gap-2.5 rounded-full border border-pool-400/20 bg-pool-500/10 px-4 py-2 backdrop-blur-sm lg:top-4">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-coral-500" />
@@ -74,10 +75,7 @@ Nowoczesny program, świetni trenerzy i najmocniejsza sekcja pływacka w gminie.
               className="animate-fade-up mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
               style={{ animationDelay: "0.3s" }}
             >
-              <a
-                href="#kontakt"
-                className="group inline-flex h-13 items-center justify-center gap-2 rounded-full bg-coral-500 px-8 text-[15px] font-bold text-white shadow-xl shadow-coral-500/20 transition-all hover:bg-coral-600 hover:shadow-coral-500/30 hover:-translate-y-0.5 sm:h-14"
-              >
+              <ContactLink className="group inline-flex h-13 items-center justify-center gap-2 rounded-full bg-coral-500 px-8 text-[15px] font-bold text-white shadow-xl shadow-coral-500/20 transition-all hover:bg-coral-600 hover:shadow-coral-500/30 hover:-translate-y-0.5 sm:h-14">
                 Zapisz dziecko
                 <svg
                   width="16"
@@ -93,7 +91,7 @@ Nowoczesny program, świetni trenerzy i najmocniejsza sekcja pływacka w gminie.
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </a>
+              </ContactLink>
               <a
                 href="#grupy"
                 className="inline-flex h-13 items-center justify-center rounded-full border border-white/15 px-8 text-[15px] font-semibold text-white/80 backdrop-blur-sm transition-all hover:bg-white/5 hover:text-white sm:h-14"
@@ -115,8 +113,8 @@ Nowoczesny program, świetni trenerzy i najmocniejsza sekcja pływacka w gminie.
               <div className="relative space-y-4">
                 {[
                   { value: "15", label: "Lat doświadczenia", sub: "od 2010 roku" },
-                  { value: "1000+", label: "Najmłodszych pływaków", sub: "przez 15 lat" },
-                  { value: "100+", label: "Zdobytych medali", sub: "na zawodach pływackich" },
+                  { value: "3000+", label: "Najmłodszych pływaków", sub: "przez 15 lat" },
+                  { value: "1000+", label: "Zdobytych medali", sub: "na zawodach pływackich" },
                 ].map((stat, i) => (
                   <div
                     key={stat.label}
@@ -146,8 +144,8 @@ Nowoczesny program, świetni trenerzy i najmocniejsza sekcja pływacka w gminie.
         >
           {[
             { value: "15", label: "Lat doświadczenia" },
-            { value: "1000+", label: "Pływaków" },
-            { value: "100+", label: "Medali" },
+            { value: "3000+", label: "Pływaków" },
+            { value: "1000+", label: "Medali" },
           ].map((stat) => (
             <div
               key={stat.label}
