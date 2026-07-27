@@ -88,11 +88,31 @@ export default function SchedulePage({ data }: Props) {
   }
 
   const groupDayIndices = getDayIndicesForGroup(selectedGroup);
-  const currentPrice = (PRICES[selectedGroup] ?? {})[
+  const perLessonPrice = (PRICES[selectedGroup] ?? {})[
     selectedDays.size as 1 | 2 | 3
   ];
   const colors = GROUP_COLORS[selectedGroup];
   const activeGroup = GROUPS.find((g) => g.name === selectedGroup)!;
+
+  // Semester price calculation
+  const dayCounts = data.semesterDayCount;
+  const totalLessons = dayCounts
+    ? [...selectedDays].reduce((sum, d) => sum + (dayCounts[d] ?? 0), 0)
+    : 0;
+  const totalPrice =
+    perLessonPrice && dayCounts && totalLessons > 0
+      ? perLessonPrice * totalLessons
+      : null;
+
+  const zeroCountDays = dayCounts
+    ? [...selectedDays].filter((d) => dayCounts[d] === 0)
+    : [];
+
+  // Summary line: "51 zajęć × 45 zł"
+  const summary =
+    perLessonPrice && dayCounts && totalLessons > 0
+      ? `${totalLessons} zajęć × ${perLessonPrice} zł`
+      : null;
 
   // Form state
   const [form, setForm] = useState({
@@ -167,7 +187,7 @@ export default function SchedulePage({ data }: Props) {
                         {activeGroup.name}
                       </p>
                       <p className="text-[12px] text-deep-200">
-                        {activeGroup.age}
+                        {activeGroup.age} · {activeGroup.duration} min
                       </p>
                     </div>
                     <svg
@@ -222,7 +242,7 @@ export default function SchedulePage({ data }: Props) {
                               <p
                                 className={`text-[11px] ${isActive ? "text-deep-200" : "text-sand-500"}`}
                               >
-                                {g.age}
+                                {g.age} · {g.duration} min
                               </p>
                             </div>
                             {isActive && (
@@ -304,15 +324,31 @@ export default function SchedulePage({ data }: Props) {
               {/* Price display */}
               <div className="rounded-2xl bg-deep-50 border border-deep-100 px-6 py-5">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-deep-400 mb-1">
-                  Cena miesięczna
+                  Cena za semestr
                 </p>
-                {currentPrice ? (
-                  <p className="font-editorial text-[2.5rem] font-bold leading-none text-deep-800">
-                    {currentPrice}{" "}
-                    <span className="text-[1.2rem] font-semibold text-deep-400">
-                      zł
-                    </span>
-                  </p>
+                {totalPrice != null ? (
+                  <>
+                    <p className="font-editorial text-[2.5rem] font-bold leading-none text-deep-800">
+                      {totalPrice}{" "}
+                      <span className="text-[1.2rem] font-semibold text-deep-400">
+                        zł
+                      </span>
+                    </p>
+                    {summary && (
+                      <p className="mt-1 text-[13px] text-sand-500">
+                        {summary}
+                      </p>
+                    )}
+                    {zeroCountDays.length > 0 && (
+                      <p className="mt-1 text-[11px] text-amber-600">
+                        ⚠️{" "}
+                        {zeroCountDays
+                          .map((d) => DAYS[d].slice(0, 3))
+                          .join(", ")}
+                        : 0 zajęć w semestrze
+                      </p>
+                    )}
+                  </>
                 ) : (
                   <p className="text-[15px] text-sand-500">Zapytaj o cenę</p>
                 )}
@@ -457,11 +493,11 @@ export default function SchedulePage({ data }: Props) {
                       .map((d) => DAYS[d])
                       .join(", ")}
                   </span>
-                  {currentPrice && (
+                  {totalPrice != null && (
                     <>
                       <span className="text-[13px] text-coral-400">·</span>
                       <span className="text-[13px] font-bold">
-                        {currentPrice} zł/mies.
+                        {totalPrice} zł/semestr
                       </span>
                     </>
                   )}

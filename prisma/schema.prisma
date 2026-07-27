@@ -28,15 +28,16 @@ enum SeasonalOfferType {
 }
 
 model Group {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  number      String
-  ageRange    String
-  colorPreset String
-  sortOrder   Int      @default(0)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  name            String   @unique
+  number          String
+  ageRange        String
+  colorPreset     String
+  sortOrder       Int      @default(0)
+  lessonDuration  Int      @default(45)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   slots  TrainingSlot[]
   prices GroupPrice[]
@@ -60,6 +61,16 @@ model GroupPrice {
   group     Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, frequency])
+}
+
+model SemesterDayCount {
+  id  String @id @default("default")
+  mon Int    @default(0)
+  tue Int    @default(0)
+  wed Int    @default(0)
+  thu Int    @default(0)
+  fri Int    @default(0)
+  sun Int    @default(0)
 }
 
 model News {

@@ -24,7 +24,14 @@ export default function ContactLink({
     const target = document.getElementById("kontakt");
     if (pathname === "/" && target) {
       e.preventDefault();
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const navOffset = 96;
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+      const centeredTop =
+        targetTop - (window.innerHeight - target.offsetHeight) / 2 - navOffset / 2;
+      window.scrollTo({
+        top: Math.max(0, centeredTop),
+        behavior: "smooth",
+      });
       window.history.replaceState(null, "", "/#kontakt");
       return;
     }

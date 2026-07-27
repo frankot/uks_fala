@@ -34,6 +34,20 @@ export default async function CmsPage({
         })
       : [];
 
+  const semesterDayCount = await prisma.semesterDayCount.findUnique({
+    where: { id: "default" },
+  });
+  const semesterDayCountArr: number[] | null = semesterDayCount
+    ? [
+        semesterDayCount.mon,
+        semesterDayCount.tue,
+        semesterDayCount.wed,
+        semesterDayCount.thu,
+        semesterDayCount.fri,
+        semesterDayCount.sun,
+      ]
+    : null;
+
   const news = tab === "aktualnosci" ? await getAllNewsAdmin() : [];
   const achievements =
     tab === "osiagniecia" ? await getAllAchievementsAdmin() : [];
@@ -72,7 +86,10 @@ export default async function CmsPage({
       </div>
 
       {tab === "grafik" && (
-        <GrafikTab groups={JSON.parse(JSON.stringify(groups))} />
+        <GrafikTab
+          groups={JSON.parse(JSON.stringify(groups))}
+          semesterDayCount={semesterDayCountArr}
+        />
       )}
       {tab === "aktualnosci" && (
         <AktualnosciTab news={JSON.parse(JSON.stringify(news))} />

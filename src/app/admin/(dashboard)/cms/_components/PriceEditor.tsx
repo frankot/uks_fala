@@ -38,7 +38,7 @@ export default function PriceEditor({
   return (
     <div>
       <p className="text-[12px] font-bold uppercase tracking-wider text-sand-500 mb-2">
-        Cennik (zł / miesiąc)
+        Cennik (zł / zajęcia)
       </p>
       {maxFrequency === 0 && (
         <p className="text-[13px] text-sand-400 italic">

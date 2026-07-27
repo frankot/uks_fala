@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import ContactLink from "./ContactLink";
@@ -19,16 +20,21 @@ const tripLinks = [
 ];
 
 export default function Navigation() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [tripsOpen, setTripsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    if (!isHome) return;
+    const onScroll = () => setScrollY(window.scrollY);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isHome]);
+
+  const scrolled = isHome ? scrollY > 40 : true;
 
   const solidNav = scrolled || mobileOpen;
 

@@ -21,6 +21,7 @@ const GroupSchema = z.object({
   ageRange: z.string().min(1).max(20),
   colorPreset: z.string().min(1),
   sortOrder: z.number().int().default(0),
+  lessonDuration: z.number().int().min(1).default(45),
   slots: z.array(SlotSchema).min(1, "Dodaj przynajmniej jeden termin"),
   prices: z.array(PriceSchema).min(1, "Dodaj przynajmniej jedną cenę"),
 });
@@ -45,6 +46,7 @@ export async function createGroup(data: GroupFormData) {
       ageRange: parsed.ageRange,
       colorPreset: parsed.colorPreset,
       sortOrder: parsed.sortOrder,
+      lessonDuration: parsed.lessonDuration,
       slots: { create: parsed.slots },
       prices: { create: parsed.prices },
     },
@@ -70,6 +72,7 @@ export async function updateGroup(id: string, data: GroupFormData) {
         ageRange: parsed.ageRange,
         colorPreset: parsed.colorPreset,
         sortOrder: parsed.sortOrder,
+        lessonDuration: parsed.lessonDuration,
         slots: { create: parsed.slots },
         prices: { create: parsed.prices },
       },

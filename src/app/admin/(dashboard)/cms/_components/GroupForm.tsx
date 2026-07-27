@@ -22,13 +22,15 @@ interface PriceEntry {
   price: number;
 }
 
-interface GroupWithRelations {
+export interface GroupWithRelations {
   id: string;
   name: string;
   number: string;
   ageRange: string;
   colorPreset: string;
   sortOrder: number;
+  lessonDuration: number;
+  active: boolean;
   slots: Slot[];
   prices: PriceEntry[];
 }
@@ -36,10 +38,11 @@ interface GroupWithRelations {
 interface Props {
   group?: GroupWithRelations;
   allGroups?: GroupWithRelations[];
+  semesterDayCount: number[] | null;
   onClose: () => void;
 }
 
-export default function GroupForm({ group, allGroups, onClose }: Props) {
+export default function GroupForm({ group, allGroups, semesterDayCount, onClose }: Props) {
   const router = useRouter();
   const isEdit = !!group;
 
@@ -59,6 +62,9 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
   const [number, setNumber] = useState(group?.number ?? "");
   const [ageRange, setAgeRange] = useState(group?.ageRange ?? "");
   const [colorPreset, setColorPreset] = useState(group?.colorPreset ?? "pool");
+  const [lessonDuration, setLessonDuration] = useState(
+    group?.lessonDuration ?? 45,
+  );
   const [sortOrder, setSortOrder] = useState(group?.sortOrder ?? 0);
   const [slots, setSlots] = useState<Slot[]>(
     group?.slots.map((s) => ({ day: s.day, hour: s.hour })) ?? [],
@@ -98,6 +104,7 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
       ageRange,
       colorPreset,
       sortOrder,
+      lessonDuration,
       slots,
       prices,
     };
@@ -190,17 +197,33 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
             </div>
             <div>
               <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                Kolejność sortowania
+                Czas trwania zajęć
               </label>
               <input
                 type="number"
-                value={sortOrder}
+                min="1"
+                value={lessonDuration}
                 onChange={(e) =>
-                  setSortOrder(parseInt(e.target.value, 10) || 0)
+                  setLessonDuration(parseInt(e.target.value, 10) || 45)
                 }
                 className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
               />
+              <p className="mt-1 text-[11px] text-sand-400">minut</p>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+              Kolejność sortowania
+            </label>
+            <input
+              type="number"
+              value={sortOrder}
+              onChange={(e) =>
+                setSortOrder(parseInt(e.target.value, 10) || 0)
+              }
+              className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+            />
           </div>
 
           <ColorPicker
@@ -296,16 +319,62 @@ export default function GroupForm({ group, allGroups, onClose }: Props) {
                     {prices
                       .slice()
                       .sort((a, b) => a.frequency - b.frequency)
-                      .map((p) => (
-                        <span
-                          key={p.frequency}
-                          className="rounded-lg bg-white px-3 py-1 text-[12px] font-medium text-sand-700 border border-sand-200"
-                        >
-                          {p.frequency}×/tydz. — {p.price} zł
-                        </span>
-                      ))}
+                      .map((p) => {
+                        const groupDays = [...new Set(slots.map((s) => s.day))];
+                        // For a given frequency, compute total if all group days attended
+                        const totalLessons = groupDays.reduce(
+                          (sum, d) =>
+                            sum + (semesterDayCount?.[d] ?? 0),
+                          0,
+                        );
+                        const seasonTotal =
+                          semesterDayCount && totalLessons > 0
+                            ? p.price * totalLessons
+                            : null;
+                        return (
+                          <span
+                            key={p.frequency}
+                            className="rounded-lg bg-white px-3 py-1 text-[12px] font-medium text-sand-700 border border-sand-200"
+                          >
+                            {p.frequency}×/tydz. — {p.price} zł/zajęcia
+                            {seasonTotal != null && (
+                              <span className="text-sand-400">
+                                {" "}
+                                = {seasonTotal} zł/semestr
+                              </span>
+                            )}
+                          </span>
+                        );
+                      })}
                   </div>
                 )}
+
+                {/* Zero-day warning */}
+                {semesterDayCount &&
+                  slots.length > 0 &&
+                  (() => {
+                    const groupDays = [...new Set(slots.map((s) => s.day))];
+                    const zeroDays = groupDays.filter(
+                      (d) => semesterDayCount[d] === 0,
+                    );
+                    if (zeroDays.length > 0) {
+                      const DAYS_SHORT = [
+                        "Pon",
+                        "Wt",
+                        "Śr",
+                        "Czw",
+                        "Pt",
+                        "Niedz",
+                      ];
+                      return (
+                        <p className="text-[11px] text-amber-600 mt-2">
+                          ⚠️ Dni z 0 zajęciami w semestrze:{" "}
+                          {zeroDays.map((d) => DAYS_SHORT[d]).join(", ")}
+                        </p>
+                      );
+                    }
+                    return null;
+                  })()}
               </div>
             </div>
           )}
