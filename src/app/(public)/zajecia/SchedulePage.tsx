@@ -51,15 +51,17 @@ export default function SchedulePage({ data }: Props) {
     : (GROUPS[0]?.name ?? "Krewetki");
 
   const [selectedGroup, setSelectedGroup] = useState(initialGroup);
-  const [selectedDays, setSelectedDays] = useState<Set<number>>(
-    () => new Set(getDayIndicesForGroup(initialGroup)),
-  );
+  const [selectedDays, setSelectedDays] = useState<Set<number>>(() => {
+    const days = getDayIndicesForGroup(initialGroup);
+    return new Set(days.length > 0 ? [days[0]] : []);
+  });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   function selectGroup(groupName: string) {
     setSelectedGroup(groupName);
-    setSelectedDays(new Set(getDayIndicesForGroup(groupName)));
+    const days = getDayIndicesForGroup(groupName);
+    setSelectedDays(new Set(days.length > 0 ? [days[0]] : []));
   }
 
   // Close dropdown on outside click
@@ -79,9 +81,9 @@ export default function SchedulePage({ data }: Props) {
 
   function toggleDay(dayIdx: number) {
     setSelectedDays((prev) => {
-      if (prev.has(dayIdx) && prev.size <= 1) return prev;
       const next = new Set(prev);
       if (next.has(dayIdx)) next.delete(dayIdx);
+      else if (next.size >= 3) return prev;
       else next.add(dayIdx);
       return next;
     });
@@ -276,23 +278,28 @@ export default function SchedulePage({ data }: Props) {
                 <div className="flex flex-col gap-2">
                   {groupDayIndices.map((dayIdx) => {
                     const isSelected = selectedDays.has(dayIdx);
-                    const isLast = isSelected && selectedDays.size === 1;
+                    const maxReached = selectedDays.size >= 3 && !isSelected;
+                    const disabled = maxReached;
                     return (
                       <button
                         key={dayIdx}
                         onClick={() => toggleDay(dayIdx)}
-                        disabled={isLast}
+                        disabled={disabled}
                         className={`flex items-center gap-3 rounded-xl border-2 px-4 py-2.5 text-left transition-all ${
                           isSelected
                             ? "border-coral-400 bg-coral-50"
-                            : "border-sand-200 bg-white hover:border-sand-300 hover:bg-sand-50"
-                        } ${isLast ? "cursor-not-allowed opacity-50" : ""}`}
+                            : disabled
+                              ? "border-sand-100 bg-sand-50/30"
+                              : "border-sand-300 bg-white hover:border-sand-400 hover:bg-sand-50 hover:shadow-sm"
+                        } ${disabled && !isSelected ? "cursor-not-allowed opacity-35" : ""}`}
                       >
                         <span
                           className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-all ${
                             isSelected
                               ? "border-coral-500 bg-coral-500"
-                              : "border-sand-300 bg-white"
+                              : disabled
+                                ? "border-sand-200 bg-sand-100"
+                                : "border-sand-400 bg-white"
                           }`}
                         >
                           {isSelected && (
@@ -311,7 +318,7 @@ export default function SchedulePage({ data }: Props) {
                           )}
                         </span>
                         <span
-                          className={`text-[13px] font-semibold ${isSelected ? "text-sand-900" : "text-sand-500"}`}
+                          className={`text-[13px] font-semibold ${isSelected ? "text-sand-900" : disabled ? "text-sand-400" : "text-sand-800"}`}
                         >
                           {DAYS[dayIdx]}
                         </span>
@@ -319,12 +326,17 @@ export default function SchedulePage({ data }: Props) {
                     );
                   })}
                 </div>
+                {selectedDays.size >= 3 && (
+                  <p className="mt-2 text-[12px] font-medium text-sand-600">
+                    Maksymalnie 3 dni treningów w tygodniu.
+                  </p>
+                )}
               </div>
 
               {/* Price display */}
               <div className="rounded-2xl bg-deep-50 border border-deep-100 px-6 py-5">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-deep-400 mb-1">
-                  Cena za semestr
+                  Cena za semestr 2026/2027
                 </p>
                 {totalPrice != null ? (
                   <>
@@ -349,6 +361,10 @@ export default function SchedulePage({ data }: Props) {
                       </p>
                     )}
                   </>
+                ) : selectedDays.size === 0 ? (
+                  <p className="text-[15px] text-sand-500">
+                    Wybierz dni treningów powyżej, aby zobaczyć cenę.
+                  </p>
                 ) : (
                   <p className="text-[15px] text-sand-500">Zapytaj o cenę</p>
                 )}
@@ -488,10 +504,12 @@ export default function SchedulePage({ data }: Props) {
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
                   <span className="text-[13px] font-bold">
-                    {[...selectedDays]
-                      .sort((a, b) => a - b)
-                      .map((d) => DAYS[d])
-                      .join(", ")}
+                    {selectedDays.size > 0
+                      ? [...selectedDays]
+                          .sort((a, b) => a - b)
+                          .map((d) => DAYS[d])
+                          .join(", ")
+                      : "Wybierz dni"}
                   </span>
                   {totalPrice != null && (
                     <>
