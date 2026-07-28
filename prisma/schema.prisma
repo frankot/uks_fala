@@ -64,13 +64,14 @@ model GroupPrice {
 }
 
 model SemesterDayCount {
-  id  String @id @default("default")
-  mon Int    @default(0)
-  tue Int    @default(0)
-  wed Int    @default(0)
-  thu Int    @default(0)
-  fri Int    @default(0)
-  sun Int    @default(0)
+  id    String @id @default("default")
+  label String @default("")
+  mon   Int    @default(0)
+  tue   Int    @default(0)
+  wed   Int    @default(0)
+  thu   Int    @default(0)
+  fri   Int    @default(0)
+  sun   Int    @default(0)
 }
 
 model News {

@@ -47,6 +47,7 @@ export default async function CmsPage({
         semesterDayCount.sun,
       ]
     : null;
+  const semesterLabel = semesterDayCount?.label ?? "";
 
   const news = tab === "aktualnosci" ? await getAllNewsAdmin() : [];
   const achievements =
@@ -89,6 +90,7 @@ export default async function CmsPage({
         <GrafikTab
           groups={JSON.parse(JSON.stringify(groups))}
           semesterDayCount={semesterDayCountArr}
+          semesterLabel={semesterLabel}
         />
       )}
       {tab === "aktualnosci" && (

@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const SemesterSchema = z.object({
+  label: z.string().max(30).default(""),
   mon: z.number().int().min(0),
   tue: z.number().int().min(0),
   wed: z.number().int().min(0),

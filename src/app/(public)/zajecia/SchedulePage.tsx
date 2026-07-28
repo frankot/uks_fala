@@ -336,7 +336,7 @@ export default function SchedulePage({ data }: Props) {
               {/* Price display */}
               <div className="rounded-2xl bg-deep-50 border border-deep-100 px-6 py-5">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-deep-400 mb-1">
-                  Cena za semestr 2026/2027
+                  Cena za semestr{data.semesterLabel ? ` ${data.semesterLabel}` : ""}
                 </p>
                 {totalPrice != null ? (
                   <>

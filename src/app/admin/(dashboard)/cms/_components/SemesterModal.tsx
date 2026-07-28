@@ -17,13 +17,15 @@ const DAY_FIELDS = ["mon", "tue", "wed", "thu", "fri", "sun"] as const;
 
 interface Props {
   current: number[] | null; // [mon, tue, wed, thu, fri, sun] or null
+  currentLabel: string;
   onClose: () => void;
 }
 
-export default function SemesterModal({ current, onClose }: Props) {
+export default function SemesterModal({ current, currentLabel, onClose }: Props) {
   const router = useRouter();
   const defaultValues = current ?? [0, 0, 0, 0, 0, 0];
   const [values, setValues] = useState<number[]>(defaultValues);
+  const [label, setLabel] = useState(currentLabel);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -42,6 +44,7 @@ export default function SemesterModal({ current, onClose }: Props) {
     setSaving(true);
     try {
       await upsertSemesterDayCount({
+        label,
         mon: values[0],
         tue: values[1],
         wed: values[2],
@@ -85,6 +88,23 @@ export default function SemesterModal({ current, onClose }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          <div>
+            <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+              Etykieta semestru
+            </label>
+            <input
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="np. 2026/2027"
+              maxLength={30}
+              className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+            />
+            <p className="mt-1 text-[11px] text-sand-400">
+              Wyświetlana na stronie publicznej, np. &quot;Cena za semestr 2026/2027&quot;.
+            </p>
+          </div>
+
           <p className="text-[13px] text-sand-500">
             Ustal, ile razy każdy dzień tygodnia wypada w obecnym semestrze. Na
             tej podstawie liczona jest całkowita cena za semestr.

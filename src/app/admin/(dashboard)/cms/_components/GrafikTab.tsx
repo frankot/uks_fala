@@ -14,9 +14,10 @@ const DAYS_SHORT = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
 interface Props {
   groups: GroupWithRelations[];
   semesterDayCount: number[] | null;
+  semesterLabel: string;
 }
 
-export default function GrafikTab({ groups, semesterDayCount }: Props) {
+export default function GrafikTab({ groups, semesterDayCount, semesterLabel }: Props) {
   const router = useRouter();
   const [formOpen, setFormOpen] = useState(false);
   const [editGroup, setEditGroup] = useState<GroupWithRelations | undefined>();
@@ -203,6 +204,7 @@ export default function GrafikTab({ groups, semesterDayCount }: Props) {
       {semesterOpen && (
         <SemesterModal
           current={semesterDayCount}
+          currentLabel={semesterLabel}
           onClose={() => setSemesterOpen(false)}
         />
       )}

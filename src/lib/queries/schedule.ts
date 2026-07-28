@@ -17,6 +17,7 @@ export type ScheduleData = {
   prices: Record<string, Partial<Record<1 | 2 | 3, number>>>;
   groupColors: Record<string, { bg: string; text: string; ring: string }>;
   semesterDayCount: number[] | null;
+  semesterLabel: string;
 };
 
 const FALLBACK_GROUPS = [
@@ -37,6 +38,7 @@ function getFallbackData(): ScheduleData {
     prices: FALLBACK_PRICES,
     groupColors: FALLBACK_COLORS,
     semesterDayCount: null,
+    semesterLabel: "",
   };
 }
 
@@ -89,8 +91,9 @@ export async function getScheduleData(): Promise<ScheduleData> {
           semesterRow.sun,
         ]
       : null;
+    const semesterLabel = semesterRow?.label ?? "";
 
-    return { groups, schedule, prices, groupColors, semesterDayCount };
+    return { groups, schedule, prices, groupColors, semesterDayCount, semesterLabel };
   } catch (error) {
     console.error("Failed to fetch schedule from DB, using fallback:", error);
     return getFallbackData();
