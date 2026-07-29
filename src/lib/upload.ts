@@ -22,6 +22,11 @@ export async function uploadImage(
   file: File,
   folder?: string,
 ): Promise<string> {
+  const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+  if (file.size > MAX_SIZE) {
+    throw new Error(`Plik przekracza maksymalny rozmiar 5 MB.`);
+  }
+
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
