@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 interface Slot {
   day: number;
   hour: string;
+  track: number;
 }
 
 interface PriceEntry {
@@ -31,7 +32,7 @@ export interface GroupWithRelations {
   sortOrder: number;
   lessonDuration: number;
   active: boolean;
-  slots: Slot[];
+  slots: Array<{ day: number; hour: string; track?: number }>;
   prices: PriceEntry[];
 }
 
@@ -46,16 +47,22 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
   const router = useRouter();
   const isEdit = !!group;
 
-  // Build map of occupied slots from other groups
+  // Build map of occupied slots from other groups (with track & duration)
   const occupiedSlots = useMemo(() => {
-    const map = new Map<string, string>();
+    const list: Array<{ groupName: string; day: number; hour: string; track: number; durationMinutes: number }> = [];
     for (const g of allGroups ?? []) {
       if (isEdit && g.id === group.id) continue;
       for (const s of g.slots) {
-        map.set(`${s.day}-${s.hour}`, g.name);
+        list.push({
+          groupName: g.name,
+          day: s.day,
+          hour: s.hour,
+          track: s.track ?? 1,
+          durationMinutes: g.lessonDuration,
+        });
       }
     }
-    return map;
+    return list;
   }, [allGroups, isEdit, group?.id]);
 
   const [name, setName] = useState(group?.name ?? "");
@@ -67,7 +74,7 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
   );
   const [sortOrder, setSortOrder] = useState(group?.sortOrder ?? 0);
   const [slots, setSlots] = useState<Slot[]>(
-    group?.slots.map((s) => ({ day: s.day, hour: s.hour })) ?? [],
+    group?.slots.map((s) => ({ day: s.day, hour: s.hour, track: s.track ?? 1 })) ?? [],
   );
   const [prices, setPrices] = useState<PriceEntry[]>(
     group?.prices.map((p) => ({ frequency: p.frequency, price: p.price })) ??
@@ -235,6 +242,7 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
             value={slots}
             onChange={handleSlotsChange}
             occupiedSlots={occupiedSlots}
+            lessonDuration={lessonDuration}
           />
 
           <PriceEditor
@@ -271,7 +279,8 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
                     const DAYS = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
                     const slotsByDay = slots.reduce<Record<number, string[]>>(
                       (acc, s) => {
-                        (acc[s.day] ??= []).push(s.hour);
+                        const label = `${s.hour} (T${s.track ?? 1})`;
+                        (acc[s.day] ??= []).push(label);
                         return acc;
                       },
                       {},

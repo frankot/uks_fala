@@ -1,9 +1,9 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import HeroStrip from "@/components/HeroStrip";
-import type { ScheduleData } from "@/lib/queries/schedule";
+import type { ScheduleData, ScheduleSlot } from "@/lib/queries/schedule";
 
 const DAYS = [
   "Poniedziałek",
@@ -13,17 +13,61 @@ const DAYS = [
   "Piątek",
   "Niedziela",
 ];
+
+const DAYS_SHORT = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
+
 const TIME_SLOTS = [
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-  "19:00",
-  "19:30",
+  "15:30", "15:45",
+  "16:00", "16:15", "16:30", "16:45",
+  "17:00", "17:15", "17:30", "17:45",
+  "18:00", "18:15", "18:30", "18:45",
+  "19:00", "19:15", "19:30",
 ];
+
+function timeToMinutes(t: string): number {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+/** Tight‑style lesson block pill. */
+function LessonBlock({
+  slot,
+  colors,
+  isHighlighted,
+  isFaded,
+  onClick,
+  durationMin,
+  "aria-label": ariaLabel,
+}: {
+  slot: ScheduleSlot;
+  colors: { bg: string; text: string; ring: string };
+  isHighlighted: boolean;
+  isFaded: boolean;
+  onClick: () => void;
+  durationMin: number;
+  "aria-label"?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={ariaLabel ?? slot.group}
+      className={`flex h-full w-full flex-col items-center justify-center rounded-lg px-1.5 py-1 text-center transition-all ${
+        isHighlighted
+          ? `${colors.bg} ${colors.text} ring-2 ${colors.ring} shadow-sm scale-105`
+          : isFaded
+            ? `${colors.bg} ${colors.text} opacity-50 hover:opacity-75`
+            : `${colors.bg} ${colors.text} opacity-40 hover:opacity-70`
+      }`}
+    >
+      <span className="text-[11px] font-bold leading-tight">
+        {slot.group}
+      </span>
+      <span className="mt-0.5 text-[9px] opacity-75 font-medium leading-none">
+        {durationMin} min · T{slot.track}
+      </span>
+    </button>
+  );
+}
 
 interface Props {
   data: ScheduleData;
@@ -36,6 +80,17 @@ export default function SchedulePage({ data }: Props) {
     prices: PRICES,
     groupColors: GROUP_COLORS,
   } = data;
+
+  // Build group‑duration lookup
+  const groupDurationMap = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const g of GROUPS) m.set(g.name, g.duration);
+    return m;
+  }, [GROUPS]);
+
+  function getDuration(groupName: string): number {
+    return groupDurationMap.get(groupName) ?? 45;
+  }
 
   function getDayIndicesForGroup(group: string): number[] {
     return [
@@ -57,6 +112,9 @@ export default function SchedulePage({ data }: Props) {
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Mobile: selected day tab
+  const [mobileDayIdx, setMobileDayIdx] = useState(0);
 
   function selectGroup(groupName: string) {
     setSelectedGroup(groupName);
@@ -110,7 +168,6 @@ export default function SchedulePage({ data }: Props) {
     ? [...selectedDays].filter((d) => dayCounts[d] === 0)
     : [];
 
-  // Summary line: "51 zajęć × 45 zł"
   const summary =
     perLessonPrice && dayCounts && totalLessons > 0
       ? `${totalLessons} zajęć × ${perLessonPrice} zł`
@@ -151,6 +208,240 @@ export default function SchedulePage({ data }: Props) {
     }
   }
 
+  // ── Helper: what's in a day/track/time cell? ──
+  type CellInfo =
+    | { type: "start"; slot: ScheduleSlot; durationMin: number }
+    | { type: "covered" }
+    | { type: "empty" };
+
+  function getCellInfo(
+    dayIdx: number,
+    track: 1 | 2,
+    timeSlot: string,
+  ): CellInfo {
+    for (const s of SCHEDULE) {
+      if (s.day !== dayIdx || s.track !== track) continue;
+      const start = timeToMinutes(s.startTime);
+      const end = start + getDuration(s.group);
+      const cell = timeToMinutes(timeSlot);
+      if (cell === start) {
+        return { type: "start", slot: s, durationMin: getDuration(s.group) };
+      }
+      if (cell > start && cell < end) {
+        return { type: "covered" };
+      }
+    }
+    return { type: "empty" };
+  }
+
+  // ── Mobile: schedule for a single day ──
+  function renderMobileDay(dayIdx: number) {
+    return (
+      <div>
+        <div className="grid grid-cols-[60px_1fr_1fr] gap-1">
+          {/* Header */}
+          <div />
+          <div className="text-center text-[10px] font-bold uppercase tracking-wider text-deep-600 bg-deep-50 rounded-t-md py-1.5">
+            Tor 1
+          </div>
+          <div className="text-center text-[10px] font-bold uppercase tracking-wider text-coral-600 bg-coral-50 rounded-t-md py-1.5">
+            Tor 2
+          </div>
+
+          {TIME_SLOTS.map((hour, rowIdx) => {
+            const t1 = getCellInfo(dayIdx, 1, hour);
+            const t2 = getCellInfo(dayIdx, 2, hour);
+
+            // Hide rows covered by rowspan
+            if (t1.type === "covered" && t2.type === "covered") return null;
+            if (t1.type === "covered" && t2.type === "empty") return null;
+            if (t1.type === "empty" && t2.type === "covered") return null;
+
+            return (
+              <React.Fragment key={hour}>
+                <div
+                  className={`flex items-center justify-end pr-2 text-[11px] font-bold ${
+                    rowIdx % 2 === 0 ? "text-sand-500" : "text-sand-400"
+                  }`}
+                >
+                  {hour}
+                </div>
+
+                {/* Tor 1 */}
+                {t1.type === "covered" ? null : t1.type === "start" ? (
+                  <div
+                    className="p-0.5"
+                    style={{ gridRow: `span ${t1.durationMin / 15}` }}
+                  >
+                    <LessonBlock
+                      slot={t1.slot}
+                      colors={GROUP_COLORS[t1.slot.group]}
+                      isHighlighted={
+                        t1.slot.group === selectedGroup &&
+                        selectedDays.has(dayIdx)
+                      }
+                      isFaded={t1.slot.group === selectedGroup}
+                      onClick={() => {
+                        if (t1.slot.group === selectedGroup) {
+                          toggleDay(dayIdx);
+                        } else {
+                          selectGroup(t1.slot.group);
+                        }
+                      }}
+                      durationMin={t1.durationMin}
+                    />
+                  </div>
+                ) : (
+                  <div className="min-h-[36px]" />
+                )}
+
+                {/* Tor 2 */}
+                {t2.type === "covered" ? null : t2.type === "start" ? (
+                  <div
+                    className="p-0.5"
+                    style={{ gridRow: `span ${t2.durationMin / 15}` }}
+                  >
+                    <LessonBlock
+                      slot={t2.slot}
+                      colors={GROUP_COLORS[t2.slot.group]}
+                      isHighlighted={
+                        t2.slot.group === selectedGroup &&
+                        selectedDays.has(dayIdx)
+                      }
+                      isFaded={t2.slot.group === selectedGroup}
+                      onClick={() => {
+                        if (t2.slot.group === selectedGroup) {
+                          toggleDay(dayIdx);
+                        } else {
+                          selectGroup(t2.slot.group);
+                        }
+                      }}
+                      durationMin={t2.durationMin}
+                    />
+                  </div>
+                ) : (
+                  <div className="min-h-[36px]" />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Desktop: full swim‑lane table ──
+  function renderDesktopTable() {
+    return (
+      <div className="overflow-x-auto rounded-2xl border border-sand-200 bg-white shadow-sm">
+        <table className="w-full min-w-[900px] border-collapse text-sm">
+          <thead>
+            {/* Header row 1: day names spanning 2 cols each */}
+            <tr className="border-b border-sand-200">
+              <th className="sticky left-0 z-10 bg-sand-50 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-sand-400 w-[72px]">
+                Godzina
+              </th>
+              {DAYS.map((day) => (
+                <th
+                  key={day}
+                  colSpan={2}
+                  className="px-3 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600 border-x border-sand-100"
+                >
+                  {day}
+                </th>
+              ))}
+            </tr>
+            {/* Header row 2: Tor 1 / Tor 2 */}
+            <tr className="border-b border-sand-100">
+              <th className="sticky left-0 z-10 bg-sand-50" />
+              {DAYS.map((day) => (
+                <React.Fragment key={day}>
+                  <th className="px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-deep-600 bg-deep-50/50">
+                    Tor 1
+                  </th>
+                  <th className="px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-coral-600 bg-coral-50/50">
+                    Tor 2
+                  </th>
+                </React.Fragment>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {TIME_SLOTS.map((hour, rowIdx) => {
+              // Pre‑compute cell info for this row
+              const cells = DAYS.map((_, dayIdx) =>
+                ([1, 2] as const).map((track) =>
+                  getCellInfo(dayIdx, track, hour),
+                ),
+              );
+
+              return (
+                <tr
+                  key={hour}
+                  className={`border-b border-sand-100 ${rowIdx % 2 === 0 ? "bg-white" : "bg-sand-50/50"}`}
+                >
+                  <td className="sticky left-0 z-10 bg-inherit px-4 py-1.5 text-[12px] font-bold text-sand-500">
+                    {hour}
+                  </td>
+                  {cells.map((dayCells, dayIdx) =>
+                    dayCells.map((cell, trackIdx) => {
+                      const track = (trackIdx + 1) as 1 | 2;
+
+                      if (cell.type === "covered") return null;
+                      if (cell.type === "empty") {
+                        return (
+                          <td
+                            key={`${dayIdx}-${track}`}
+                            className="p-0.5 min-h-[32px]"
+                          />
+                        );
+                      }
+
+                      // cell.type === "start"
+                      const { slot, durationMin } = cell;
+                      const rowSpan = durationMin / 15;
+                      const isSelectedGroup =
+                        slot.group === selectedGroup;
+                      const isDaySelected = selectedDays.has(dayIdx);
+                      const isHighlighted =
+                        isSelectedGroup && isDaySelected;
+
+                      return (
+                        <td
+                          key={`${dayIdx}-${track}`}
+                          rowSpan={rowSpan}
+                          className="p-0.5"
+                        >
+                          <div className="h-full">
+                            <LessonBlock
+                              slot={slot}
+                              colors={GROUP_COLORS[slot.group]}
+                              isHighlighted={isHighlighted}
+                              isFaded={isSelectedGroup}
+                              onClick={() => {
+                                if (slot.group === selectedGroup) {
+                                  toggleDay(dayIdx);
+                                } else {
+                                  selectGroup(slot.group);
+                                }
+                              }}
+                              durationMin={durationMin}
+                              aria-label={`${slot.group} — ${DAYS[slot.day]}, Tor ${slot.track}`}
+                            />
+                          </div>
+                        </td>
+                      );
+                    }),
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-sand-50">
       <HeroStrip
@@ -159,7 +450,7 @@ export default function SchedulePage({ data }: Props) {
         tag="Harmonogram"
         title="Plan zajęć"
         subtitle="UKS Fala"
-        description="Zajęcia odbywają się 6 dni w tygodniu — bez sobót. Wybierz grupę i dni treningów, aby zobaczyć harmonogram i cenę miesięczną."
+        description="Zajęcia odbywają się 6 dni w tygodniu — bez sobót. Dwa tory basenowe pozwalają na równoległe treningi różnych grup."
       />
 
       {/* Main content */}
@@ -377,79 +668,47 @@ export default function SchedulePage({ data }: Props) {
 
           {/* ——— SCHEDULE TABLE ——— */}
           <div>
-            <div className="overflow-x-auto rounded-2xl border border-sand-200 bg-white shadow-sm">
-              <table className="w-full min-w-[640px] border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-sand-200">
-                    <th className="sticky left-0 z-10 bg-sand-50 px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-sand-400 w-[80px]">
-                      Godzina
-                    </th>
-                    {DAYS.map((day) => (
-                      <th
-                        key={day}
-                        className="px-3 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600"
-                      >
-                        {day}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {TIME_SLOTS.map((hour, rowIdx) => (
-                    <tr
-                      key={hour}
-                      className={`border-b border-sand-100 ${rowIdx % 2 === 0 ? "bg-white" : "bg-sand-50/50"}`}
+            {/* Desktop: full table */}
+            <div className="hidden lg:block">{renderDesktopTable()}</div>
+
+            {/* Mobile: day tabs */}
+            <div className="lg:hidden">
+              {/* Day tabs */}
+              <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
+                {DAYS.map((day, idx) => {
+                  const hasLessons = getDayIndicesForGroup(selectedGroup).includes(idx);
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => setMobileDayIdx(idx)}
+                      className={`shrink-0 rounded-lg px-4 py-2 text-[13px] font-bold transition-all ${
+                        mobileDayIdx === idx
+                          ? "bg-deep-700 text-white shadow-sm"
+                          : hasLessons
+                            ? "bg-sand-100 text-sand-700 hover:bg-sand-200"
+                            : "bg-sand-50 text-sand-400"
+                      }`}
                     >
-                      <td className="sticky left-0 z-10 bg-inherit px-4 py-3 text-[12px] font-bold text-sand-500">
-                        {hour}
-                      </td>
-                      {DAYS.map((_, dayIdx) => {
-                        const slots = SCHEDULE.filter(
-                          (s) => s.day === dayIdx && s.hour === hour,
-                        );
-                        return (
-                          <td key={dayIdx} className="px-2 py-2 text-center">
-                            {slots.map((slot) => {
-                              const c = GROUP_COLORS[slot.group];
-                              const isSelectedGroup =
-                                slot.group === selectedGroup;
-                              const isDaySelected = selectedDays.has(dayIdx);
-                              const isHighlighted =
-                                isSelectedGroup && isDaySelected;
-                              return (
-                                <button
-                                  key={slot.group}
-                                  onClick={() => {
-                                    if (slot.group === selectedGroup) {
-                                      toggleDay(dayIdx);
-                                    } else {
-                                      selectGroup(slot.group);
-                                    }
-                                  }}
-                                  className={`mx-auto block w-full rounded-lg px-2 py-1.5 text-[11px] font-bold transition-all ${
-                                    isHighlighted
-                                      ? `${c.bg} ${c.text} ring-2 ${c.ring} shadow-sm scale-105`
-                                      : isSelectedGroup
-                                        ? `${c.bg} ${c.text} opacity-50 hover:opacity-75`
-                                        : `${c.bg} ${c.text} opacity-40 hover:opacity-70`
-                                  }`}
-                                >
-                                  {slot.group}
-                                </button>
-                              );
-                            })}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      {DAYS_SHORT[idx]}
+                    </button>
+                  );
+                })}
+              </div>
+              {renderMobileDay(mobileDayIdx)}
             </div>
 
             <p className="mt-3 text-[12px] text-sand-400">
               * Harmonogram orientacyjny — może ulec zmianie. Kliknij grupę aby
               ją wybrać; kliknij zaznaczoną grupę, aby odhaczyć dany dzień.
+            </p>
+
+            <p className="mt-1 flex items-center gap-3 text-[11px] text-sand-400">
+              <span className="inline-flex items-center gap-1">
+                <span className="inline-block w-3 h-3 rounded-sm bg-deep-50 border border-deep-200" /> Tor 1
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="inline-block w-3 h-3 rounded-sm bg-coral-50 border border-coral-200" /> Tor 2
+              </span>
             </p>
 
             {/* ——— RESERVATION FORM ——— */}

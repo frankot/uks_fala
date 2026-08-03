@@ -8,6 +8,7 @@ import { z } from "zod";
 const SlotSchema = z.object({
   day: z.number().int().min(0).max(5),
   hour: z.string().regex(/^\d{2}:\d{2}$/),
+  track: z.number().int().min(1).max(2).default(1),
 });
 
 const PriceSchema = z.object({
@@ -28,6 +29,11 @@ const GroupSchema = z.object({
 
 export type GroupFormData = z.infer<typeof GroupSchema>;
 
+function timeToMinutes(time: string): number {
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+}
+
 function revalidate() {
   revalidatePath("/zajecia");
   revalidatePath("/admin/cms");
@@ -38,6 +44,24 @@ export async function createGroup(data: GroupFormData) {
   if (!session) throw new Error("Unauthorized");
 
   const parsed = GroupSchema.parse(data);
+
+  // Validate no overlapping slots on the same track
+  for (let i = 0; i < parsed.slots.length; i++) {
+    for (let j = i + 1; j < parsed.slots.length; j++) {
+      const a = parsed.slots[i];
+      const b = parsed.slots[j];
+      if (a.day !== b.day || a.track !== b.track) continue;
+      const aStart = timeToMinutes(a.hour);
+      const aEnd = aStart + parsed.lessonDuration;
+      const bStart = timeToMinutes(b.hour);
+      const bEnd = bStart + parsed.lessonDuration;
+      if (aStart < bEnd && bStart < aEnd) {
+        throw new Error(
+          `Konflikt: dwa terminy na tym samym torze ${a.track} w dniu ${a.day} nakładają się (${a.hour}–${aEnd}min i ${b.hour}–${bEnd}min).`
+        );
+      }
+    }
+  }
 
   await prisma.group.create({
     data: {
@@ -60,6 +84,24 @@ export async function updateGroup(id: string, data: GroupFormData) {
   if (!session) throw new Error("Unauthorized");
 
   const parsed = GroupSchema.parse(data);
+
+  // Validate no overlapping slots on the same track
+  for (let i = 0; i < parsed.slots.length; i++) {
+    for (let j = i + 1; j < parsed.slots.length; j++) {
+      const a = parsed.slots[i];
+      const b = parsed.slots[j];
+      if (a.day !== b.day || a.track !== b.track) continue;
+      const aStart = timeToMinutes(a.hour);
+      const aEnd = aStart + parsed.lessonDuration;
+      const bStart = timeToMinutes(b.hour);
+      const bEnd = bStart + parsed.lessonDuration;
+      if (aStart < bEnd && bStart < aEnd) {
+        throw new Error(
+          `Konflikt: dwa terminy na tym samym torze ${a.track} w dniu ${a.day} nakładają się (${a.hour}–${aEnd}min i ${b.hour}–${bEnd}min).`
+        );
+      }
+    }
+  }
 
   await prisma.$transaction([
     prisma.trainingSlot.deleteMany({ where: { groupId: id } }),

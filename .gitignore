@@ -42,3 +42,5 @@ next-env.d.ts
 
 /src/generated/prisma
 docs/specs/2026-07-16-feedback-update-seasonal-offers.md
+docs/spec-schedule-v2.md
+prisma/seed.ts

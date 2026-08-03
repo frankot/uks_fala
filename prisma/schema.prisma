@@ -48,6 +48,7 @@ model TrainingSlot {
   groupId String
   day     Int
   hour    String
+  track   Int    @default(1)
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, day, hour])

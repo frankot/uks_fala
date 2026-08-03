@@ -6,14 +6,21 @@ import {
   GROUP_COLORS as FALLBACK_COLORS,
 } from "@/lib/schedule";
 
+export type ScheduleSlot = {
+  group: string;
+  day: number;
+  startTime: string;
+  track: 1 | 2;
+};
+
 export type ScheduleData = {
   groups: Array<{
     num: string;
     name: string;
     age: string;
-    duration: number;
+    duration: number; // minutes
   }>;
-  schedule: Array<{ group: string; day: number; hour: string }>;
+  schedule: ScheduleSlot[];
   prices: Record<string, Partial<Record<1 | 2 | 3, number>>>;
   groupColors: Record<string, { bg: string; text: string; ring: string }>;
   semesterDayCount: number[] | null;
@@ -21,14 +28,14 @@ export type ScheduleData = {
 };
 
 const FALLBACK_GROUPS = [
-  { num: "01", name: "Krewetki",       age: "3–5 lat",   duration: 45 },
-  { num: "02", name: "Neonki",         age: "4–6 lat",   duration: 45 },
+  { num: "01", name: "Krewetki",       age: "3–5 lat",   duration: 30 },
+  { num: "02", name: "Neonki",         age: "4–6 lat",   duration: 30 },
   { num: "03", name: "Koniki Morskie", age: "5–7 lat",   duration: 45 },
   { num: "04", name: "Płotki",         age: "6–8 lat",   duration: 45 },
   { num: "05", name: "Okonki",         age: "7–9 lat",   duration: 45 },
   { num: "06", name: "Delfiny",        age: "8–10 lat",  duration: 45 },
   { num: "07", name: "Barrakudy",      age: "9–12 lat",  duration: 45 },
-  { num: "08", name: "Rekiny",         age: "11–15 lat", duration: 45 },
+  { num: "08", name: "Rekiny",         age: "11–15 lat", duration: 60 },
 ];
 
 function getFallbackData(): ScheduleData {
@@ -62,7 +69,7 @@ export async function getScheduleData(): Promise<ScheduleData> {
     }));
 
     const schedule = dbGroups.flatMap((g) =>
-      g.slots.map((s) => ({ group: g.name, day: s.day, hour: s.hour }))
+      g.slots.map((s) => ({ group: g.name, day: s.day, startTime: s.hour, track: s.track as 1 | 2 }))
     );
 
     const prices: Record<string, Partial<Record<1 | 2 | 3, number>>> = {};
