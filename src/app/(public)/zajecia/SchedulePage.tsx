@@ -166,7 +166,7 @@ export default function SchedulePage({ data }: Props) {
     "idle",
   );
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     setStatus("sending");
     const days = [...selectedDays]

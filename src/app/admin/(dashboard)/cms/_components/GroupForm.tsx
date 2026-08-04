@@ -31,6 +31,7 @@ export interface GroupWithRelations {
   colorPreset: string;
   sortOrder: number;
   lessonDuration: number;
+  description?: string | null;
   active: boolean;
   slots: Array<{ day: number; hour: string; track?: number }>;
   prices: PriceEntry[];
@@ -72,6 +73,7 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
   const [lessonDuration, setLessonDuration] = useState(
     group?.lessonDuration ?? 45,
   );
+  const [description, setDescription] = useState(group?.description ?? "");
   const [sortOrder, setSortOrder] = useState(group?.sortOrder ?? 0);
   const [slots, setSlots] = useState<Slot[]>(
     group?.slots.map((s) => ({ day: s.day, hour: s.hour, track: s.track ?? 1 })) ?? [],
@@ -112,6 +114,7 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
       colorPreset,
       sortOrder,
       lessonDuration,
+      description,
       slots,
       prices,
     };
@@ -231,6 +234,23 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
               }
               className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
             />
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+              Krótki opis grupy
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+              maxLength={300}
+              placeholder="Np. 'Najmłodsza grupa — pierwsze kroki w wodzie. Oswajanie z basenem przez zabawę.'"
+              className="mt-2 block w-full resize-none rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+            />
+            <p className="mt-1 text-[11px] text-sand-400">
+              {description.length}/300 — wyświetla się na stronie planu zajęć
+            </p>
           </div>
 
           <ColorPicker

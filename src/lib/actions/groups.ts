@@ -23,6 +23,7 @@ const GroupSchema = z.object({
   colorPreset: z.string().min(1),
   sortOrder: z.number().int().default(0),
   lessonDuration: z.number().int().min(1).default(45),
+  description: z.string().max(300).optional().default(""),
   slots: z.array(SlotSchema).min(1, "Dodaj przynajmniej jeden termin"),
   prices: z.array(PriceSchema).min(1, "Dodaj przynajmniej jedną cenę"),
 });
@@ -71,6 +72,7 @@ export async function createGroup(data: GroupFormData) {
       colorPreset: parsed.colorPreset,
       sortOrder: parsed.sortOrder,
       lessonDuration: parsed.lessonDuration,
+      description: parsed.description || null,
       slots: { create: parsed.slots },
       prices: { create: parsed.prices },
     },
@@ -115,6 +117,7 @@ export async function updateGroup(id: string, data: GroupFormData) {
         colorPreset: parsed.colorPreset,
         sortOrder: parsed.sortOrder,
         lessonDuration: parsed.lessonDuration,
+        description: parsed.description || null,
         slots: { create: parsed.slots },
         prices: { create: parsed.prices },
       },
