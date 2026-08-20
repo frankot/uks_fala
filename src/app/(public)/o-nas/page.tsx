@@ -434,7 +434,7 @@ export default function ONasPage() {
                   Zapisz dziecko
                 </ContactLink>
                 <Link
-                  href="/zajecia"
+                  href="/grafik"
                   className="inline-flex h-13 items-center justify-center rounded-full border border-white/15 px-8 text-[15px] font-semibold text-white/80 backdrop-blur-sm transition-all hover:bg-white/5 hover:text-white sm:h-14"
                 >
                   Zobacz zajęcia

@@ -51,7 +51,7 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
   const isEdit = !!group;
 
   // Occupied cells = slots of other ACTIVE groups. Inactive groups are hidden on
-  // /zajecia, so they must not block cells here either.
+  // /grafik, so they must not block cells here either.
   const occupiedSlots = useMemo(() => {
     const list: Array<{ groupName: string; day: number; hour: string; track: number; durationMinutes: number }> = [];
     for (const g of allGroups ?? []) {

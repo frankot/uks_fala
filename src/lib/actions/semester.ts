@@ -29,6 +29,6 @@ export async function upsertSemesterDayCount(data: SemesterFormData) {
     update: parsed,
   });
 
-  revalidatePath("/zajecia");
+  revalidatePath("/grafik");
   revalidatePath("/admin/cms");
 }

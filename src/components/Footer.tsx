@@ -90,7 +90,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {[
                 { href: "/o-nas", label: "O nas" },
-                { href: "/zajecia", label: "Grupy szkoleniowe" },
+                { href: "/grafik", label: "Grupy szkoleniowe" },
                 { href: "/trenerzy", label: "Trenerzy" },
               ].map((link) => (
                 <li key={link.href}>

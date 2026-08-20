@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The plan zajęć moved from /zajecia to /grafik — keep links already shared
+  // (Facebook posts, parent chats, search results) working.
+  async redirects() {
+    return [{ source: "/zajecia", destination: "/grafik", permanent: true }];
+  },
   images: {
     remotePatterns: [
       {

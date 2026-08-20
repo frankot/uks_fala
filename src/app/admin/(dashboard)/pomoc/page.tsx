@@ -58,7 +58,7 @@ export default function PomocPage() {
         <div className="rounded-xl border border-coral-200 bg-coral-50 px-5 py-4 mb-6">
           <p className="text-[14px] text-coral-700 font-semibold">
             ⚡ To najważniejsza sekcja CMS. Tutaj definiujesz grupy treningowe, ich godziny i cennik.
-            Dane są wyświetlane na podstronie /zajecia oraz w harmonogramie na stronie głównej.
+            Dane są wyświetlane na podstronie /grafik oraz w harmonogramie na stronie głównej.
           </p>
         </div>
 

@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/o-nas", label: "O nas" },
   { href: "/aktualnosci", label: "Aktualnosci" },
   { href: "/osiagniecia", label: "Osiagniecia" },
-  { href: "/zajecia", label: "Zajęcia" },
+  { href: "/grafik", label: "Grafik zajęć" },
   { href: "/trenerzy", label: "Trenerzy" },
 ];
 
@@ -153,7 +153,7 @@ export default function Navigation() {
               +48 530 077 078
             </a>
             <Link
-              href="/zajecia"
+              href="/grafik"
               className="inline-flex h-10 items-center rounded-full bg-coral-500 px-6 text-[13px] font-bold uppercase tracking-wider text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20"
             >
               Zapisz dziecko

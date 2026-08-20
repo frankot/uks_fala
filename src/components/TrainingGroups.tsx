@@ -79,7 +79,7 @@ export default async function TrainingGroups() {
                 </div>
 
                 <Link
-                  href={`/zajecia?group=${encodeURIComponent(group.name)}`}
+                  href={`/grafik?group=${encodeURIComponent(group.name)}`}
                   className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-sand-100 py-2.5 text-[13px] font-bold text-sand-700 transition-all group-hover:bg-deep-700 group-hover:text-white"
                 >
                   Zapisz dziecko

@@ -108,7 +108,7 @@ async function assertScheduleIsValid(
 }
 
 function revalidate() {
-  revalidatePath("/zajecia");
+  revalidatePath("/grafik");
   revalidatePath("/admin/cms");
   // The home-page group cards are cached for an hour — publish edits right away.
   updateTag(TRAINING_GROUPS_TAG);
