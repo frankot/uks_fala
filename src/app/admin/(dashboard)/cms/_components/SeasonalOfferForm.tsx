@@ -29,6 +29,7 @@ export interface SeasonalOfferItem {
   program: string;
   included: string | null;
   signupInfo: string | null;
+  signupUrl: string | null;
   images: string[];
   published: boolean;
   featured: boolean;
@@ -47,12 +48,16 @@ const LABELS = {
     create: "Dodaj obóz",
     edit: "Edytuj obóz",
     imageFolder: "uks-fala/obozy",
+    defaultSignupUrl: "/obozy",
+    signupUrlPlaceholder: "np. forms.gle/abc123 (puste = /obozy)",
   },
   POLKOLONIA: {
     singular: "półkolonię",
     create: "Dodaj półkolonię",
     edit: "Edytuj półkolonię",
     imageFolder: "uks-fala/polkolonie",
+    defaultSignupUrl: "/polkolonie",
+    signupUrlPlaceholder: "np. forms.gle/abc123 (puste = /polkolonie)",
   },
 };
 
@@ -89,6 +94,7 @@ export default function SeasonalOfferForm({ type, item, onClose }: Props) {
   const [program, setProgram] = useState(item?.program ?? "");
   const [included, setIncluded] = useState(item?.included ?? "");
   const [signupInfo, setSignupInfo] = useState(item?.signupInfo ?? "");
+  const [signupUrl, setSignupUrl] = useState(item?.signupUrl ?? "");
   const [images, setImages] = useState<string[]>(item?.images ?? []);
   const [published, setPublished] = useState(item?.published ?? false);
   const [featured, setFeatured] = useState(item?.featured ?? false);
@@ -118,6 +124,7 @@ export default function SeasonalOfferForm({ type, item, onClose }: Props) {
       program,
       included,
       signupInfo,
+      signupUrl,
       images,
       published,
       featured,
@@ -293,6 +300,25 @@ export default function SeasonalOfferForm({ type, item, onClose }: Props) {
               placeholder="np. Cena obejmuje wyżywienie i opiekę trenerską."
               className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
             />
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+              Link przycisku &bdquo;Zarezerwuj miejsce&rdquo;
+            </label>
+            <input
+              type="text"
+              value={signupUrl}
+              onChange={(e) => setSignupUrl(e.target.value)}
+              placeholder={labels.signupUrlPlaceholder}
+              className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+            />
+            <p className="mt-1 text-[11px] text-sand-400">
+              Dowolny link, np. do formularza Google — możesz wkleić go w całości
+              albo wpisać sam adres (test.pl). Linki zewnętrzne otwierają się w
+              nowej karcie. Puste pole = przycisk prowadzi na stronę{" "}
+              {labels.defaultSignupUrl}.
+            </p>
           </div>
 
           <ImageUploader

@@ -3,74 +3,21 @@
 import { useSearchParams } from "next/navigation";
 import React, { useState, useMemo } from "react";
 import HeroStrip from "@/components/HeroStrip";
-import type { ScheduleData, ScheduleSlot } from "@/lib/queries/schedule";
-
-const DAYS = [
-  "Poniedziałek",
-  "Wtorek",
-  "Środa",
-  "Czwartek",
-  "Piątek",
-  "Niedziela",
-];
-
-const DAYS_SHORT = ["Pon", "Wt", "Śr", "Czw", "Pt", "Niedz"];
-
-const TIME_SLOTS = [
-  "15:30", "15:45",
-  "16:00", "16:15", "16:30", "16:45",
-  "17:00", "17:15", "17:30", "17:45",
-  "18:00", "18:15", "18:30", "18:45",
-  "19:00", "19:15", "19:30",
-];
-
-function timeToMinutes(t: string): number {
-  const [h, m] = t.split(":").map(Number);
-  return h * 60 + m;
-}
-
-/** Tight‑style lesson block pill. */
-function LessonBlock({
-  slot,
-  colors,
-  isHighlighted,
-  isFaded,
-  onClick,
-  durationMin,
-  "aria-label": ariaLabel,
-}: {
-  slot: ScheduleSlot;
-  colors: { bg: string; text: string; ring: string };
-  isHighlighted: boolean;
-  isFaded: boolean;
-  onClick: () => void;
-  durationMin: number;
-  "aria-label"?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={ariaLabel ?? slot.group}
-      className={`flex h-full w-full flex-col items-center justify-center rounded-lg px-1.5 py-1 text-center transition-all ${
-        isHighlighted
-          ? `${colors.bg} ${colors.text} ring-2 ${colors.ring} shadow-sm scale-105`
-          : isFaded
-            ? `${colors.bg} ${colors.text} opacity-50 hover:opacity-75`
-            : `${colors.bg} ${colors.text} opacity-40 hover:opacity-70`
-      }`}
-    >
-      <span className="text-[11px] font-bold leading-tight">
-        {slot.group}
-      </span>
-      <span className="mt-0.5 text-[9px] opacity-75 font-medium leading-none">
-        {durationMin} min · T{slot.track}
-      </span>
-    </button>
-  );
-}
+import type { ScheduleData } from "@/lib/queries/schedule";
+import { DAYS, DAYS_SHORT, DAY_INDICES, placeBlocks } from "@/lib/schedule-grid";
+import ScheduleGrid, { type GridSlot } from "./ScheduleGrid";
 
 interface Props {
   data: ScheduleData;
+}
+
+/** "zajęcia" is plurale tantum: 2–4 (but not 12–14) take "zajęcia", the rest "zajęć". */
+function pluralZajecia(count: number): string {
+  const last = count % 10;
+  const lastTwo = count % 100;
+  if (count === 1) return "zajęcia";
+  if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return "zajęcia";
+  return "zajęć";
 }
 
 export default function SchedulePage({ data }: Props) {
@@ -87,10 +34,6 @@ export default function SchedulePage({ data }: Props) {
     for (const g of GROUPS) m.set(g.name, g.duration);
     return m;
   }, [GROUPS]);
-
-  function getDuration(groupName: string): number {
-    return groupDurationMap.get(groupName) ?? 45;
-  }
 
   function getDayIndicesForGroup(group: string): number[] {
     return [
@@ -150,11 +93,6 @@ export default function SchedulePage({ data }: Props) {
     ? [...selectedDays].filter((d) => dayCounts[d] === 0)
     : [];
 
-  const summary =
-    perLessonPrice && dayCounts && totalLessons > 0
-      ? `${totalLessons} zajęć × ${perLessonPrice} zł`
-      : null;
-
   // Form state
   const [form, setForm] = useState({
     name: "",
@@ -190,238 +128,22 @@ export default function SchedulePage({ data }: Props) {
     }
   }
 
-  // ── Helper: what's in a day/track/time cell? ──
-  type CellInfo =
-    | { type: "start"; slot: ScheduleSlot; durationMin: number }
-    | { type: "covered" }
-    | { type: "empty" };
+  // ── Lesson blocks placed on the shared 15-min axis ──
+  const blocks = useMemo(
+    () =>
+      placeBlocks<GridSlot>(
+        SCHEDULE.map((s) => ({ ...s, hour: s.startTime })),
+        (s) => groupDurationMap.get(s.group) ?? 45,
+      ),
+    [SCHEDULE, groupDurationMap],
+  );
 
-  function getCellInfo(
-    dayIdx: number,
-    track: 1 | 2,
-    timeSlot: string,
-  ): CellInfo {
-    for (const s of SCHEDULE) {
-      if (s.day !== dayIdx || s.track !== track) continue;
-      const start = timeToMinutes(s.startTime);
-      const end = start + getDuration(s.group);
-      const cell = timeToMinutes(timeSlot);
-      if (cell === start) {
-        return { type: "start", slot: s, durationMin: getDuration(s.group) };
-      }
-      if (cell > start && cell < end) {
-        return { type: "covered" };
-      }
+  function handleBlockSelect(slot: GridSlot) {
+    if (slot.group === selectedGroup) {
+      toggleDay(slot.day);
+    } else {
+      selectGroup(slot.group);
     }
-    return { type: "empty" };
-  }
-
-  // ── Mobile: schedule for a single day ──
-  function renderMobileDay(dayIdx: number) {
-    return (
-      <div>
-        <div className="grid grid-cols-[60px_1fr_1fr] gap-1">
-          {/* Header */}
-          <div />
-          <div className="text-center text-[10px] font-bold uppercase tracking-wider text-deep-600 bg-deep-50 rounded-t-md py-1.5">
-            Tor 1
-          </div>
-          <div className="text-center text-[10px] font-bold uppercase tracking-wider text-coral-600 bg-coral-50 rounded-t-md py-1.5">
-            Tor 2
-          </div>
-
-          {TIME_SLOTS.map((hour, rowIdx) => {
-            const t1 = getCellInfo(dayIdx, 1, hour);
-            const t2 = getCellInfo(dayIdx, 2, hour);
-
-            // Hide rows covered by rowspan
-            if (t1.type === "covered" && t2.type === "covered") return null;
-            if (t1.type === "covered" && t2.type === "empty") return null;
-            if (t1.type === "empty" && t2.type === "covered") return null;
-
-            return (
-              <React.Fragment key={hour}>
-                <div
-                  className={`flex items-center justify-end pr-2 text-[11px] font-bold ${
-                    rowIdx % 2 === 0 ? "text-sand-500" : "text-sand-400"
-                  }`}
-                >
-                  {hour}
-                </div>
-
-                {/* Tor 1 */}
-                {t1.type === "covered" ? null : t1.type === "start" ? (
-                  <div
-                    className="p-0.5"
-                    style={{ gridRow: `span ${t1.durationMin / 15}` }}
-                  >
-                    <LessonBlock
-                      slot={t1.slot}
-                      colors={GROUP_COLORS[t1.slot.group]}
-                      isHighlighted={
-                        t1.slot.group === selectedGroup &&
-                        selectedDays.has(dayIdx)
-                      }
-                      isFaded={t1.slot.group === selectedGroup}
-                      onClick={() => {
-                        if (t1.slot.group === selectedGroup) {
-                          toggleDay(dayIdx);
-                        } else {
-                          selectGroup(t1.slot.group);
-                        }
-                      }}
-                      durationMin={t1.durationMin}
-                    />
-                  </div>
-                ) : (
-                  <div className="min-h-[36px]" />
-                )}
-
-                {/* Tor 2 */}
-                {t2.type === "covered" ? null : t2.type === "start" ? (
-                  <div
-                    className="p-0.5"
-                    style={{ gridRow: `span ${t2.durationMin / 15}` }}
-                  >
-                    <LessonBlock
-                      slot={t2.slot}
-                      colors={GROUP_COLORS[t2.slot.group]}
-                      isHighlighted={
-                        t2.slot.group === selectedGroup &&
-                        selectedDays.has(dayIdx)
-                      }
-                      isFaded={t2.slot.group === selectedGroup}
-                      onClick={() => {
-                        if (t2.slot.group === selectedGroup) {
-                          toggleDay(dayIdx);
-                        } else {
-                          selectGroup(t2.slot.group);
-                        }
-                      }}
-                      durationMin={t2.durationMin}
-                    />
-                  </div>
-                ) : (
-                  <div className="min-h-[36px]" />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  // ── Desktop: full swim‑lane table ──
-  function renderDesktopTable() {
-    return (
-      <div className="overflow-x-auto rounded-2xl border border-sand-200 bg-white shadow-sm">
-        <table className="w-full min-w-[900px] border-collapse text-sm">
-          <thead>
-            {/* Header row 1: day names spanning 2 cols each */}
-            <tr className="border-b border-sand-200">
-              <th className="sticky left-0 z-10 bg-sand-50 pl-2 pr-0 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-sand-400 w-[40px] border-r border-sand-200">
-                Godzina
-              </th>
-              {DAYS.map((day) => (
-                <th
-                  key={day}
-                  colSpan={2}
-                  className="px-3 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-sand-600 border-x border-sand-100"
-                >
-                  {day}
-                </th>
-              ))}
-            </tr>
-            {/* Header row 2: Tor 1 / Tor 2 */}
-            <tr className="border-b border-sand-100">
-              <th className="sticky left-0 z-10 bg-sand-50" />
-              {DAYS.map((day) => (
-                <React.Fragment key={day}>
-                  <th className="px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-deep-600 bg-deep-50/50">
-                    Tor 1
-                  </th>
-                  <th className="px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-wider text-coral-600 bg-coral-50/50">
-                    Tor 2
-                  </th>
-                </React.Fragment>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {TIME_SLOTS.map((hour, rowIdx) => {
-              // Pre‑compute cell info for this row
-              const cells = DAYS.map((_, dayIdx) =>
-                ([1, 2] as const).map((track) =>
-                  getCellInfo(dayIdx, track, hour),
-                ),
-              );
-
-              return (
-                <tr
-                  key={hour}
-                  className={`border-b border-sand-100 ${rowIdx % 2 === 0 ? "bg-white" : "bg-sand-50/50"}`}
-                >
-                  <td className="sticky left-0 z-10 bg-inherit pl-2 pr-0 py-1.5 text-[12px] font-bold text-sand-500 border-r border-sand-100">
-                    {hour}
-                  </td>
-                  {cells.map((dayCells, dayIdx) =>
-                    dayCells.map((cell, trackIdx) => {
-                      const track = (trackIdx + 1) as 1 | 2;
-
-                      if (cell.type === "covered") return null;
-                      if (cell.type === "empty") {
-                        return (
-                          <td
-                            key={`${dayIdx}-${track}`}
-                            className="p-0.5 min-h-[32px]"
-                          />
-                        );
-                      }
-
-                      // cell.type === "start"
-                      const { slot, durationMin } = cell;
-                      const rowSpan = durationMin / 15;
-                      const isSelectedGroup =
-                        slot.group === selectedGroup;
-                      const isDaySelected = selectedDays.has(dayIdx);
-                      const isHighlighted =
-                        isSelectedGroup && isDaySelected;
-
-                      return (
-                        <td
-                          key={`${dayIdx}-${track}`}
-                          rowSpan={rowSpan}
-                          className="p-0.5"
-                        >
-                          <div className="h-full">
-                            <LessonBlock
-                              slot={slot}
-                              colors={GROUP_COLORS[slot.group]}
-                              isHighlighted={isHighlighted}
-                              isFaded={isSelectedGroup}
-                              onClick={() => {
-                                if (slot.group === selectedGroup) {
-                                  toggleDay(dayIdx);
-                                } else {
-                                  selectGroup(slot.group);
-                                }
-                              }}
-                              durationMin={durationMin}
-                              aria-label={`${slot.group} — ${DAYS[slot.day]}, Tor ${slot.track}`}
-                            />
-                          </div>
-                        </td>
-                      );
-                    }),
-                  )}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    );
   }
 
   return (
@@ -545,9 +267,18 @@ export default function SchedulePage({ data }: Props) {
                 {/* Group description */}
                 {activeGroup.description && (
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sand-500 mb-3">
-                      O grupie
-                    </p>
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sand-500">
+                        O grupie
+                      </p>
+                      {activeGroup.level && (
+                        <span
+                          className={`inline-block rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${colors.bg} ${colors.text}`}
+                        >
+                          {activeGroup.level}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-[13px] text-sand-600 leading-relaxed">
                       {activeGroup.description}
                     </p>
@@ -557,22 +288,17 @@ export default function SchedulePage({ data }: Props) {
                 {/* Price */}
                 <div className="lg:text-right shrink-0 lg:min-w-[200px]">
                   <div className="rounded-xl bg-deep-50 border border-deep-100 px-5 py-4">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-deep-400 mb-1">
-                      Cena za semestr{data.semesterLabel ? ` ${data.semesterLabel}` : ""}
-                    </p>
                     {totalPrice != null ? (
                       <>
                         <p className="font-editorial text-[2rem] font-bold leading-none text-deep-800">
+                          {totalLessons} {pluralZajecia(totalLessons)}
+                        </p>
+                        <p className="mt-1.5 text-[1.125rem] font-semibold leading-none text-deep-500">
                           {totalPrice}{" "}
-                          <span className="text-[1rem] font-semibold text-deep-400">
+                          <span className="text-[0.875rem] text-deep-400">
                             zł
                           </span>
                         </p>
-                        {summary && (
-                          <p className="mt-1 text-[13px] text-sand-500">
-                            {summary}
-                          </p>
-                        )}
                       </>
                     ) : selectedDays.size === 0 ? (
                       <p className="text-[14px] font-medium text-sand-500">
@@ -583,6 +309,9 @@ export default function SchedulePage({ data }: Props) {
                         Zapytaj o cenę
                       </p>
                     )}
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-deep-400">
+                      Cena za semestr{data.semesterLabel ? ` ${data.semesterLabel}` : ""}
+                    </p>
                     {zeroCountDays.length > 0 && (
                       <p className="mt-1.5 text-[12px] font-medium text-amber-600">
                         ⚠️{" "}
@@ -603,8 +332,18 @@ export default function SchedulePage({ data }: Props) {
         </div>
 
         {/* ===== SCHEDULE TABLE ===== */}
-        {/* Desktop: full table */}
-        <div className="hidden lg:block">{renderDesktopTable()}</div>
+        {/* Desktop: all six days side by side */}
+        <div className="hidden lg:block">
+          <ScheduleGrid
+            days={DAY_INDICES}
+            blocks={blocks}
+            groupColors={GROUP_COLORS}
+            selectedGroup={selectedGroup}
+            selectedDays={selectedDays}
+            onSelect={handleBlockSelect}
+            minWidth={900}
+          />
+        </div>
 
         {/* Mobile: day tabs */}
         <div className="lg:hidden">
@@ -630,7 +369,16 @@ export default function SchedulePage({ data }: Props) {
               );
             })}
           </div>
-          {renderMobileDay(mobileDayIdx)}
+          <ScheduleGrid
+            days={[mobileDayIdx]}
+            blocks={blocks}
+            groupColors={GROUP_COLORS}
+            selectedGroup={selectedGroup}
+            selectedDays={selectedDays}
+            onSelect={handleBlockSelect}
+            showDayHeader={false}
+            gutterWidth={48}
+          />
         </div>
 
         {/* Legend */}
@@ -660,7 +408,7 @@ export default function SchedulePage({ data }: Props) {
             Zarezerwuj miejsce
           </h2>
           <p className="mt-2 text-[15px] text-sand-500">
-            Wypełnij formularz — odpiszemy w ciągu 24h w dni robocze.
+            Możesz dołączyć do nas przez cały rok.
           </p>
 
           {/* Pre-filled summary */}

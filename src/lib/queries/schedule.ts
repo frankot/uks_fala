@@ -19,6 +19,7 @@ export type ScheduleData = {
     name: string;
     age: string;
     duration: number; // minutes
+    level?: string | null;
     description?: string | null;
   }>;
   schedule: ScheduleSlot[];
@@ -29,14 +30,14 @@ export type ScheduleData = {
 };
 
 const FALLBACK_GROUPS = [
-  { num: "01", name: "Krewetki",       age: "3–5 lat",   duration: 30, description: "Najmłodsza grupa — pierwsze kroki w wodzie. Oswajanie z basenem, nauka podstaw przez zabawę." },
-  { num: "02", name: "Neonki",         age: "4–6 lat",   duration: 30, description: "Kontynuacja przygody z pływaniem. Doskonalenie podstaw, nauka prostych stylów." },
-  { num: "03", name: "Koniki Morskie", age: "5–7 lat",   duration: 45, description: "Nauka techniki kraula, skoków i nurkowania. Pierwsza grupa z dłuższymi zajęciami." },
-  { num: "04", name: "Płotki",         age: "6–8 lat",   duration: 45, description: "Rozwój techniki pływackiej. Wprowadzenie do stylu grzbietowego, ćwiczenia wytrzymałościowe." },
-  { num: "05", name: "Okonki",         age: "7–9 lat",   duration: 45, description: "Kształtowanie prawidłowej techniki. Nauka stylu klasycznego, elementy pływania sportowego." },
-  { num: "06", name: "Delfiny",        age: "8–10 lat",  duration: 45, description: "Zaawansowana technika wszystkich stylów. Przygotowanie do pierwszych zawodów." },
-  { num: "07", name: "Barrakudy",      age: "9–12 lat",  duration: 45, description: "Grupa dla ambitnych pływaków. Intensywny trening, starty w zawodach, budowanie kondycji." },
-  { num: "08", name: "Rekiny",         age: "11–15 lat", duration: 60, description: "Najstarsza grupa — profesjonalny trening pływacki. Rozwój sportowy na wysokim poziomie." },
+  { num: "01", name: "Krewetki",       age: "3–5 lat",   duration: 30, level: "Oswajanie z wodą", description: "Najmłodsza grupa — pierwsze chwile w wodzie. Oswajanie z basenem, zabawy i nauka podstawowych ruchów." },
+  { num: "02", name: "Neonki",         age: "4–6 lat",   duration: 30, level: "Nauka podstaw", description: "Kontynuacja przygody z pływaniem. Samodzielne poruszanie się w wodzie, nurkowanie i pierwsze elementy kraula." },
+  { num: "03", name: "Koniki Morskie", age: "5–7 lat",   duration: 45, level: "Pierwsze style", description: "Pierwsza grupa z 45-minutowymi zajęciami. Nauka techniki kraula na piersiach i na grzbiecie, skoki do wody." },
+  { num: "04", name: "Płotki",         age: "6–8 lat",   duration: 45, level: "Technika pływania", description: "Rozwój techniki pływackiej i wytrzymałości. Doskonalenie stylu grzbietowego oraz nauka nawrotów." },
+  { num: "05", name: "Okonki",         age: "7–9 lat",   duration: 45, level: "Doskonalenie stylów", description: "Kształtowanie prawidłowej techniki wszystkich stylów. Nauka stylu klasycznego i pierwsze elementy treningu sportowego." },
+  { num: "06", name: "Delfiny",        age: "8–10 lat",  duration: 45, level: "Zaawansowana technika", description: "Zaawansowana technika czterech stylów, praca nad startami i nawrotami. Przygotowanie do pierwszych zawodów." },
+  { num: "07", name: "Barrakudy",      age: "9–12 lat",  duration: 45, level: "Przygotowanie startowe", description: "Grupa dla ambitnych pływaków. Intensywny trening objętościowy, starty w zawodach i budowanie kondycji." },
+  { num: "08", name: "Rekiny",         age: "11–15 lat", duration: 45, level: "Grupa wyczynowa", description: "Sekcja sportowa — 45-minutowe treningi, praca nad formą startową i regularne starty w zawodach okręgowych." },
 ];
 
 function getFallbackData(): ScheduleData {
@@ -67,6 +68,7 @@ export async function getScheduleData(): Promise<ScheduleData> {
       name: g.name,
       age: g.ageRange,
       duration: g.lessonDuration,
+      level: g.level,
       description: g.description,
     }));
 

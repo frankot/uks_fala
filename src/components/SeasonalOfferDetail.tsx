@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ContactLink from "./ContactLink";
 import { formatOfferDateRange } from "./SeasonalOfferCard";
 
 export interface SeasonalOfferDetailItem {
@@ -18,6 +17,7 @@ export interface SeasonalOfferDetailItem {
   program: string;
   included: string | null;
   signupInfo: string | null;
+  signupUrl: string | null;
   images: string[];
 }
 
@@ -27,6 +27,34 @@ interface Props {
   backLabel: string;
   tag: string;
   accent?: "pool" | "coral";
+}
+
+const SIGNUP_BUTTON_CLASS =
+  "mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-coral-500 px-5 text-[13px] font-bold uppercase tracking-wider text-white transition-all hover:bg-coral-600";
+
+function SignupButton({ href }: { href: string }) {
+  // Paths and anchors stay in-app; anything else is a link out of the site, and
+  // http(s) targets get their own tab so the offer page is not lost.
+  if (href.startsWith("/") || href.startsWith("#")) {
+    return (
+      <Link href={href} className={SIGNUP_BUTTON_CLASS}>
+        Zarezerwuj miejsce
+      </Link>
+    );
+  }
+
+  const opensNewTab = /^https?:\/\//i.test(href);
+
+  return (
+    <a
+      href={href}
+      target={opensNewTab ? "_blank" : undefined}
+      rel={opensNewTab ? "noopener noreferrer" : undefined}
+      className={SIGNUP_BUTTON_CLASS}
+    >
+      Zarezerwuj miejsce
+    </a>
+  );
 }
 
 function TextBlock({ title, body }: { title: string; body: string | null }) {
@@ -72,6 +100,9 @@ export default function SeasonalOfferDetail({
   const accentText = accent === "coral" ? "text-coral-300" : "text-pool-300";
   const accentBg = accent === "coral" ? "bg-coral-500" : "bg-pool-500";
   const dateRange = formatOfferDateRange(offer.startDate, offer.endDate);
+  // Admins paste a signup form link (Google Forms etc.) per offer; without one
+  // the button falls back to that offer type's listing page.
+  const signupHref = offer.signupUrl?.trim() || backHref;
 
   return (
     <article className="bg-sand-50">
@@ -147,9 +178,7 @@ export default function SeasonalOfferDetail({
                     {offer.priceNote}
                   </p>
                 )}
-                <ContactLink className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-coral-500 px-5 text-[13px] font-bold uppercase tracking-wider text-white transition-all hover:bg-coral-600">
-                  Zapytaj o miejsce
-                </ContactLink>
+                <SignupButton href={signupHref} />
               </div>
             </div>
           </aside>

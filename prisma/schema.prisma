@@ -35,6 +35,7 @@ model Group {
   colorPreset     String
   sortOrder       Int      @default(0)
   lessonDuration  Int      @default(45)
+  level           String?
   description     String?
   active          Boolean  @default(true)
   createdAt       DateTime @default(now())
@@ -133,6 +134,7 @@ model SeasonalOffer {
   program         String
   included        String?
   signupInfo      String?
+  signupUrl       String?
   images          String[]
   published       Boolean           @default(false)
   featured        Boolean           @default(false)

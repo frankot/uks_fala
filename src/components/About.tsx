@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function About() {
   return (
-    <section id="o-nas" className="relative py-24 md:pt-10 md:pb-32">
+    <section id="o-nas" className="relative pt-24 pb-14 md:pt-10 md:pb-20">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
         <div className="grid items-center gap-16 md:grid-cols-12 md:gap-12">
           {/* Left — text (takes more space, asymmetric) */}
@@ -122,6 +122,60 @@ Bezpiecznie. Mądrze. Z pasją. <br />Tak buduje się miłość do sportu na lat
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Dwie ścieżki */}
+        <div className="mx-auto mt-12 grid max-w-[820px] gap-8 sm:grid-cols-2 sm:gap-20 md:mt-16">
+          <Link
+            href="/zajecia"
+            className="group flex items-center justify-center gap-3 rounded-2xl border border-pool-200/70 bg-pool-100/50 px-6 py-8 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pool-300 hover:bg-pool-100/80 hover:shadow-lg hover:shadow-deep-900/5"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0 text-pool-500 transition-colors group-hover:text-deep-500"
+            >
+              <path d="M2 7c.6.5 1.2 1 2.5 1s1.9-.5 2.5-1 1.2-1 2.5-1 1.9.5 2.5 1 1.2 1 2.5 1 1.9-.5 2.5-1 1.2-1 2.5-1 1.9.5 2.5 1" />
+              <path d="M2 12c.6.5 1.2 1 2.5 1s1.9-.5 2.5-1 1.2-1 2.5-1 1.9.5 2.5 1 1.2 1 2.5 1 1.9-.5 2.5-1 1.2-1 2.5-1 1.9.5 2.5 1" />
+              <path d="M2 17c.6.5 1.2 1 2.5 1s1.9-.5 2.5-1 1.2-1 2.5-1 1.9.5 2.5 1 1.2 1 2.5 1 1.9-.5 2.5-1 1.2-1 2.5-1 1.9.5 2.5 1" />
+            </svg>
+            <h3 className="text-[19px] font-semibold tracking-[-0.01em] text-deep-700 transition-colors group-hover:text-deep-800">
+              Szkoła pływania
+            </h3>
+          </Link>
+
+          <Link
+            href="/zajecia"
+            className="group flex items-center justify-center gap-3 rounded-2xl border border-pool-200/70 bg-pool-100/50 px-6 py-8 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pool-300 hover:bg-pool-100/80 hover:shadow-lg hover:shadow-deep-900/5"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0 text-pool-500 transition-colors group-hover:text-deep-500"
+            >
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+              <path d="M4 22h16" />
+              <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+              <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+            </svg>
+            <h3 className="text-[19px] font-semibold tracking-[-0.01em] text-deep-700 transition-colors group-hover:text-deep-800">
+              Sekcja sportowa
+            </h3>
+          </Link>
         </div>
       </div>
     </section>

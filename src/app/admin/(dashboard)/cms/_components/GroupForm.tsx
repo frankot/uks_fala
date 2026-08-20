@@ -7,6 +7,7 @@ import {
   type GroupFormData,
 } from "@/lib/actions/groups";
 import { type ColorPresetKey } from "@/lib/color-presets";
+import { LESSON_DURATIONS, type LessonDuration } from "@/lib/schedule-grid";
 import ColorPicker from "./ColorPicker";
 import SlotEditor from "./SlotEditor";
 import PriceEditor from "./PriceEditor";
@@ -31,6 +32,7 @@ export interface GroupWithRelations {
   colorPreset: string;
   sortOrder: number;
   lessonDuration: number;
+  level: string | null;
   description?: string | null;
   active: boolean;
   slots: Array<{ day: number; hour: string; track?: number }>;
@@ -48,11 +50,13 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
   const router = useRouter();
   const isEdit = !!group;
 
-  // Build map of occupied slots from other groups (with track & duration)
+  // Occupied cells = slots of other ACTIVE groups. Inactive groups are hidden on
+  // /zajecia, so they must not block cells here either.
   const occupiedSlots = useMemo(() => {
     const list: Array<{ groupName: string; day: number; hour: string; track: number; durationMinutes: number }> = [];
     for (const g of allGroups ?? []) {
       if (isEdit && g.id === group.id) continue;
+      if (!g.active) continue;
       for (const s of g.slots) {
         list.push({
           groupName: g.name,
@@ -70,9 +74,13 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
   const [number, setNumber] = useState(group?.number ?? "");
   const [ageRange, setAgeRange] = useState(group?.ageRange ?? "");
   const [colorPreset, setColorPreset] = useState(group?.colorPreset ?? "pool");
-  const [lessonDuration, setLessonDuration] = useState(
-    group?.lessonDuration ?? 45,
-  );
+  const [lessonDuration, setLessonDuration] = useState<LessonDuration>(() => {
+    const current = group?.lessonDuration ?? 45;
+    return (LESSON_DURATIONS as readonly number[]).includes(current)
+      ? (current as LessonDuration)
+      : 45;
+  });
+  const [level, setLevel] = useState(group?.level ?? "");
   const [description, setDescription] = useState(group?.description ?? "");
   const [sortOrder, setSortOrder] = useState(group?.sortOrder ?? 0);
   const [slots, setSlots] = useState<Slot[]>(
@@ -114,6 +122,7 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
       colorPreset,
       sortOrder,
       lessonDuration,
+      level,
       description,
       slots,
       prices,
@@ -188,6 +197,9 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
                 placeholder="01"
                 className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
               />
+              <p className="mt-1 text-[11px] text-sand-400">
+                Duża cyfra w tle kafelka grupy na stronie głównej.
+              </p>
             </div>
           </div>
 
@@ -209,17 +221,39 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
               <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
                 Czas trwania zajęć
               </label>
-              <input
-                type="number"
-                min="1"
+              <select
                 value={lessonDuration}
                 onChange={(e) =>
-                  setLessonDuration(parseInt(e.target.value, 10) || 45)
+                  setLessonDuration(
+                    parseInt(e.target.value, 10) as LessonDuration,
+                  )
                 }
-                className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-              />
-              <p className="mt-1 text-[11px] text-sand-400">minut</p>
+                className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+              >
+                {LESSON_DURATIONS.map((d) => (
+                  <option key={d} value={d}>
+                    {d} minut
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+              Poziom
+            </label>
+            <input
+              type="text"
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              placeholder="np. Oswajanie z wodą"
+              className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+            />
+            <p className="mt-1 text-[11px] text-sand-400">
+              Etykieta grupy — na kafelku na stronie głównej i przy opisie grupy
+              w planie zajęć. Puste = bez etykiety.
+            </p>
           </div>
 
           <div>
@@ -234,6 +268,10 @@ export default function GroupForm({ group, allGroups, semesterDayCount, onClose 
               }
               className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-2.5 text-[14px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
             />
+            <p className="mt-1 text-[11px] text-sand-400">
+              Kolejność grupy na stronie głównej i w planie zajęć — od
+              najmniejszej liczby do największej.
+            </p>
           </div>
 
           <div>

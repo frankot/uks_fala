@@ -1,90 +1,12 @@
 import Link from "next/link";
 import WaveDivider from "./WaveDivider";
+import { getTrainingGroups } from "@/lib/queries/training-groups";
 
-const groups = [
-  {
-    num: "01",
-    name: "Krewetki",
-    age: "3–5 lat",
-    level: "Oswajanie z wodą",
-    sessions: "1–2× / tyg.",
-    duration: "30 min",
-    accent: "bg-pool-100 text-deep-600",
-    border: "border-pool-200",
-  },
-  {
-    num: "02",
-    name: "Neonki",
-    age: "4–6 lat",
-    level: "Nauka podstaw",
-    sessions: "1–2× / tyg.",
-    duration: "30 min",
-    accent: "bg-pool-100 text-deep-600",
-    border: "border-pool-200",
-  },
-  {
-    num: "03",
-    name: "Koniki Morskie",
-    age: "5–7 lat",
-    level: "Pierwsze style",
-    sessions: "2× / tyg.",
-    duration: "45 min",
-    accent: "bg-deep-100 text-deep-700",
-    border: "border-deep-200",
-  },
-  {
-    num: "04",
-    name: "Płotki",
-    age: "6–8 lat",
-    level: "Technika pływania",
-    sessions: "2× / tyg.",
-    duration: "45 min",
-    accent: "bg-deep-100 text-deep-700",
-    border: "border-deep-200",
-  },
-  {
-    num: "05",
-    name: "Okonki",
-    age: "7–9 lat",
-    level: "Doskonalenie stylów",
-    sessions: "2–3× / tyg.",
-    duration: "45 min",
-    accent: "bg-coral-100 text-coral-600",
-    border: "border-coral-200",
-  },
-  {
-    num: "06",
-    name: "Delfiny",
-    age: "8–10 lat",
-    level: "Zaawansowana technika",
-    sessions: "3× / tyg.",
-    duration: "45 min",
-    accent: "bg-coral-100 text-coral-600",
-    border: "border-coral-200",
-  },
-  {
-    num: "07",
-    name: "Barrakudy",
-    age: "9–12 lat",
-    level: "Przygotowanie startowe",
-    sessions: "3–4× / tyg.",
-    duration: "45 min",
-    accent: "bg-coral-100 text-coral-600",
-    border: "border-coral-200",
-  },
-  {
-    num: "08",
-    name: "Rekiny",
-    age: "11–15 lat",
-    level: "Grupa wyczynowa",
-    sessions: "4–7× / tyg.",
-    duration: "60 min",
-    accent: "bg-deep-800 text-white",
-    border: "border-deep-700",
-  },
-];
+export default async function TrainingGroups() {
+  const groups = await getTrainingGroups();
 
-export default function TrainingGroups() {
+  if (groups.length === 0) return null;
+
   return (
     <>
       <WaveDivider color="var(--color-sand-50)" flip />
@@ -105,8 +27,9 @@ export default function TrainingGroups() {
               </h2>
             </div>
             <p className="mt-5 text-[17px] leading-[1.75] text-sand-600 md:mt-0 md:text-right">
-              8 grup dopasowanych do wieku i&nbsp;umiejętności — od maluchów
-              stawiających pierwsze kroki w&nbsp;wodzie po młodych zawodników.
+              {groups.length} grup dopasowanych do wieku
+              i&nbsp;umiejętności — od maluchów stawiających pierwsze kroki
+              w&nbsp;wodzie po młodych zawodników.
             </p>
           </div>
 
@@ -123,11 +46,13 @@ export default function TrainingGroups() {
                 </span>
 
                 {/* Level badge */}
-                <span
-                  className={`relative inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${group.accent}`}
-                >
-                  {group.level}
-                </span>
+                {group.level && (
+                  <span
+                    className={`relative inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${group.accent}`}
+                  >
+                    {group.level}
+                  </span>
+                )}
 
                 <h3 className="relative mt-5 text-xl font-bold text-sand-950">
                   {group.name}
@@ -137,12 +62,14 @@ export default function TrainingGroups() {
                 </p>
 
                 <div className="mt-5 space-y-2.5 border-t border-sand-200 pt-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[13px] text-sand-500">Zajęcia</span>
-                    <span className="text-[13px] font-semibold text-sand-800">
-                      {group.sessions}
-                    </span>
-                  </div>
+                  {group.sessions && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[13px] text-sand-500">Zajęcia</span>
+                      <span className="text-[13px] font-semibold text-sand-800">
+                        {group.sessions}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-[13px] text-sand-500">Czas</span>
                     <span className="text-[13px] font-semibold text-sand-800">

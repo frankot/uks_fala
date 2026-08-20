@@ -55,7 +55,7 @@ export default function Navigation() {
             aria-label="UKS Fala Nieporęt"
           >
             <Image
-              src="/logo-black/fala-symbol-transparent.png"
+              src="/logo-blue/fala-logo-only-transparent.png"
               alt=""
               width={43}
               height={50}
@@ -63,7 +63,7 @@ export default function Navigation() {
               className="h-12 w-auto transition-transform group-hover:scale-105 md:h-14"
             />
             <Image
-              src="/logo-black/fala-wordmark-transparent.png"
+              src="/logo-blue/fala-company-name-transparent.png"
               alt="UKS Fala Nieporęt"
               width={106}
               height={40}

@@ -25,6 +25,7 @@ const SeasonalOfferSchema = z.object({
   program: z.string().min(1),
   included: z.string().optional().nullable(),
   signupInfo: z.string().optional().nullable(),
+  signupUrl: z.string().max(500).optional().nullable(),
   images: z.array(z.string().url()).default([]),
   published: z.boolean().default(false),
   featured: z.boolean().default(false),
@@ -36,6 +37,19 @@ export type SeasonalOfferFormData = z.infer<typeof SeasonalOfferSchema>;
 function normalizeOptionalText(value: string | null | undefined) {
   const trimmed = value?.trim();
   return trimmed ? trimmed : null;
+}
+
+/**
+ * Any link is allowed. A bare domain ("test.pl") would be read by the browser as
+ * a path relative to the offer page, so it gets an https:// prefix; site-relative
+ * paths, anchors and mailto:/tel: links are left as typed.
+ */
+function normalizeUrl(value: string | null | undefined) {
+  const trimmed = normalizeOptionalText(value);
+  if (!trimmed) return null;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith("/") || trimmed.startsWith("#")) return trimmed;
+  return `https://${trimmed}`;
 }
 
 function normalizeData(data: SeasonalOfferFormData) {
@@ -54,6 +68,7 @@ function normalizeData(data: SeasonalOfferFormData) {
     program: data.program.trim(),
     included: normalizeOptionalText(data.included),
     signupInfo: normalizeOptionalText(data.signupInfo),
+    signupUrl: normalizeUrl(data.signupUrl),
     startDate: data.startDate ?? null,
     endDate: data.endDate ?? null,
   };

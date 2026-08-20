@@ -2,8 +2,18 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
+import { TRAINING_GROUPS_TAG } from "@/lib/queries/training-groups";
+import {
+  DAYS_SHORT,
+  GRID_END,
+  GRID_START,
+  LESSON_DURATIONS,
+  fitsInGrid,
+  rangesOverlap,
+  timeToMinutes,
+} from "@/lib/schedule-grid";
 
 const SlotSchema = z.object({
   day: z.number().int().min(0).max(5),
@@ -22,7 +32,10 @@ const GroupSchema = z.object({
   ageRange: z.string().min(1).max(20),
   colorPreset: z.string().min(1),
   sortOrder: z.number().int().default(0),
-  lessonDuration: z.number().int().min(1).default(45),
+  level: z.string().max(40).optional().default(""),
+  lessonDuration: z
+    .union([z.literal(LESSON_DURATIONS[0]), z.literal(LESSON_DURATIONS[1])])
+    .default(45),
   description: z.string().max(300).optional().default(""),
   slots: z.array(SlotSchema).min(1, "Dodaj przynajmniej jeden termin"),
   prices: z.array(PriceSchema).min(1, "Dodaj przynajmniej jedną cenę"),
@@ -30,14 +43,75 @@ const GroupSchema = z.object({
 
 export type GroupFormData = z.infer<typeof GroupSchema>;
 
-function timeToMinutes(time: string): number {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
+/**
+ * Rejects anything the grafik grid cannot render: slots outside the pool window,
+ * two of this group's own slots on one track, or a clash with another active group.
+ */
+async function assertScheduleIsValid(
+  parsed: GroupFormData,
+  excludeGroupId?: string,
+) {
+  for (const s of parsed.slots) {
+    if (!fitsInGrid(s.hour, parsed.lessonDuration)) {
+      throw new Error(
+        `Termin ${DAYS_SHORT[s.day]} ${s.hour} (${parsed.lessonDuration} min) nie mieści się w oknie ${GRID_START}–${GRID_END}.`,
+      );
+    }
+  }
+
+  for (let i = 0; i < parsed.slots.length; i++) {
+    for (let j = i + 1; j < parsed.slots.length; j++) {
+      const a = parsed.slots[i];
+      const b = parsed.slots[j];
+      if (a.day !== b.day || a.track !== b.track) continue;
+      const aStart = timeToMinutes(a.hour);
+      const bStart = timeToMinutes(b.hour);
+      if (
+        rangesOverlap(
+          aStart,
+          aStart + parsed.lessonDuration,
+          bStart,
+          bStart + parsed.lessonDuration,
+        )
+      ) {
+        throw new Error(
+          `Konflikt: dwa terminy tej grupy na torze ${a.track} w ${DAYS_SHORT[a.day]} nakładają się (${a.hour} i ${b.hour}).`,
+        );
+      }
+    }
+  }
+
+  const others = await prisma.group.findMany({
+    where: {
+      active: true,
+      ...(excludeGroupId ? { id: { not: excludeGroupId } } : {}),
+    },
+    select: { name: true, lessonDuration: true, slots: true },
+  });
+
+  for (const slot of parsed.slots) {
+    const start = timeToMinutes(slot.hour);
+    const end = start + parsed.lessonDuration;
+    for (const other of others) {
+      for (const o of other.slots) {
+        if (o.day !== slot.day || o.track !== slot.track) continue;
+        const oStart = timeToMinutes(o.hour);
+        if (!rangesOverlap(start, end, oStart, oStart + other.lessonDuration)) {
+          continue;
+        }
+        throw new Error(
+          `Konflikt: ${DAYS_SHORT[slot.day]} ${slot.hour} na torze ${slot.track} koliduje z grupą ${other.name} (${o.hour}, ${other.lessonDuration} min).`,
+        );
+      }
+    }
+  }
 }
 
 function revalidate() {
   revalidatePath("/zajecia");
   revalidatePath("/admin/cms");
+  // The home-page group cards are cached for an hour — publish edits right away.
+  updateTag(TRAINING_GROUPS_TAG);
 }
 
 export async function createGroup(data: GroupFormData) {
@@ -46,23 +120,7 @@ export async function createGroup(data: GroupFormData) {
 
   const parsed = GroupSchema.parse(data);
 
-  // Validate no overlapping slots on the same track
-  for (let i = 0; i < parsed.slots.length; i++) {
-    for (let j = i + 1; j < parsed.slots.length; j++) {
-      const a = parsed.slots[i];
-      const b = parsed.slots[j];
-      if (a.day !== b.day || a.track !== b.track) continue;
-      const aStart = timeToMinutes(a.hour);
-      const aEnd = aStart + parsed.lessonDuration;
-      const bStart = timeToMinutes(b.hour);
-      const bEnd = bStart + parsed.lessonDuration;
-      if (aStart < bEnd && bStart < aEnd) {
-        throw new Error(
-          `Konflikt: dwa terminy na tym samym torze ${a.track} w dniu ${a.day} nakładają się (${a.hour}–${aEnd}min i ${b.hour}–${bEnd}min).`
-        );
-      }
-    }
-  }
+  await assertScheduleIsValid(parsed);
 
   await prisma.group.create({
     data: {
@@ -72,6 +130,7 @@ export async function createGroup(data: GroupFormData) {
       colorPreset: parsed.colorPreset,
       sortOrder: parsed.sortOrder,
       lessonDuration: parsed.lessonDuration,
+      level: parsed.level || null,
       description: parsed.description || null,
       slots: { create: parsed.slots },
       prices: { create: parsed.prices },
@@ -87,23 +146,7 @@ export async function updateGroup(id: string, data: GroupFormData) {
 
   const parsed = GroupSchema.parse(data);
 
-  // Validate no overlapping slots on the same track
-  for (let i = 0; i < parsed.slots.length; i++) {
-    for (let j = i + 1; j < parsed.slots.length; j++) {
-      const a = parsed.slots[i];
-      const b = parsed.slots[j];
-      if (a.day !== b.day || a.track !== b.track) continue;
-      const aStart = timeToMinutes(a.hour);
-      const aEnd = aStart + parsed.lessonDuration;
-      const bStart = timeToMinutes(b.hour);
-      const bEnd = bStart + parsed.lessonDuration;
-      if (aStart < bEnd && bStart < aEnd) {
-        throw new Error(
-          `Konflikt: dwa terminy na tym samym torze ${a.track} w dniu ${a.day} nakładają się (${a.hour}–${aEnd}min i ${b.hour}–${bEnd}min).`
-        );
-      }
-    }
-  }
+  await assertScheduleIsValid(parsed, id);
 
   await prisma.$transaction([
     prisma.trainingSlot.deleteMany({ where: { groupId: id } }),
@@ -117,6 +160,7 @@ export async function updateGroup(id: string, data: GroupFormData) {
         colorPreset: parsed.colorPreset,
         sortOrder: parsed.sortOrder,
         lessonDuration: parsed.lessonDuration,
+        level: parsed.level || null,
         description: parsed.description || null,
         slots: { create: parsed.slots },
         prices: { create: parsed.prices },
