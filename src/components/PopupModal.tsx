@@ -57,12 +57,30 @@ export default function PopupModal({
     }
     document.addEventListener("keydown", onKeyDown);
 
+    // Lock background scroll. `scrollbar-gutter: stable` (globals.css) keeps the
+    // viewport width constant; where it is unsupported, pad by the scrollbar
+    // width instead so the page does not shift sideways.
+    const gutterReserved =
+      typeof CSS !== "undefined" &&
+      typeof CSS.supports === "function" &&
+      CSS.supports("scrollbar-gutter", "stable");
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
     const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+
     document.body.style.overflow = "hidden";
+    if (!gutterReserved && scrollbarWidth > 0) {
+      const currentPadding = parseFloat(
+        getComputedStyle(document.body).paddingRight,
+      );
+      document.body.style.paddingRight = `${currentPadding + scrollbarWidth}px`;
+    }
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
     };
   }, [mounted, close]);
 
