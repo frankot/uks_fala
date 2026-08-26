@@ -18,14 +18,14 @@ export default function Footer() {
               aria-label="UKS Fala Nieporęt"
             >
               <Image
-                src="/fala-logo-only-transparent.png"
+                src="/logo-blue/fala-logo-only-transparent.png"
                 alt=""
                 width={43}
                 height={50}
                 className="h-12 w-auto"
               />
               <Image
-                src="/fala-company-name-transparent.png"
+                src="/logo-blue/fala-company-name-transparent.png"
                 alt="UKS Fala Nieporęt"
                 width={106}
                 height={40}

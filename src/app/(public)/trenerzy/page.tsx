@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import HeroStrip from "@/components/HeroStrip";
-import { getCoachesPublic } from "@/lib/queries/coaches";
+import { getCoachesPublicWithSlugs } from "@/lib/queries/coaches";
 import CoachCard from "@/components/CoachCard";
 
 export const metadata = {
@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export default async function TrenerzyPage() {
-  const coaches = await getCoachesPublic();
+  const coaches = await getCoachesPublicWithSlugs();
 
   return (
     <section>

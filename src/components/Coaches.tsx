@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { getCoachesPublic } from "@/lib/queries/coaches";
+import { getCoachesPublicWithSlugs } from "@/lib/queries/coaches";
 import CoachCard from "@/components/CoachCard";
 
 export default async function Coaches() {
-  const coaches = await getCoachesPublic(4);
+  const coaches = await getCoachesPublicWithSlugs(4);
 
   return (
     <section id="trenerzy" className="relative overflow-hidden bg-sand-100 py-24 md:py-32">

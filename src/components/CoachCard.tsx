@@ -1,8 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export type CoachCardData = {
   id: string;
   name: string;
+  slug: string;
   role: string;
   bio: string;
   imageUrl: string | null;
@@ -24,7 +26,10 @@ type CoachCardProps = {
 
 export default function CoachCard({ coach, className = "" }: CoachCardProps) {
   return (
-    <article className={`group overflow-hidden rounded-3xl bg-white transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-deep-900/8 ${className}`.trim()}>
+    <Link
+      href={`/trenerzy/${coach.slug}`}
+      className={`group block overflow-hidden rounded-3xl bg-white transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-deep-900/8 ${className}`.trim()}
+    >
       {/* Photo or initial placeholder */}
       <div className="relative flex h-52 items-center justify-center overflow-hidden bg-gradient-to-br from-deep-700 to-deep-900">
         {coach.imageUrl ? (
@@ -58,10 +63,27 @@ export default function CoachCard({ coach, className = "" }: CoachCardProps) {
         <p className="mt-1 text-[13px] font-semibold text-deep-500">
           {coach.role}
         </p>
-        <p className="mt-4 text-[15px] leading-[1.7] text-sand-500">
+        <p className="mt-4 line-clamp-5 text-[15px] leading-[1.7] text-sand-500">
           {coach.bio}
         </p>
+        <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-bold text-deep-600 transition-colors group-hover:text-deep-800">
+          Poznaj trenera
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform group-hover:translate-x-0.5"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }

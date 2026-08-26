@@ -17,3 +17,14 @@ export function slugify(text: string): string {
   const suffix = Math.random().toString(36).substring(2, 6);
   return `${base}-${suffix}`;
 }
+
+/** Deterministic slug (no random suffix) — for records without a stored slug. */
+export function slugifyStable(text: string): string {
+  return text
+    .split("")
+    .map((ch) => POLISH_MAP[ch] ?? ch)
+    .join("")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
