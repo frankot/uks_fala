@@ -2,15 +2,34 @@ import Image from "next/image";
 import Link from "next/link";
 import ContactLink from "./ContactLink";
 
+const NAV_LINKS = [
+  { href: "/o-nas", label: "O nas" },
+  { href: "/grafik", label: "Grupy szkoleniowe" },
+  { href: "/trenerzy", label: "Trenerzy" },
+  { href: "/aktualnosci", label: "Aktualności" },
+];
+
+const OFFER_LINKS = [
+  { href: "/szkola-plywania", label: "Szkoła pływania" },
+  { href: "/sekcja-sportowa", label: "Sekcja sportowa" },
+  { href: "/obozy", label: "Obozy" },
+  { href: "/polkolonie", label: "Półkolonie" },
+];
+
+const linkClass =
+  "text-[14px] text-deep-300/60 transition-colors hover:text-white";
+
+const headingClass =
+  "text-[11px] font-bold uppercase tracking-[0.2em] text-deep-400";
+
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-deep-950 text-deep-200">
-      {/* Grain */}
       <div className="grain absolute inset-0" />
 
       <div className="relative z-10 mx-auto max-w-[1240px] px-5 py-16 sm:px-8 md:py-20">
-        {/* Top — brand + tagline */}
-        <div className="mb-14 flex flex-col justify-between gap-8 md:flex-row md:items-start">
+        {/* Row 1 — brand + contact */}
+        <div className="grid gap-10 md:grid-cols-2 md:gap-16">
           <div>
             <Link
               href="/"
@@ -22,131 +41,84 @@ export default function Footer() {
                 alt=""
                 width={43}
                 height={50}
-                className="h-12 w-auto"
+                className="h-16 w-auto"
               />
               <Image
                 src="/logo-blue/fala-company-name-transparent.png"
                 alt="UKS Fala Nieporęt"
                 width={106}
                 height={40}
-                className="h-8 w-auto drop-shadow-[0_1px_4px_rgba(255,255,255,0.12)]"
+                className="h-11 w-auto drop-shadow-[0_1px_4px_rgba(255,255,255,0.12)]"
               />
             </Link>
-            <p className="mt-5 max-w-xs text-[15px] leading-[1.7] text-deep-300/60">
+            <p className="mt-6 max-w-sm text-[15px] leading-[1.7] text-deep-300/60">
               Uczniowski Klub Sportowy Fala Nieporęt. Szkoła pływania i sekcja
               sportowa dla dzieci i młodzieży.
             </p>
           </div>
 
-          {/* Social icons */}
-          <div className="flex gap-3">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-deep-800/50 text-deep-300 transition-all hover:bg-deep-700 hover:text-white"
-              aria-label="Facebook"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-              </svg>
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-11 w-11 items-center justify-center rounded-xl bg-deep-800/50 text-deep-300 transition-all hover:bg-deep-700 hover:text-white"
-              aria-label="Instagram"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
-            </a>
+          <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+            <div>
+              <h4 className={headingClass}>Kontakt</h4>
+              <div className="mt-5 space-y-2.5">
+                <a href="tel:+48530077078" className={`block ${linkClass}`}>
+                  +48 530 077 078
+                </a>
+                <a
+                  href="mailto:biuro@uksfala.com.pl"
+                  className={`block ${linkClass}`}
+                >
+                  biuro@uksfala.com.pl
+                </a>
+              </div>
+              <p className="mt-5 text-[12px] leading-[1.7] text-deep-400/60">
+                NIP 536 19 22 255
+                <br />
+                REGON 363628020
+              </p>
+            </div>
+
+            <div>
+              <h4 className={headingClass}>Adres</h4>
+              <p className="mt-5 text-[14px] leading-[1.7] text-deep-300/60">
+                Stanisławów Pierwszy
+                <br />
+                ul. Koncertowa 4
+                <br />
+                05-126 Nieporęt
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Links grid */}
-        <div className="grid gap-10 border-t border-deep-800/50 pt-12 sm:grid-cols-3">
+        {/* Row 2 — navigation + offer + social */}
+        <div className="mt-10 grid gap-10 border-t border-deep-800/50 pt-9 sm:grid-cols-2 md:grid-cols-4 md:gap-16">
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-deep-400">
-              Nawigacja
-            </h4>
-            <ul className="mt-5 space-y-3">
-              {[
-                { href: "/o-nas", label: "O nas" },
-                { href: "/grafik", label: "Grupy szkoleniowe" },
-                { href: "/trenerzy", label: "Trenerzy" },
-              ].map((link) => (
+            <h4 className={headingClass}>Nawigacja</h4>
+            <ul className="mt-5 space-y-2.5">
+              {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
-                  >
+                  <Link href={link.href} className={linkClass}>
                     {link.label}
                   </Link>
                 </li>
               ))}
               <li>
-                <ContactLink className="text-[14px] text-deep-300/60 transition-colors hover:text-white">
-                  Kontakt
-                </ContactLink>
+                <ContactLink className={linkClass}>Kontakt</ContactLink>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-deep-400">
-              Oferta
-            </h4>
-            <ul className="mt-5 space-y-3">
-              <li>
-                <Link
-                  href="/szkola-plywania"
-                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
-                >
-                  Szkoła pływania
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/sekcja-sportowa"
-                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
-                >
-                  Sekcja sportowa
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/obozy"
-                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
-                >
-                  Obozy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/polkolonie"
-                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
-                >
-                  Półkolonie
-                </Link>
-              </li>
+            <h4 className={headingClass}>Oferta</h4>
+            <ul className="mt-5 space-y-2.5">
+              {OFFER_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={linkClass}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <span className="text-[14px] text-deep-300/60">
                   Zajęcia indywidualne
@@ -155,45 +127,48 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-deep-400">
-              Kontakt
-            </h4>
-            <ul className="mt-5 space-y-3">
-              <li>
-                <a
-                  href="tel:+48530077078"
-                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
+          <div className="sm:col-span-2 md:col-start-4 md:col-span-1">
+            <h4 className={headingClass}>Obserwuj</h4>
+            <div className="mt-5 flex gap-3">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-deep-800/50 text-deep-300 transition-all hover:bg-deep-700 hover:text-white"
+                aria-label="Facebook"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-11 w-11 items-center justify-center rounded-xl bg-deep-800/50 text-deep-300 transition-all hover:bg-deep-700 hover:text-white"
+                aria-label="Instagram"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-+48 530 077 078
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:biuro@uksfala.com.pl"
-                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
-                >
-                  biuro@uksfala.com.pl
-                </a>
-              </li>
-              <li>
-                <p className="text-[14px] leading-[1.7] text-deep-300/60">
-                  Stanisławów Pierwszy, ul. Koncertowa 4<br />
-                  05-126 Nieporęt
-                </p>
-              </li>
-            </ul>
-
-            <p className="mt-6 text-[12px] leading-[1.7] text-deep-400/60">
-              Uczniowski Klub Sportowy Fala Nieporęt
-              <br />
-              NIP 536 19 22 255 &middot; REGON 363628020
-            </p>
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-deep-800/50 pt-8 sm:flex-row">
+        <div className="mt-10 flex flex-col gap-3 border-t border-deep-800/50 pt-7 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[12px] text-deep-400/60">
             &copy; {new Date().getFullYear()} UKS Fala Nieporęt. Wszelkie prawa
             zastrzeżone.
