@@ -182,12 +182,11 @@ export default function SzkolaPlywaniaPage() {
           <div className="relative mt-12">
             <div className="relative aspect-4/3 overflow-hidden rounded-3xl bg-deep-50 sm:aspect-3/2 lg:aspect-16/9">
               <Image
-                src="/szkola.jpg"
+                src="/szkola.webp"
                 alt="Zajęcia szkoły pływania UKS Fala"
                 fill
                 sizes="(min-width: 1240px) 1240px, 100vw"
                 className="object-cover"
-                priority
               />
             </div>
 

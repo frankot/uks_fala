@@ -107,8 +107,8 @@ Bezpiecznie. Mądrze. Z pasją. <br />Tak buduje się miłość do sportu na lat
                 src="/about1.webp"
                 alt="Dzieci na zajęciach pływania"
                 fill
+                sizes="(min-width: 768px) 42vw, 100vw"
                 className="object-cover"
-                priority
               />
             </div>
 

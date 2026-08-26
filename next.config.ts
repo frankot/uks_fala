@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
     return [{ source: "/zajecia", destination: "/grafik", permanent: true }];
   },
   images: {
+    // AVIF first, WebP as the fallback — both are re-encoded once and cached.
+    formats: ["image/avif", "image/webp"],
+    // Cloudinary URLs carry a version segment, so a long TTL never serves stale
+    // art: editing an image in the CMS produces a new URL.
+    minimumCacheTTL: 2678400, // 31 days
     remotePatterns: [
       {
         protocol: "https",

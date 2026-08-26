@@ -1,4 +1,6 @@
 import Link from "next/link";
+import CmsImage from "@/components/CmsImage";
+import { GALLERY_WIDTHS, WIDE_WIDTHS } from "@/lib/cloudinary-image";
 import { formatOfferDateRange } from "./SeasonalOfferCard";
 
 export interface SeasonalOfferDetailItem {
@@ -186,18 +188,22 @@ export default function SeasonalOfferDetail({
 
         {offer.images.length > 0 && (
           <div className="mt-10 space-y-4">
-            <img
+            <CmsImage
               src={offer.images[0]}
               alt={offer.title}
+              sizes="(min-width: 1240px) 1240px, 100vw"
+              widths={WIDE_WIDTHS}
               className="min-h-[360px] w-full rounded-[2rem] object-cover shadow-xl shadow-deep-900/10 lg:min-h-[560px]"
             />
             {offer.images.length > 1 && (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {offer.images.slice(1, 4).map((url, index) => (
-                  <img
+                  <CmsImage
                     key={url}
                     src={url}
                     alt={`${offer.title} — zdjęcie ${index + 2}`}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    widths={GALLERY_WIDTHS}
                     className="h-56 w-full rounded-[1.5rem] object-cover shadow-sm"
                   />
                 ))}

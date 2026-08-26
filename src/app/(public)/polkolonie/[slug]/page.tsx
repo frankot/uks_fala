@@ -1,8 +1,17 @@
-export const dynamic = "force-dynamic";
+// Serwowane z cache; edycje w CMS publikują się od razu przez revalidatePath
+// w src/lib/actions/*. Godzina to tylko siatka bezpieczeństwa.
+export const revalidate = 3600;
 
 import { notFound } from "next/navigation";
 import SeasonalOfferDetail from "@/components/SeasonalOfferDetail";
-import { getSeasonalOfferBySlug } from "@/lib/queries/seasonal-offers";
+import {
+  getSeasonalOfferBySlug,
+  getSeasonalOfferSlugs,
+} from "@/lib/queries/seasonal-offers";
+
+export async function generateStaticParams() {
+  return (await getSeasonalOfferSlugs("POLKOLONIA")).map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,

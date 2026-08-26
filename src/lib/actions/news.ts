@@ -21,6 +21,7 @@ export type NewsFormData = z.infer<typeof NewsSchema>;
 function revalidate() {
   revalidatePath("/");
   revalidatePath("/aktualnosci");
+  revalidatePath("/aktualnosci/[slug]", "page");
   revalidatePath("/admin/cms");
 }
 

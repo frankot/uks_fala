@@ -1,4 +1,6 @@
-export const dynamic = "force-dynamic";
+// Serwowane z cache; edycje w CMS publikują się od razu przez revalidatePath
+// w src/lib/actions/*. Godzina to tylko siatka bezpieczeństwa.
+export const revalidate = 3600;
 
 import { Suspense } from "react";
 import type { Metadata } from "next";

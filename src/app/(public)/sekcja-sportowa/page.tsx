@@ -168,11 +168,11 @@ export default function SekcjaSportowaPage() {
             <div className="relative md:col-span-5">
               <div className="relative aspect-3/4 overflow-hidden rounded-3xl bg-deep-50">
                 <Image
-                  src="/fala-about.jpg"
+                  src="/fala-about.webp"
                   alt="Trening sekcji sportowej UKS Fala"
                   fill
+                  sizes="(min-width: 768px) 42vw, 100vw"
                   className="object-cover"
-                  priority
                 />
               </div>
               <div className="absolute -bottom-6 -left-6 rounded-2xl bg-deep-800 p-5 shadow-xl shadow-deep-900/20 md:-left-12">

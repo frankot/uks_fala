@@ -1,10 +1,20 @@
-export const dynamic = "force-dynamic";
+// Serwowane z cache; edycje w CMS publikują się od razu przez revalidatePath
+// w src/lib/actions/*. Godzina to tylko siatka bezpieczeństwa.
+export const revalidate = 3600;
 
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import HeroStrip from "@/components/HeroStrip";
-import { getCoachBySlug } from "@/lib/queries/coaches";
+import {
+  getCoachBySlug,
+  getCoachesPublicWithSlugs,
+} from "@/lib/queries/coaches";
+
+export async function generateStaticParams() {
+  const coaches = await getCoachesPublicWithSlugs();
+  return coaches.map((coach) => ({ slug: coach.slug }));
+}
 
 export async function generateMetadata({
   params,

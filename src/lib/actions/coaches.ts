@@ -19,6 +19,10 @@ export type CoachFormData = z.infer<typeof CoachSchema>;
 
 function revalidate() {
   revalidatePath("/");
+  revalidatePath("/trenerzy");
+  // Slugs are derived from the whole published list, so one edit can shift
+  // every detail URL — drop the entire segment rather than a single slug.
+  revalidatePath("/trenerzy/[slug]", "page");
   revalidatePath("/admin/cms");
 }
 

@@ -196,3 +196,14 @@ export async function getAchievementBySlug(slug: string) {
 export async function getAllAchievementsAdmin() {
   return prisma.achievement.findMany({ orderBy: { createdAt: "desc" } });
 }
+
+/** Slugs prerenderowane przy buildzie — patrz generateStaticParams w /osiagniecia/[slug]. */
+export async function getAchievementSlugs() {
+  const items = await prisma.achievement.findMany({
+    where: { published: true },
+    select: { slug: true },
+  });
+  return items.length > 0
+    ? items.map((i) => i.slug)
+    : FALLBACK_ACHIEVEMENTS.map((i) => i.slug);
+}

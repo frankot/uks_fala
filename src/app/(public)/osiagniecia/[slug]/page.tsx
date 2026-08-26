@@ -1,9 +1,20 @@
-export const dynamic = "force-dynamic";
+// Serwowane z cache; edycje w CMS publikują się od razu przez revalidatePath
+// w src/lib/actions/*. Godzina to tylko siatka bezpieczeństwa.
+export const revalidate = 3600;
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import HeroStrip from "@/components/HeroStrip";
-import { getAchievementBySlug } from "@/lib/queries/achievements";
+import CmsImage from "@/components/CmsImage";
+import { GALLERY_WIDTHS } from "@/lib/cloudinary-image";
+import {
+  getAchievementBySlug,
+  getAchievementSlugs,
+} from "@/lib/queries/achievements";
+
+export async function generateStaticParams() {
+  return (await getAchievementSlugs()).map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -48,10 +59,17 @@ export default async function AchievementDetailPage({
               className={`mt-6 ${item.images.length === 1 ? "" : "grid gap-3 sm:grid-cols-2"}`}
             >
               {item.images.map((url, i) => (
-                <img
+                <CmsImage
                   key={i}
                   src={url}
                   alt={`${item.title} — zdjecie ${i + 1}`}
+                  sizes={
+                    item.images.length === 1
+                      ? "(min-width: 672px) 608px, 100vw"
+                      : "(min-width: 640px) 304px, 100vw"
+                  }
+                  widths={GALLERY_WIDTHS}
+                  priority={i === 0}
                   className="w-full rounded-xl object-cover"
                 />
               ))}

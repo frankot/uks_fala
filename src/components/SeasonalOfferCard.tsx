@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CmsImage from "@/components/CmsImage";
 
 export interface SeasonalOfferCardItem {
   id: string;
@@ -53,9 +54,10 @@ export default function SeasonalOfferCard({
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-pool-100 via-sand-100 to-deep-100">
         {offer.images[0] ? (
-          <img
+          <CmsImage
             src={offer.images[0]}
             alt={offer.title}
+            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

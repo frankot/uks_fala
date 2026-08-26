@@ -197,3 +197,14 @@ export async function getNewsBySlug(slug: string) {
 export async function getAllNewsAdmin() {
   return prisma.news.findMany({ orderBy: { createdAt: "desc" } });
 }
+
+/** Slugs prerenderowane przy buildzie — patrz generateStaticParams w /aktualnosci/[slug]. */
+export async function getNewsSlugs() {
+  const items = await prisma.news.findMany({
+    where: { published: true },
+    select: { slug: true },
+  });
+  return items.length > 0
+    ? items.map((i) => i.slug)
+    : FALLBACK_NEWS.map((i) => i.slug);
+}

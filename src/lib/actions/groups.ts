@@ -108,6 +108,7 @@ async function assertScheduleIsValid(
 }
 
 function revalidate() {
+  revalidatePath("/");
   revalidatePath("/grafik");
   revalidatePath("/admin/cms");
   // The home-page group cards are cached for an hour — publish edits right away.

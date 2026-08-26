@@ -21,6 +21,7 @@ export type AchievementFormData = z.infer<typeof AchievementSchema>;
 function revalidate() {
   revalidatePath("/");
   revalidatePath("/osiagniecia");
+  revalidatePath("/osiagniecia/[slug]", "page");
   revalidatePath("/admin/cms");
 }
 

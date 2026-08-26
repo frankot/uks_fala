@@ -31,3 +31,12 @@ export async function getAllSeasonalOffersAdmin(type: SeasonalOfferType) {
     orderBy: OFFER_ORDER,
   });
 }
+
+/** Slugs prerenderowane przy buildzie — patrz generateStaticParams w /obozy|/polkolonie. */
+export async function getSeasonalOfferSlugs(type: SeasonalOfferType) {
+  const items = await prisma.seasonalOffer.findMany({
+    where: { type, published: true },
+    select: { slug: true },
+  });
+  return items.map((i) => i.slug);
+}
