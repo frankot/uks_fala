@@ -6,24 +6,43 @@ import Image from "next/image";
 import Link from "next/link";
 import ContactLink from "./ContactLink";
 
-const navLinks = [
+type NavLink = { href: string; label: string };
+type NavDropdown = { id: string; label: string; links: NavLink[] };
+type NavItem = NavLink | NavDropdown;
+
+const navItems: NavItem[] = [
   { href: "/o-nas", label: "O nas" },
+  {
+    id: "zajecia",
+    label: "Zajęcia",
+    links: [
+      { href: "/grafik", label: "Grafik zajęć" },
+      { href: "/szkola-plywania", label: "Szkoła pływania" },
+      { href: "/sekcja-sportowa", label: "Sekcja sportowa" },
+    ],
+  },
+  {
+    id: "wyjazdy",
+    label: "Wyjazdy",
+    links: [
+      { href: "/obozy", label: "Obozy" },
+      { href: "/polkolonie", label: "Półkolonie" },
+    ],
+  },
   { href: "/aktualnosci", label: "Aktualnosci" },
   { href: "/osiagniecia", label: "Osiagniecia" },
-  { href: "/grafik", label: "Grafik zajęć" },
   { href: "/trenerzy", label: "Trenerzy" },
 ];
 
-const tripLinks = [
-  { href: "/obozy", label: "Obozy" },
-  { href: "/polkolonie", label: "Półkolonie" },
-];
+function isDropdown(item: NavItem): item is NavDropdown {
+  return "links" in item;
+}
 
 export default function Navigation() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [tripsOpen, setTripsOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -77,59 +96,61 @@ export default function Navigation() {
             className="hidden items-center gap-1 md:flex"
             aria-label="Nawigacja główna"
           >
-            {navLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
-                  solidNav
-                    ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
-                    : "text-white/75 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            <div className="group relative">
-              <button
-                type="button"
-                className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
-                  solidNav
-                    ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
-                    : "text-white/75 hover:bg-white/10 hover:text-white"
-                }`}
-                aria-haspopup="menu"
-              >
-                Wyjazdy
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="transition-transform group-hover:rotate-180"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
-              <div className="invisible absolute left-0 top-full min-w-44 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white p-2 shadow-xl shadow-deep-900/10">
-                  {tripLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+            {navItems.map((item) =>
+              isDropdown(item) ? (
+                <div key={item.id} className="group relative">
+                  <button
+                    type="button"
+                    className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                      solidNav
+                        ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                        : "text-white/75 hover:bg-white/10 hover:text-white"
+                    }`}
+                    aria-haspopup="menu"
+                  >
+                    {item.label}
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="transition-transform group-hover:rotate-180"
                     >
-                      {item.label}
-                    </Link>
-                  ))}
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </button>
+                  <div className="invisible absolute left-0 top-full min-w-48 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                    <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white p-2 shadow-xl shadow-deep-900/10">
+                      {item.links.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="block rounded-xl px-4 py-2.5 text-[14px] font-medium whitespace-nowrap text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                    solidNav
+                      ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                      : "text-white/75 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
 
             <ContactLink
               className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
@@ -204,51 +225,59 @@ export default function Navigation() {
             aria-label="Nawigacja mobilna"
           >
             <div className="flex flex-col gap-1">
-              {navLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-
-              <button
-                type="button"
-                className="flex items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                onClick={() => setTripsOpen((open) => !open)}
-                aria-expanded={tripsOpen}
-              >
-                Wyjazdy
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={`transition-transform ${tripsOpen ? "rotate-180" : ""}`}
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
-              {tripsOpen && (
-                <div className="ml-4 flex flex-col border-l border-sand-200 pl-3">
-                  {tripLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-600 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                      onClick={() => setMobileOpen(false)}
+              {navItems.map((item) =>
+                isDropdown(item) ? (
+                  <div key={item.id} className="flex flex-col">
+                    <button
+                      type="button"
+                      className="flex items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                      onClick={() =>
+                        setOpenMenu((open) => (open === item.id ? null : item.id))
+                      }
+                      aria-expanded={openMenu === item.id}
                     >
                       {item.label}
-                    </Link>
-                  ))}
-                </div>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-transform ${
+                          openMenu === item.id ? "rotate-180" : ""
+                        }`}
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+                    {openMenu === item.id && (
+                      <div className="ml-4 flex flex-col border-l border-sand-200 pl-3">
+                        {item.links.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            className="rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-600 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                )
               )}
 
               <ContactLink

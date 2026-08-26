@@ -25,7 +25,7 @@ export type Track = (typeof TRACKS)[number];
 
 /** First bookable time and the hard end of the pool window. */
 export const GRID_START = "15:30";
-export const GRID_END = "19:30";
+export const GRID_END = "21:00";
 /** Granularity of the axis — every lesson start must land on a multiple of this. */
 export const STEP_MINUTES = 15;
 /** Height of one STEP_MINUTES row, in px. The axis is linear: 45 min is always 3×. */
@@ -51,7 +51,7 @@ export const GRID_END_MIN = timeToMinutes(GRID_END);
 /** Number of rows on the axis. */
 export const ROW_COUNT = (GRID_END_MIN - GRID_START_MIN) / STEP_MINUTES;
 
-/** Start time of every row — "15:30", "15:45", … , "19:15". */
+/** Start time of every row — "15:30", "15:45", … , "20:45". */
 export const TIME_SLOTS: string[] = Array.from({ length: ROW_COUNT }, (_, i) =>
   formatTime(GRID_START_MIN + i * STEP_MINUTES),
 );

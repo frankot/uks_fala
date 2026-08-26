@@ -80,10 +80,25 @@ export default function CallToAction() {
                       Basen OSiR Nieporęt
                     </p>
                     <p className="text-lg font-bold">
-                      ul. Koncertowa 4, Stanisławów Pierwszy
+                      Stanisławów Pierwszy, ul. Koncertowa 4
                     </p>
+                    <p className="text-[14px] text-deep-200/60">05-126 Nieporęt</p>
                   </div>
                 </div>
+              </div>
+
+              {/* Dane klubu */}
+              <div className="mt-10 border-t border-white/8 pt-6">
+                <p className="text-[12px] font-semibold uppercase tracking-wider text-deep-300/50">
+                  Dane klubu
+                </p>
+                <p className="mt-2 text-[14px] leading-[1.7] text-deep-200/60">
+                  Uczniowski Klub Sportowy Fala Nieporęt
+                  <br />
+                  Stanisławów Pierwszy, ul. Koncertowa 4, 05-126 Nieporęt
+                  <br />
+                  NIP 536 19 22 255 &middot; REGON 363628020
+                </p>
               </div>
             </div>
 

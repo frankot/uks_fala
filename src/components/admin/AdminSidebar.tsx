@@ -10,6 +10,7 @@ const CMS_LINKS = [
   { label: "Trenerzy", tab: "trenerzy", icon: "users" },
   { label: "Obozy", tab: "obozy", icon: "camp" },
   { label: "Półkolonie", tab: "polkolonie", icon: "sun" },
+  { label: "Pop-up", tab: "popup", icon: "popup" },
 ];
 
 function TabIcon({ icon }: { icon: string }) {
@@ -74,6 +75,13 @@ function TabIcon({ icon }: { icon: string }) {
           <path d="M20 12h2" />
           <path d="m6.34 17.66-1.41 1.41" />
           <path d="m19.07 4.93-1.41 1.41" />
+        </svg>
+      );
+    case "popup":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="4" width="14" height="11" rx="2" />
+          <rect x="8" y="9" width="14" height="11" rx="2" />
         </svg>
       );
     default:

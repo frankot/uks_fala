@@ -127,7 +127,7 @@ Bezpiecznie. Mądrze. Z pasją. <br />Tak buduje się miłość do sportu na lat
         {/* Dwie ścieżki */}
         <div className="mx-auto mt-12 grid max-w-[820px] gap-8 sm:grid-cols-2 sm:gap-20 md:mt-16">
           <Link
-            href="/grafik"
+            href="/szkola-plywania"
             className="group flex items-center justify-center gap-3 rounded-2xl border border-pool-200/70 bg-pool-100/50 px-6 py-8 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pool-300 hover:bg-pool-100/80 hover:shadow-lg hover:shadow-deep-900/5"
           >
             <svg
@@ -151,7 +151,7 @@ Bezpiecznie. Mądrze. Z pasją. <br />Tak buduje się miłość do sportu na lat
           </Link>
 
           <Link
-            href="/grafik"
+            href="/sekcja-sportowa"
             className="group flex items-center justify-center gap-3 rounded-2xl border border-pool-200/70 bg-pool-100/50 px-6 py-8 text-center backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pool-300 hover:bg-pool-100/80 hover:shadow-lg hover:shadow-deep-900/5"
           >
             <svg

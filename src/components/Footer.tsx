@@ -116,14 +116,20 @@ export default function Footer() {
             </h4>
             <ul className="mt-5 space-y-3">
               <li>
-                <span className="text-[14px] text-deep-300/60">
+                <Link
+                  href="/szkola-plywania"
+                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
+                >
                   Szkoła pływania
-                </span>
+                </Link>
               </li>
               <li>
-                <span className="text-[14px] text-deep-300/60">
+                <Link
+                  href="/sekcja-sportowa"
+                  className="text-[14px] text-deep-300/60 transition-colors hover:text-white"
+                >
                   Sekcja sportowa
-                </span>
+                </Link>
               </li>
               <li>
                 <Link
@@ -171,12 +177,18 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <p className="text-[14px] text-deep-300/60">
-                  ul. Koncertowa 4<br />
-                  05-126 Stanisławów Pierwszy
+                <p className="text-[14px] leading-[1.7] text-deep-300/60">
+                  Stanisławów Pierwszy, ul. Koncertowa 4<br />
+                  05-126 Nieporęt
                 </p>
               </li>
             </ul>
+
+            <p className="mt-6 text-[12px] leading-[1.7] text-deep-400/60">
+              Uczniowski Klub Sportowy Fala Nieporęt
+              <br />
+              NIP 536 19 22 255 &middot; REGON 363628020
+            </p>
           </div>
         </div>
 

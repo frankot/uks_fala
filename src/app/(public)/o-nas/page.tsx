@@ -161,8 +161,9 @@ export default function ONasPage() {
                     Uczniowski Klub Sportowy Fala Nieporęt
                   </strong>{" "}
                   to klub sportowy działający przy basenie OSiR
-                  w&nbsp;Nieporęcie (ul.&nbsp;Koncertowa&nbsp;4, Stanisławów
-                  Pierwszy). Jesteśmy licencjonowanym klubem zrzeszonym
+                  w&nbsp;Nieporęcie (Stanisławów Pierwszy,
+                  ul.&nbsp;Koncertowa&nbsp;4, 05-126&nbsp;Nieporęt). Jesteśmy
+                  licencjonowanym klubem zrzeszonym
                   w&nbsp;Polskim Związku Pływackim, co pozwala naszym zawodnikom
                   na starty w&nbsp;oficjalnych zawodach na każdym szczeblu.
                 </p>
@@ -359,7 +360,8 @@ export default function ONasPage() {
                   <strong className="text-sand-800">
                     Ośrodka Sportu i&nbsp;Rekreacji w&nbsp;Nieporęcie
                   </strong>{" "}
-                  (ul.&nbsp;Koncertowa&nbsp;4, Stanisławów Pierwszy).
+                  (Stanisławów Pierwszy, ul.&nbsp;Koncertowa&nbsp;4,
+                  05-126&nbsp;Nieporęt).
                 </p>
                 <p className="text-[17px] leading-[1.8] text-sand-600">
                   Basen dysponuje 25-metrowym torem pływackim z&nbsp;podziałem

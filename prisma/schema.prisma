@@ -144,3 +144,12 @@ model SeasonalOffer {
 
   @@index([type, published, sortOrder])
 }
+
+model Popup {
+  id           String   @id @default("default")
+  active       Boolean  @default(false)
+  title        String   @default("")
+  content      String   @default("")
+  delaySeconds Int      @default(3)
+  updatedAt    DateTime @updatedAt
+}

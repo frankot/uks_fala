@@ -8,6 +8,7 @@ import OsiagnieciaSection from "@/components/OsiagnieciaSection";
 import TrainingGroups from "@/components/TrainingGroups";
 import Coaches from "@/components/Coaches";
 import CallToAction from "@/components/CallToAction";
+import SitePopup from "@/components/SitePopup";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <TrainingGroups />
       <Coaches />
       <CallToAction />
+      <SitePopup />
     </>
   );
 }

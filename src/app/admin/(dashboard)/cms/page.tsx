@@ -4,11 +4,13 @@ import { getAllNewsAdmin } from "@/lib/queries/news";
 import { getAllAchievementsAdmin } from "@/lib/queries/achievements";
 import { getAllCoachesAdmin } from "@/lib/queries/coaches";
 import { getAllSeasonalOffersAdmin } from "@/lib/queries/seasonal-offers";
+import { getPopup } from "@/lib/queries/popup";
 import GrafikTab from "./_components/GrafikTab";
 import AktualnosciTab from "./_components/AktualnosciTab";
 import OsiagnieciaTab from "./_components/OsiagnieciaTab";
 import TrenerzyTab from "./_components/TrenerzyTab";
 import SeasonalOffersTab from "./_components/SeasonalOffersTab";
+import PopupTab from "./_components/PopupTab";
 
 const TABS = [
   { key: "grafik", label: "Grafik" },
@@ -17,6 +19,7 @@ const TABS = [
   { key: "trenerzy", label: "Trenerzy" },
   { key: "obozy", label: "Obozy" },
   { key: "polkolonie", label: "Półkolonie" },
+  { key: "popup", label: "Pop-up" },
 ];
 
 export default async function CmsPage({
@@ -59,6 +62,7 @@ export default async function CmsPage({
     tab === "polkolonie"
       ? await getAllSeasonalOffersAdmin("POLKOLONIA")
       : [];
+  const popup = tab === "popup" ? await getPopup() : null;
 
   return (
     <div className="">
@@ -69,13 +73,13 @@ export default async function CmsPage({
         </p>
       </div>
 
-      {/* Tab bar */}
-      <div className="mb-6 flex gap-0 border-b border-sand-200">
+      {/* Tab bar — mobile only; on md+ the sidebar already lists every section */}
+      <div className="mb-6 flex gap-0 overflow-x-auto border-b border-sand-200 md:hidden">
         {TABS.map((t) => (
           <Link
             key={t.key}
             href={`/admin/cms?tab=${t.key}`}
-            className={`px-4 py-2.5 text-[13px] font-bold transition-colors ${
+            className={`shrink-0 px-4 py-2.5 text-[13px] font-bold transition-colors ${
               tab === t.key
                 ? "border-b-2 border-coral-500 text-sand-900"
                 : "text-sand-500 hover:text-sand-700"
@@ -117,6 +121,9 @@ export default async function CmsPage({
           type="POLKOLONIA"
           offers={JSON.parse(JSON.stringify(dayCamps))}
         />
+      )}
+      {tab === "popup" && (
+        <PopupTab popup={popup ? JSON.parse(JSON.stringify(popup)) : null} />
       )}
     </div>
   );
