@@ -62,7 +62,12 @@ export default function Navigation() {
       className={`fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded transition-all duration-300 sm:left-4 sm:right-4 ${
         solidNav
           ? "bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md"
-          : "bg-transparent"
+          : // Frosted rather than tinted at the top of the hero: the wash is
+            // faint enough to keep the photo readable through it, and the heavy
+            // blur — not the colour — is what separates the bar from what is
+            // behind it. Blur is stronger here than in the scrolled state,
+            // which can lean on its own opacity instead.
+            "bg-white/10 backdrop-blur-lg"
       }`}
     >
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
