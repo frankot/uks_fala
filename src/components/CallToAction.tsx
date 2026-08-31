@@ -1,10 +1,28 @@
 "use client";
 
+import { useEffect } from "react";
+import {
+  CONTACT_ID,
+  CONTACT_FORM_ID,
+  scrollToContact,
+} from "@/lib/scroll-to-contact";
+
 export default function CallToAction() {
+  // Arriving from another page lands on the browser's own anchor jump, which leaves
+  // the form mostly below the fold — reposition it once the card has laid out.
+  useEffect(() => {
+    if (window.location.hash !== `#${CONTACT_ID}`) return;
+    const frame = requestAnimationFrame(() => scrollToContact("auto"));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
-    <section id="kontakt" className="relative scroll-mt-28 py-24 md:py-32">
+    <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
-        <div className="relative overflow-hidden rounded-[2rem] bg-deep-900">
+        <div
+          id={CONTACT_ID}
+          className="relative scroll-mt-24 overflow-hidden rounded-[2rem] bg-deep-900"
+        >
           {/* Grain */}
           <div className="grain absolute inset-0 rounded-[2rem]" />
           {/* Ambient glow */}
@@ -103,7 +121,10 @@ export default function CallToAction() {
             </div>
 
             {/* Right — form */}
-            <div className="m-4 rounded-2xl bg-white p-8 sm:p-10 lg:m-6 lg:p-12">
+            <div
+              id={CONTACT_FORM_ID}
+              className="m-4 rounded-2xl bg-white p-8 sm:p-10 lg:m-6 lg:p-12"
+            >
               <h3 className="font-editorial text-2xl font-bold text-sand-950">
                 Napisz do nas
               </h3>

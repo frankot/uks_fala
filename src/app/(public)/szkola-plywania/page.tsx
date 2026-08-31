@@ -136,21 +136,96 @@ const reasons = [
   },
 ];
 
+/**
+ * Placeholder FAQ — swap the questions/answers once the client sends the real set.
+ * The payment and absence entries carry over the copy from the old
+ * "Płatności i nieobecności" section so nothing was lost in the change.
+ */
+const faq = [
+  {
+    question: "Od jakiego wieku dziecko może zacząć naukę pływania?",
+    answer:
+      "Zajęcia prowadzimy już od 3. roku życia — najmłodsi zaczynają od oswajania z wodą w kameralnych grupach. Grupę zawsze dobieramy do wieku i umiejętności dziecka.",
+  },
+  {
+    question: "Jak wygląda płatność za zajęcia?",
+    answer:
+      "Płatności za szkolenie dokonuje się za cały semestr zajęć z góry. Na prośbę rodzica płatność może zostać rozłożona na raty — pierwsza rata jest płatna wraz z zapisem. Dla młodszego rodzeństwa przewidujemy 10% zniżki.",
+  },
+  {
+    question: "Czy można odrobić nieobecność na zajęciach?",
+    answer:
+      "Tak, jeśli nieobecność została zgłoszona e-mailem. Wszystkie zajęcia można odrobić na podstawie zaświadczenia lekarskiego, a w pozostałych przypadkach uczestnik może odrobić jeden tydzień nieobecności w miesiącu. Zajęcia odpracowujemy w innych godzinach pracy szkółki, po wcześniejszej konsultacji.",
+  },
+  {
+    question: "Jak zgłosić nieobecność dziecka?",
+    answer:
+      "Nieobecności zgłasza się w aplikacji, do której link rodzice otrzymują po zapisie dziecka na zajęcia. Nie przewidujemy zwrotu kosztów za nieobecności — czas na odrobienie mija z końcem trwania umowy.",
+  },
+  {
+    question: "Co zabrać na pierwsze zajęcia?",
+    answer:
+      "Strój kąpielowy, czepek, okularki, klapki i ręcznik. Resztą sprzętu potrzebnego na zajęciach — makaronami, deskami czy płetwami — dysponuje klub.",
+  },
+  {
+    question: "Czy rodzic może być obecny na zajęciach?",
+    answer:
+      "Tak, rodzice mogą obserwować zajęcia z widowni. Na płycie basenu przebywają wyłącznie instruktorzy i uczestnicy zajęć.",
+  },
+];
+
 export default function SzkolaPlywaniaPage() {
   return (
     <>
-      <HeroStrip
-        backHref="/"
-        backLabel="Strona główna"
-        tag="Szkoła pływania"
-        tagColor="pool"
-        title="Pływanie to"
-        subtitle="nasza pasja"
-        description="Rekreacyjne zajęcia na każdym poziomie — od pierwszego kontaktu z wodą, przez technikę wszystkich stylów, po profesjonalne treningi. W grupach i indywidualnie."
-      />
+      {/* Hero + photo straddling the dark hero and the section below */}
+      <div className="relative z-20">
+        <HeroStrip
+          backHref="/"
+          backLabel="Strona główna"
+          tag="Szkoła pływania"
+          tagColor="pool"
+          title="Pływanie to"
+          subtitle="nasza pasja"
+          description="Rekreacyjne zajęcia na każdym poziomie — od pierwszego kontaktu z wodą, przez technikę wszystkich stylów, po profesjonalne treningi. W grupach i indywidualnie."
+        />
+
+        {/* Desktop — overlaps the hero edge, sits to the right of the copy */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden lg:block">
+          <div className="mx-auto max-w-310 px-5 sm:px-8">
+            <div className="flex justify-end">
+              <div className="relative aspect-3/4 w-[300px] translate-y-[110px] overflow-hidden rounded-3xl bg-deep-800 shadow-2xl shadow-deep-950/50 ring-1 ring-white/10 xl:w-[350px]">
+                <Image
+                  src="/szkola-hero.webp"
+                  alt="Dziecko nurkujące na zajęciach nauki pływania UKS Fala"
+                  fill
+                  loading="eager"
+                  sizes="350px"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile / tablet — same photo, pulled up over the hero edge */}
+      <div className="relative z-20 -mt-10 px-5 sm:px-8 lg:hidden">
+        <div className="mx-auto max-w-310">
+          <div className="relative aspect-4/3 overflow-hidden rounded-3xl bg-deep-800 shadow-xl shadow-deep-950/30 sm:aspect-16/10">
+            <Image
+              src="/szkola-hero.webp"
+              alt="Dziecko nurkujące na zajęciach nauki pływania UKS Fala"
+              fill
+              loading="eager"
+              sizes="(min-width: 1240px) 1240px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Informacje ogólne */}
-      <section className="py-20 md:py-28">
+      <section className="py-20 md:py-28 lg:pt-36">
         <div className="mx-auto max-w-310 px-5 sm:px-8">
           {/* Heading + lead */}
           <div className="grid items-end gap-8 md:grid-cols-12 md:gap-12">
@@ -334,104 +409,64 @@ export default function SzkolaPlywaniaPage() {
         </div>
       </section>
 
-      {/* Płatności i nieobecności */}
+      {/* FAQ */}
       <section className="overflow-hidden bg-sand-100 py-20 md:py-28">
         <div className="mx-auto max-w-310 px-5 sm:px-8">
-          <div className="mb-14 max-w-xl">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-10 bg-coral-400" />
-              <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-coral-500">
-                Organizacja
-              </span>
-            </div>
-            <h2 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-sand-950">
-              Płatności
-              <span className="block text-deep-500">
-                i&nbsp;odrabianie zajęć
-              </span>
-            </h2>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            {/* Płatności */}
-            <div className="self-start rounded-3xl border border-sand-200 bg-white p-8 shadow-sm sm:p-10">
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-deep-50 text-deep-500">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="5" width="20" height="14" rx="2" />
-                  <line x1="2" y1="10" x2="22" y2="10" />
-                </svg>
-              </div>
-              <h3 className="font-editorial text-xl font-bold text-sand-950">
-                Płatności
-              </h3>
-              <p className="mt-4 text-[15px] leading-[1.8] text-sand-600">
-                Płatności za szkolenie dokonuje się za&nbsp;cały semestr zajęć
-                z&nbsp;góry. Na&nbsp;prośbę rodzica płatność może zostać
-                rozłożona na&nbsp;raty — pierwsza rata jest płatna wraz
-                z&nbsp;zapisem.
-              </p>
-              <div className="mt-6 flex items-center gap-3 rounded-2xl bg-coral-50 px-5 py-4">
-                <span className="font-editorial text-2xl font-bold text-coral-500">
-                  10%
-                </span>
-                <span className="text-[14px] font-semibold text-coral-600">
-                  zniżki dla młodszego rodzeństwa
-                </span>
+          <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+            <div className="md:col-span-5">
+              <div className="md:sticky md:top-28">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="h-px w-10 bg-coral-400" />
+                  <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-coral-500">
+                    FAQ
+                  </span>
+                </div>
+                <h2 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-sand-950">
+                  Najczęstsze
+                  <span className="block text-deep-500">pytania</span>
+                </h2>
+                <p className="mt-5 text-[17px] leading-[1.8] text-sand-600">
+                  Nie znalazłeś odpowiedzi? Zadzwoń lub napisz do&nbsp;nas —
+                  chętnie rozwiejemy wszystkie wątpliwości przed&nbsp;zapisem
+                  dziecka.
+                </p>
+                <ContactLink className="mt-7 inline-flex h-13 items-center justify-center rounded-full border border-sand-300 bg-white px-8 text-[15px] font-semibold text-sand-700 transition-colors hover:bg-sand-50">
+                  Zadaj pytanie
+                </ContactLink>
               </div>
             </div>
 
-            {/* Nieobecności */}
-            <div className="rounded-3xl border border-sand-200 bg-white p-8 shadow-sm sm:p-10">
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-deep-50 text-deep-500">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="3" y="4" width="18" height="18" rx="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                  <path d="m9 16 2 2 4-4" />
-                </svg>
-              </div>
-              <h3 className="font-editorial text-xl font-bold text-sand-950">
-                Nieobecności
-              </h3>
-              <ul className="mt-4 space-y-3">
-                {[
-                  "Nieobecności można odrabiać, jeśli zostały zgłoszone e-mailem.",
-                  "Wszystkie zajęcia można odrobić na podstawie zaświadczenia lekarskiego.",
-                  "W innych przypadkach uczestnik może odrobić 1 tydzień nieobecności w miesiącu.",
-                  "Zajęcia odpracowujemy w innych godzinach pracy szkółki, po wcześniejszej konsultacji.",
-                  "Nie przewidujemy zwrotu kosztów za nieobecności — czas na odrobienie mija z końcem trwania umowy.",
-                ].map((rule) => (
-                  <li key={rule} className="flex gap-3">
-                    <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-pool-400" />
-                    <span className="text-[15px] leading-[1.7] text-sand-600">
-                      {rule}
-                    </span>
-                  </li>
+            <div className="md:col-span-7">
+              <div className="space-y-3">
+                {faq.map((item) => (
+                  <details
+                    key={item.question}
+                    name="faq"
+                    className="group rounded-2xl border border-sand-200 bg-white px-6 py-1 shadow-sm transition-colors open:border-deep-200 sm:px-8"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[16px] font-bold text-sand-950 transition-colors marker:content-none group-open:text-deep-600 hover:text-deep-500 [&::-webkit-details-marker]:hidden">
+                      {item.question}
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sand-100 text-deep-500 transition-all group-open:rotate-45 group-open:bg-deep-50">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        >
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="border-t border-sand-200 py-5 text-[15px] leading-[1.8] text-sand-600">
+                      {item.answer}
+                    </p>
+                  </details>
                 ))}
-              </ul>
-              <p className="mt-6 rounded-2xl bg-sand-50 px-5 py-4 text-[14px] leading-[1.7] text-sand-600">
-                Nieobecności należy zgłosić w&nbsp;aplikacji, do&nbsp;której link
-                rodzice otrzymują po&nbsp;zapisie dziecka na&nbsp;zajęcia.
-              </p>
+              </div>
             </div>
           </div>
         </div>

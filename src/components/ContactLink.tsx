@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
+import { scrollToContact } from "@/lib/scroll-to-contact";
 
 interface ContactLinkProps {
   children: ReactNode;
@@ -20,23 +21,13 @@ export default function ContactLink({
 
   function handleClick(e: MouseEvent<HTMLAnchorElement>) {
     onClick?.();
+    e.preventDefault();
 
-    const target = document.getElementById("kontakt");
-    if (pathname === "/" && target) {
-      e.preventDefault();
-      const navOffset = 96;
-      const targetTop = target.getBoundingClientRect().top + window.scrollY;
-      const centeredTop =
-        targetTop - (window.innerHeight - target.offsetHeight) / 2 - navOffset / 2;
-      window.scrollTo({
-        top: Math.max(0, centeredTop),
-        behavior: "smooth",
-      });
+    if (pathname === "/" && scrollToContact()) {
       window.history.replaceState(null, "", "/#kontakt");
       return;
     }
 
-    e.preventDefault();
     router.push("/#kontakt");
   }
 

@@ -1,3 +1,60 @@
+const advantages = [
+  {
+    num: "01",
+    accent: "bg-coral-500/15 text-coral-500",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+    title: "Doświadczona Kadra Instruktorów",
+    description:
+      "Nasza wykwalifikowana kadra instruktorów to pasjonaci pływania z wieloletnim doświadczeniem. Każdy z naszych instruktorów posiada certyfikaty potwierdzające ich umiejętności i wiedzę, a przede wszystkim potrafią stworzyć przyjazną i motywującą atmosferę na basenie.",
+  },
+  {
+    num: "02",
+    accent: "bg-pool-500/15 text-pool-500",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+    title: "Bezpieczne środowisko, w którym dzieci czują się pewnie",
+    description:
+      "Kameralne grupy, doświadczeni trenerzy i pełna opieka od wejścia na basen aż do końca zajęć. Treningi odbywają się na nowoczesnym obiekcie Aquapark „Fala” w Stanisławowie Pierwszym, dzięki czemu rodzice mają pewność, że ich dzieci uczą się w komfortowych i bezpiecznych warunkach.",
+  },
+  {
+    num: "03",
+    accent: "bg-pool-500/15 text-pool-500",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+      </svg>
+    ),
+    title: "Przemyślany rozwój — krok po kroku",
+    description:
+      "Każde dziecko trafia do grupy dopasowanej do wieku i umiejętności, dzięki czemu rozwija się we własnym tempie i z radością zdobywa kolejne poziomy. Od pierwszego kontaktu z wodą aż po trening sportowy i starty w zawodach — tworzymy jasną i motywującą drogę rozwoju dla każdego młodego pływaka.",
+  },
+  {
+    num: "04",
+    accent: "bg-coral-500/15 text-coral-500",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+        <line x1="9" y1="9" x2="9.01" y2="9" />
+        <line x1="15" y1="9" x2="15.01" y2="9" />
+      </svg>
+    ),
+    title: "Indywidualne Podejście",
+    description:
+      "Rozumiemy, że każda osoba jest inna i ma swoje tempo nauki. Dlatego dostosowujemy nasze zajęcia do Twoich potrzeb i umiejętności. Niezależnie od tego, czy dopiero zaczynasz swoją przygodę z pływaniem, czy chcesz doskonalić swoje techniki, mamy dla Ciebie odpowiednie zajęcia.",
+  },
+];
+
 export default function Advantages() {
   return (
     <section className="relative overflow-hidden bg-deep-900 py-24 md:py-32">
@@ -23,109 +80,35 @@ export default function Advantages() {
           </h2>
         </div>
 
-        {/* Bento grid — varied sizes */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Card 1 — large, spans 2 cols on lg */}
-          <div className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] p-8 backdrop-blur-sm transition-all hover:bg-white/[0.06] lg:col-span-2 lg:p-10 lg:self-start lg:h-fit">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:gap-8">
-              <div className="mb-5 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-coral-500/15 sm:mb-0">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e05438" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
+        {/* One centered column — the descriptions differ in length, which the old
+            bento grid exposed as ragged, half-empty boxes. Hovering a card lifts it
+            slightly; the other cards are left untouched. Gated to pointer-fine so
+            touch devices never get a stuck hover state, and the cards keep the
+            default cursor — they are not clickable. */}
+        <div className="mx-auto max-w-4xl space-y-3">
+          {advantages.map((advantage) => (
+            <div
+              key={advantage.num}
+              className="relative flex gap-5 overflow-hidden rounded-3xl border border-white/6 bg-white/3 p-6 backdrop-blur-sm transition-all duration-300 ease-out pointer-fine:hover:scale-[1.02] pointer-fine:hover:border-white/15 pointer-fine:hover:bg-white/8 sm:gap-8 sm:p-8"
+            >
+              <div
+                className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${advantage.accent}`}
+              >
+                {advantage.icon}
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">
-                  Doświadczona Kadra Instruktorów
+              <div className="relative z-10">
+                <h3 className="text-xl font-bold leading-snug text-white">
+                  {advantage.title}
                 </h3>
                 <p className="mt-3 text-[15px] leading-[1.7] text-deep-200/60">
-                  Nasza wykwalifikowana kadra instruktorów to pasjonaci pływania z
-                  wieloletnim doświadczeniem. Każdy z naszych instruktorów posiada
-                  certyfikaty potwierdzające ich umiejętności i wiedzę, a przede
-                  wszystkim potrafią stworzyć przyjazną i motywującą atmosferę na
-                  basenie.
+                  {advantage.description}
                 </p>
               </div>
+              <span className="font-editorial pointer-events-none absolute -right-4 -bottom-4 text-[120px] font-bold leading-none text-white/2 select-none">
+                {advantage.num}
+              </span>
             </div>
-            <div className="absolute -bottom-4 -right-4 font-editorial text-[120px] font-bold leading-none text-white/[0.02] select-none">
-              01
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] p-8 backdrop-blur-sm transition-all hover:bg-white/[0.06]">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-pool-500/15">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-white">
-              Bezpieczne środowisko, w którym dzieci czują się pewnie
-            </h3>
-            <p className="mt-3 text-[15px] leading-[1.7] text-deep-200/60">
-              Kameralne grupy, doświadczeni trenerzy i pełna opieka od
-              wejścia na basen aż do końca zajęć. Treningi odbywają się na
-              nowoczesnym obiekcie Aquapark „Fala” w Stanisławowie
-              Pierwszym, dzięki czemu rodzice mają pewność, że ich dzieci
-              uczą się w komfortowych i bezpiecznych warunkach.
-            </p>
-            <div className="absolute -bottom-4 -right-4 font-editorial text-[120px] font-bold leading-none text-white/[0.02] select-none">
-              02
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] p-8 backdrop-blur-sm transition-all hover:bg-white/[0.06]">
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-pool-500/15">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-white">
-              Przemyślany rozwój — krok po kroku
-            </h3>
-            <p className="mt-3 text-[15px] leading-[1.7] text-deep-200/60">
-              Każde dziecko trafia do grupy dopasowanej do wieku i
-              umiejętności, dzięki czemu rozwija się we własnym tempie i z
-              radością zdobywa kolejne poziomy. Od pierwszego kontaktu z
-              wodą aż po trening sportowy i starty w zawodach — tworzymy
-              jasną i motywującą drogę rozwoju dla każdego młodego pływaka.
-            </p>
-            <div className="absolute -bottom-4 -right-4 font-editorial text-[120px] font-bold leading-none text-white/[0.02] select-none">
-              03
-            </div>
-          </div>
-
-          {/* Card 4 — large, spans 2 cols on lg */}
-          <div className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] p-8 backdrop-blur-sm transition-all hover:bg-white/[0.06] lg:col-span-2 lg:p-10 lg:self-start lg:h-fit">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:gap-8">
-              <div className="mb-5 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-coral-500/15 sm:mb-0">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e05438" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                  <line x1="9" y1="9" x2="9.01" y2="9" />
-                  <line x1="15" y1="9" x2="15.01" y2="9" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">
-                  Indywidualne Podejście
-                </h3>
-                <p className="mt-3 text-[15px] leading-[1.7] text-deep-200/60">
-                  Rozumiemy, że każda osoba jest inna i ma swoje tempo nauki.
-                  Dlatego dostosowujemy nasze zajęcia do Twoich potrzeb i
-                  umiejętności. Niezależnie od tego, czy dopiero zaczynasz swoją
-                  przygodę z pływaniem, czy chcesz doskonalić swoje techniki, mamy
-                  dla Ciebie odpowiednie zajęcia.
-                </p>
-              </div>
-            </div>
-            <div className="absolute -bottom-4 -right-4 font-editorial text-[120px] font-bold leading-none text-white/[0.02] select-none">
-              04
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
