@@ -7,7 +7,7 @@ import HeroStrip from "@/components/HeroStrip";
 import { getAllAchievements } from "@/lib/queries/achievements";
 
 export const metadata = {
-  title: "Osiagniecia — UKS Fala",
+  title: "Osiągnięcia — UKS Fala",
   description: "Sukcesy i medale zawodnikow UKS Fala Nieporet.",
 };
 

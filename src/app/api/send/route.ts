@@ -11,27 +11,48 @@ import {
 import { getValidGroupNames } from "@/lib/queries/schedule";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
-/** Both public forms post here; `type` picks which shape is expected. */
+/**
+ * Both public forms post here; `type` picks which shape is expected.
+ *
+ * Every rule carries a Polish message because the first issue is returned
+ * verbatim to the visitor — an unlabelled rule would surface Zod's English
+ * default ("expected number, received NaN") in the middle of the form.
+ */
 const BaseSchema = z.object({
-  name: z.string().min(1, "Podaj imię i nazwisko").max(100),
-  email: z.email("Nieprawidłowy adres e-mail").max(200),
-  phone: z.string().max(30).default(""),
-  message: z.string().max(2000).default(""),
+  name: z
+    .string({ error: "Podaj imię i nazwisko" })
+    .min(1, "Podaj imię i nazwisko")
+    .max(100, "Imię i nazwisko jest za długie"),
+  email: z
+    .email("Nieprawidłowy adres e-mail")
+    .max(200, "Adres e-mail jest za długi"),
+  phone: z.string().max(30, "Numer telefonu jest za długi").default(""),
+  message: z.string().max(2000, "Wiadomość jest za długa").default(""),
 });
 
 const ReservationSchema = BaseSchema.extend({
   type: z.literal("rezerwacja"),
-  group: z.string().min(1).max(50),
+  group: z
+    .string({ error: "Wybierz grupę" })
+    .min(1, "Wybierz grupę")
+    .max(50, "Nazwa grupy jest za długa"),
   /** Count of chosen training days — the price tier, 1–3 per week. */
-  frequency: z.coerce.number().int().min(1).max(3),
+  frequency: z.coerce
+    .number({ error: "Wybierz dni treningów" })
+    .int("Wybierz dni treningów")
+    .min(1, "Wybierz przynajmniej jeden dzień treningów")
+    .max(3, "Możesz wybrać maksymalnie trzy dni treningów"),
   /** Human-readable day list ("Poniedziałek, Środa") for the club to read. */
-  days: z.string().max(200).default(""),
+  days: z.string().max(200, "Lista dni jest za długa").default(""),
 });
 
 const ContactSchema = BaseSchema.extend({
   type: z.literal("kontakt"),
-  childAge: z.string().max(100).default(""),
-  message: z.string().min(1, "Napisz wiadomość").max(2000),
+  childAge: z.string().max(100, "Wiek dziecka jest za długi").default(""),
+  message: z
+    .string({ error: "Napisz wiadomość" })
+    .min(1, "Napisz wiadomość")
+    .max(2000, "Wiadomość jest za długa"),
 });
 
 const PayloadSchema = z.discriminatedUnion("type", [
@@ -75,6 +96,18 @@ function idempotencyKey(payload: z.infer<typeof PayloadSchema>): string {
     .digest("hex")
     .slice(0, 32);
   return `uks-fala/${payload.type}/${digest}`;
+}
+
+/**
+ * Picks the first issue's message, guarding against Zod's English defaults
+ * reaching the visitor if a rule is ever added without one.
+ */
+function polishIssue(error: z.ZodError): string {
+  const message = error.issues[0]?.message ?? "";
+  return /[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]|^[A-ZŁ][a-ząćęłńóśźż ]/.test(message) &&
+    !message.startsWith("Invalid")
+    ? message
+    : "Sprawdź poprawność wypełnionych pól.";
 }
 
 function clubEmail(payload: z.infer<typeof PayloadSchema>) {
@@ -167,7 +200,7 @@ export async function POST(req: Request) {
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.issues[0]?.message ?? "Brakujące pola" },
+      { error: polishIssue(parsed.error) },
       { status: 400 },
     );
   }
@@ -182,6 +215,24 @@ export async function POST(req: Request) {
   }
 
   if (!resend) {
+    // 202 counts as res.ok on the client, so in production a missing key would
+    // show the visitor "Wysłano!" while the enquiry went nowhere. Only local dev
+    // gets the convenient no-op; deployed, an unconfigured key is a real failure.
+    if (process.env.NODE_ENV === "production") {
+      console.error("RESEND_API_KEY missing in production — enquiry dropped.", {
+        type: payload.type,
+        email: payload.email,
+      });
+      return NextResponse.json(
+        {
+          error:
+            "Formularz jest chwilowo niedostępny. Napisz do nas bezpośrednio na " +
+            CLUB_EMAIL,
+        },
+        { status: 500 },
+      );
+    }
+
     console.warn("RESEND_API_KEY missing — skipping email send.", {
       type: payload.type,
       email: payload.email,

@@ -5,6 +5,10 @@ import CoachCard from "@/components/CoachCard";
 export default async function Coaches() {
   const coaches = await getCoachesPublicWithSlugs(4);
 
+  // No coaches published yet — drop the whole block rather than render the
+  // "Kadra" heading above an empty grid.
+  if (coaches.length === 0) return null;
+
   return (
     <section id="trenerzy" className="relative overflow-hidden bg-sand-100 py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">

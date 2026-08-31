@@ -4,6 +4,10 @@ import { getLatestAchievements } from "@/lib/queries/achievements";
 export default async function OsiagnieciaSection() {
   const achievements = await getLatestAchievements(3);
 
+  // Nothing published yet — drop the whole block rather than render the
+  // "Nasze sukcesy" heading above an empty grid.
+  if (achievements.length === 0) return null;
+
   const isPlaceholder = achievements.length > 0 && !achievements[0].slug;
 
   return (
@@ -23,7 +27,7 @@ export default async function OsiagnieciaSection() {
           <div className="flex items-center gap-3 mb-5">
             <div className="h-px w-10 bg-coral-400" />
             <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-coral-400">
-              Osiagniecia
+              Osiągnięcia
             </span>
           </div>
           <h2 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white">

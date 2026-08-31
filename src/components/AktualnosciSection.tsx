@@ -63,6 +63,10 @@ export default async function AktualnosciSection() {
     })),
   ].slice(0, 4);
 
+  // Nothing published yet — drop the whole block rather than render the
+  // "Co nowego" heading above an empty grid.
+  if (items.length === 0) return null;
+
   return (
     <section className="bg-sand-50 py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
@@ -71,7 +75,7 @@ export default async function AktualnosciSection() {
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px w-10 bg-pool-400" />
             <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-pool-500">
-              Aktualnosci
+              Aktualności
             </span>
           </div>
           <h2 className="font-editorial text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-sand-950">

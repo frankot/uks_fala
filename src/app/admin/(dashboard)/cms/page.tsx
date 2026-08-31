@@ -14,8 +14,8 @@ import PopupTab from "./_components/PopupTab";
 
 const TABS = [
   { key: "grafik", label: "Grafik" },
-  { key: "aktualnosci", label: "Aktualnosci" },
-  { key: "osiagniecia", label: "Osiagniecia" },
+  { key: "aktualnosci", label: "Aktualności" },
+  { key: "osiagniecia", label: "Osiągnięcia" },
   { key: "trenerzy", label: "Trenerzy" },
   { key: "obozy", label: "Obozy" },
   { key: "polkolonie", label: "Półkolonie" },

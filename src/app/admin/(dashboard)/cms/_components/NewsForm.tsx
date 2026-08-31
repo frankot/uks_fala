@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createNews, updateNews, type NewsFormData } from "@/lib/actions/news";
 import ImageUploader from "./ImageUploader";
+import { usePendingImages } from "@/lib/use-pending-images";
 import { useRouter } from "next/navigation";
 
 interface NewsItem {
@@ -32,7 +33,7 @@ export default function NewsForm({ item, onClose }: Props) {
   const [title, setTitle] = useState(item?.title ?? "");
   const [description, setDescription] = useState(item?.description ?? "");
   const [content, setContent] = useState(item?.content ?? "");
-  const [images, setImages] = useState<string[]>(item?.images ?? []);
+  const images = usePendingImages(item?.images ?? [], "uks-fala/news");
   const [published, setPublished] = useState(item?.published ?? false);
   const [publishedAt, setPublishedAt] = useState(toDatetimeLocal(item?.publishedAt));
   const [error, setError] = useState("");
@@ -43,16 +44,20 @@ export default function NewsForm({ item, onClose }: Props) {
     setError("");
     setSaving(true);
 
-    const data: NewsFormData = {
-      title,
-      description,
-      content,
-      images,
-      published,
-      publishedAt: new Date(publishedAt),
-    };
-
     try {
+      // Files are sent now, not when they were picked — abandoning the form
+      // must not leave orphaned assets in Cloudinary.
+      const uploadedImages = await images.uploadPending();
+
+      const data: NewsFormData = {
+        title,
+        description,
+        content,
+        images: uploadedImages,
+        published,
+        publishedAt: new Date(publishedAt),
+      };
+
       if (isEdit) {
         await updateNews(item.id, data);
       } else {
@@ -61,7 +66,7 @@ export default function NewsForm({ item, onClose }: Props) {
       router.refresh();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystapil blad");
+      setError(err instanceof Error ? err.message : "Wystąpił błąd");
       setSaving(false);
     }
   }
@@ -127,7 +132,7 @@ export default function NewsForm({ item, onClose }: Props) {
             />
           </div>
 
-          <ImageUploader value={images} onChange={setImages} folder="uks-fala/news" />
+          <ImageUploader images={images} />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>

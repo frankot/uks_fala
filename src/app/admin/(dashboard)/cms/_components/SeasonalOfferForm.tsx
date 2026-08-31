@@ -9,6 +9,7 @@ import {
 } from "@/lib/actions/seasonal-offers";
 import type { SeasonalOfferType } from "@/lib/queries/seasonal-offers";
 import ImageUploader from "./ImageUploader";
+import { usePendingImages } from "@/lib/use-pending-images";
 
 export interface SeasonalOfferItem {
   id: string;
@@ -95,7 +96,7 @@ export default function SeasonalOfferForm({ type, item, onClose }: Props) {
   const [included, setIncluded] = useState(item?.included ?? "");
   const [signupInfo, setSignupInfo] = useState(item?.signupInfo ?? "");
   const [signupUrl, setSignupUrl] = useState(item?.signupUrl ?? "");
-  const [images, setImages] = useState<string[]>(item?.images ?? []);
+  const images = usePendingImages(item?.images ?? [], labels.imageFolder);
   const [published, setPublished] = useState(item?.published ?? false);
   const [featured, setFeatured] = useState(item?.featured ?? false);
   const [sortOrder, setSortOrder] = useState(item?.sortOrder ?? 0);
@@ -107,31 +108,35 @@ export default function SeasonalOfferForm({ type, item, onClose }: Props) {
     setError("");
     setSaving(true);
 
-    const data: SeasonalOfferFormData = {
-      type,
-      title,
-      summary,
-      locationName,
-      locationAddress,
-      startDate: fromDateInput(startDate),
-      endDate: fromDateInput(endDate),
-      ageRange,
-      price,
-      priceNote,
-      accommodation,
-      meals,
-      transport,
-      program,
-      included,
-      signupInfo,
-      signupUrl,
-      images,
-      published,
-      featured,
-      sortOrder,
-    };
-
     try {
+      // Files are sent now, not when they were picked — abandoning the form
+      // must not leave orphaned assets in Cloudinary.
+      const uploadedImages = await images.uploadPending();
+
+      const data: SeasonalOfferFormData = {
+        type,
+        title,
+        summary,
+        locationName,
+        locationAddress,
+        startDate: fromDateInput(startDate),
+        endDate: fromDateInput(endDate),
+        ageRange,
+        price,
+        priceNote,
+        accommodation,
+        meals,
+        transport,
+        program,
+        included,
+        signupInfo,
+        signupUrl,
+        images: uploadedImages,
+        published,
+        featured,
+        sortOrder,
+      };
+
       if (isEdit) {
         await updateSeasonalOffer(item.id, data);
       } else {
@@ -321,11 +326,7 @@ export default function SeasonalOfferForm({ type, item, onClose }: Props) {
             </p>
           </div>
 
-          <ImageUploader
-            value={images}
-            onChange={setImages}
-            folder={labels.imageFolder}
-          />
+          <ImageUploader images={images} />
 
           <div className="grid gap-4 lg:grid-cols-2">
             <LongField label="Program *" value={program} onChange={setProgram} required />

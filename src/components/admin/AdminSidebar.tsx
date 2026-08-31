@@ -5,8 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 const CMS_LINKS = [
   { label: "Grafik", tab: "grafik", icon: "calendar" },
-  { label: "Aktualnosci", tab: "aktualnosci", icon: "news" },
-  { label: "Osiagniecia", tab: "osiagniecia", icon: "trophy" },
+  { label: "Aktualności", tab: "aktualnosci", icon: "news" },
+  { label: "Osiągnięcia", tab: "osiagniecia", icon: "trophy" },
   { label: "Trenerzy", tab: "trenerzy", icon: "users" },
   { label: "Obozy", tab: "obozy", icon: "camp" },
   { label: "Półkolonie", tab: "polkolonie", icon: "sun" },

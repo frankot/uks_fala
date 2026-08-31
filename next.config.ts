@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Image uploads go through a server action, and Next caps those bodies at
+      // 1 MB by default — smaller than the 2 MB file limit the CMS advertises,
+      // so every photo between the two failed with an opaque 500. Sized just
+      // above MAX_UPLOAD_BYTES to leave room for multipart overhead, and kept
+      // under Vercel's hard 4.5 MB request cap, which config cannot raise.
+      bodySizeLimit: "3mb",
+    },
+  },
   // The plan zajęć moved from /zajecia to /grafik — keep links already shared
   // (Facebook posts, parent chats, search results) working.
   async redirects() {

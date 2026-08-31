@@ -2,6 +2,11 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { auth } from "@/lib/auth";
+import {
+  MAX_UPLOAD_BYTES,
+  MAX_UPLOAD_LABEL,
+  formatMegabytes,
+} from "@/lib/upload-limits";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,8 +37,6 @@ const ALLOWED_FOLDERS = [
   "uks-fala/polkolonie",
 ] as const;
 
-const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
-
 export async function deleteImage(url: string): Promise<void> {
   await requireSession();
 
@@ -52,8 +55,10 @@ export async function uploadImage(
 ): Promise<string> {
   await requireSession();
 
-  if (file.size > MAX_SIZE) {
-    throw new Error("Plik przekracza maksymalny rozmiar 5 MB.");
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error(
+      `Plik ma ${formatMegabytes(file.size)} — maksymalny rozmiar to ${MAX_UPLOAD_LABEL}.`,
+    );
   }
 
   // `accept="image/*"` on the input is a hint to the file picker, not a control.
@@ -76,6 +81,19 @@ export async function uploadImage(
           {
             folder: target,
             resource_type: "image",
+            // Backstop: the browser already downscales before upload, but this
+            // bounds whatever actually lands in the account. `limit` only ever
+            // shrinks — a smaller image is left at its own size — and q_auto
+            // picks the lowest quality that still looks clean.
+            transformation: [
+              {
+                width: 1920,
+                height: 1920,
+                crop: "limit",
+                quality: "auto:good",
+                fetch_format: "auto",
+              },
+            ],
           },
           (error, result) => {
             if (error) reject(error);

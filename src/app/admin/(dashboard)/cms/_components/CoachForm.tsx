@@ -7,6 +7,7 @@ import {
   type CoachFormData,
 } from "@/lib/actions/coaches";
 import ImageUploader from "./ImageUploader";
+import { usePendingImages } from "@/lib/use-pending-images";
 import { useRouter } from "next/navigation";
 
 interface CoachItem {
@@ -32,8 +33,9 @@ export default function CoachForm({ item, onClose }: Props) {
   const [name, setName] = useState(item?.name ?? "");
   const [role, setRole] = useState(item?.role ?? "");
   const [bio, setBio] = useState(item?.bio ?? "");
-  const [images, setImages] = useState<string[]>(
+  const images = usePendingImages(
     item?.imageUrl ? [item.imageUrl] : [],
+    "uks-fala/coaches",
   );
   const [sortOrder, setSortOrder] = useState(item?.sortOrder ?? 0);
   const [published, setPublished] = useState(item?.published ?? true);
@@ -45,16 +47,20 @@ export default function CoachForm({ item, onClose }: Props) {
     setError("");
     setSaving(true);
 
-    const data: CoachFormData = {
-      name,
-      role,
-      bio,
-      imageUrl: images[0] ?? "",
-      sortOrder,
-      published,
-    };
-
     try {
+      // Files are sent now, not when they were picked — abandoning the form
+      // must not leave orphaned assets in Cloudinary.
+      const uploadedImages = await images.uploadPending();
+
+      const data: CoachFormData = {
+        name,
+        role,
+        bio,
+        imageUrl: uploadedImages[0] ?? "",
+        sortOrder,
+        published,
+      };
+
       if (isEdit) {
         await updateCoach(item.id, data);
       } else {
@@ -63,7 +69,7 @@ export default function CoachForm({ item, onClose }: Props) {
       router.refresh();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystapil blad");
+      setError(err instanceof Error ? err.message : "Wystąpił błąd");
       setSaving(false);
     }
   }
@@ -130,7 +136,7 @@ export default function CoachForm({ item, onClose }: Props) {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">
-            <ImageUploader value={images} onChange={setImages} folder="uks-fala/coaches" />
+            <ImageUploader images={images} />
 
             <div>
               <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500 mb-2">

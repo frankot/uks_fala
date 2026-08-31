@@ -29,8 +29,8 @@ const navItems: NavItem[] = [
       { href: "/polkolonie", label: "Półkolonie" },
     ],
   },
-  { href: "/aktualnosci", label: "Aktualnosci" },
-  { href: "/osiagniecia", label: "Osiagniecia" },
+  { href: "/aktualnosci", label: "Aktualności" },
+  { href: "/osiagniecia", label: "Osiągnięcia" },
   { href: "/trenerzy", label: "Trenerzy" },
 ];
 

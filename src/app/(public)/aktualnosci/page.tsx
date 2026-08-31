@@ -8,7 +8,7 @@ import CmsImage from "@/components/CmsImage";
 import { getAllNews } from "@/lib/queries/news";
 
 export const metadata = {
-  title: "Aktualnosci — UKS Fala",
+  title: "Aktualności — UKS Fala",
   description: "Najnowsze wiadomosci z klubu plywackiego UKS Fala Nieporet.",
 };
 

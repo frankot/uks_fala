@@ -1,68 +1,53 @@
 "use client";
 
-import { useState } from "react";
-import { uploadImage } from "@/lib/upload";
+import type { PendingImages } from "@/lib/use-pending-images";
+import { ACCEPTED_FORMATS_LABEL } from "@/lib/upload-limits";
 
 interface Props {
-  value: string[];
-  onChange: (urls: string[]) => void;
-  folder: string;
+  images: PendingImages;
 }
 
-const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+/**
+ * Presentational half of the image picker — all state lives in
+ * `usePendingImages`, which the parent form also needs so it can send the files
+ * from its own submit handler.
+ */
+export default function ImageUploader({ images }: Props) {
+  const { items, add, remove, busy, pendingCount, error } = images;
 
-export default function ImageUploader({ value, onChange, folder }: Props) {
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
-
-  async function handleAdd() {
-    setError("");
+  function handleAdd() {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
-    input.onchange = async () => {
+    input.onchange = () => {
       const file = input.files?.[0];
-      if (!file) return;
-
-      if (file.size > MAX_SIZE) {
-        setError(
-          `Plik jest za duży (${(file.size / 1024 / 1024).toFixed(1)} MB). Maksymalny rozmiar to 5 MB.`,
-        );
-        return;
-      }
-
-      setUploading(true);
-      try {
-        const url = await uploadImage(file, folder);
-        onChange([...value, url]);
-      } catch {
-        setError("Wystąpił błąd podczas przesyłania. Spróbuj ponownie.");
-      } finally {
-        setUploading(false);
-      }
+      if (file) void add(file);
     };
     input.click();
-  }
-
-  function handleRemove(index: number) {
-    onChange(value.filter((_, i) => i !== index));
   }
 
   return (
     <div>
       <label className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-        Zdjecia
+        Zdjęcia
       </label>
       <div className="mt-2 flex flex-wrap gap-3">
-        {value.map((url, i) => (
+        {items.map((item) => (
           <div
-            key={i}
+            key={item.id}
             className="group relative h-20 w-20 overflow-hidden rounded-xl border border-sand-200"
           >
-            <img src={url} alt="" className="h-full w-full object-cover" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={item.url} alt="" className="h-full w-full object-cover" />
+            {item.kind === "pending" && (
+              <span className="absolute inset-x-0 bottom-0 bg-deep-700/85 py-0.5 text-center text-[9px] font-bold uppercase tracking-wide text-white">
+                Do wysłania
+              </span>
+            )}
             <button
               type="button"
-              onClick={() => handleRemove(i)}
+              onClick={() => remove(item.id)}
+              aria-label="Usuń zdjęcie"
               className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
             >
               <svg
@@ -84,10 +69,10 @@ export default function ImageUploader({ value, onChange, folder }: Props) {
         <button
           type="button"
           onClick={handleAdd}
-          disabled={uploading}
+          disabled={busy}
           className="flex h-20 w-20 items-center justify-center rounded-xl border-2 border-dashed border-sand-300 text-sand-400 transition-colors hover:border-deep-400 hover:text-deep-500 disabled:opacity-50"
         >
-          {uploading ? (
+          {busy ? (
             <svg
               className="animate-spin"
               width="20"
@@ -116,8 +101,38 @@ export default function ImageUploader({ value, onChange, folder }: Props) {
           )}
         </button>
       </div>
+
+      <p className="mt-2 text-[12px] text-sand-400">
+        {pendingCount > 0
+          ? `${pendingCount} ${pendingCount === 1 ? "zdjęcie zostanie wysłane" : "zdjęcia/zdjęć zostanie wysłanych"} po zapisaniu formularza.`
+          : `Zdjęcia są automatycznie zmniejszane i wysyłane dopiero przy zapisie. Formaty: ${ACCEPTED_FORMATS_LABEL}.`}
+      </p>
+
       {error && (
-        <p className="mt-2 text-[13px] text-coral-600">{error}</p>
+        <div
+          role="alert"
+          className="mt-2 flex items-start gap-2.5 rounded-xl border-2 border-coral-300 bg-coral-50 px-4 py-3"
+        >
+          <svg
+            className="mt-px shrink-0 text-coral-600"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <p className="text-[13px] font-semibold leading-snug text-coral-700">
+            {error}
+          </p>
+        </div>
       )}
     </div>
   );
