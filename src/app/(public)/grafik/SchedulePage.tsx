@@ -93,20 +93,24 @@ export default function SchedulePage({ data }: Props) {
     ? [...selectedDays].filter((d) => dayCounts[d] === 0)
     : [];
 
-  // Form state
+  // Form state. `company` is the honeypot — hidden from real users, so anything
+  // in it means a bot; the API answers those with a success it can learn nothing from.
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
+    company: "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
     "idle",
   );
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     setStatus("sending");
+    setErrorMessage("");
     const days = [...selectedDays]
       .sort((a, b) => a - b)
       .map((d) => DAYS[d])
@@ -115,12 +119,21 @@ export default function SchedulePage({ data }: Props) {
       const res = await fetch("/api/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, group: selectedGroup, days }),
+        body: JSON.stringify({
+          ...form,
+          type: "rezerwacja",
+          group: selectedGroup,
+          // The API prices by how many sessions a week; `days` says which ones.
+          frequency: selectedDays.size,
+          days,
+        }),
       });
       if (res.ok) {
         setStatus("ok");
-        setForm({ name: "", email: "", phone: "", message: "" });
+        setForm({ name: "", email: "", phone: "", message: "", company: "" });
       } else {
+        const data = await res.json().catch(() => null);
+        setErrorMessage(data?.error ?? "");
         setStatus("error");
       }
     } catch {
@@ -491,7 +504,7 @@ export default function SchedulePage({ data }: Props) {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <form onSubmit={handleSubmit} className="relative mt-8 space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label
@@ -575,17 +588,39 @@ export default function SchedulePage({ data }: Props) {
                   />
                 </div>
 
+                {/* Honeypot — off-screen and untabbable, so only bots fill it. */}
+                <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                  <label htmlFor="res-company">Nie wypełniaj tego pola</label>
+                  <input
+                    id="res-company"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={form.company}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, company: e.target.value }))
+                    }
+                  />
+                </div>
+
                 {status === "error" && (
                   <p className="rounded-xl bg-coral-50 px-4 py-3 text-[14px] text-coral-600">
-                    Coś poszło nie tak. Spróbuj ponownie lub napisz
-                    bezpośrednio na biuro@uksfala.com.pl
+                    {errorMessage ||
+                      "Coś poszło nie tak. Spróbuj ponownie lub napisz bezpośrednio na biuro@uksfala.com.pl"}
+                  </p>
+                )}
+
+                {selectedDays.size === 0 && (
+                  <p className="rounded-xl bg-sand-100 px-4 py-3 text-[14px] text-sand-600">
+                    Wybierz przynajmniej jeden dzień treningów, żeby wysłać
+                    zgłoszenie.
                   </p>
                 )}
 
                 <button
                   type="submit"
-                  disabled={status === "sending"}
-                  className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-coral-500 text-[15px] font-bold text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20 disabled:opacity-60"
+                  disabled={status === "sending" || selectedDays.size === 0}
+                  className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-coral-500 text-[15px] font-bold text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {status === "sending"
                     ? "Wysyłanie…"

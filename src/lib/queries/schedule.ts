@@ -110,3 +110,24 @@ export async function getScheduleData(): Promise<ScheduleData> {
     return getFallbackData();
   }
 }
+
+/**
+ * Group names a reservation may legitimately reference.
+ *
+ * Validating against the hardcoded PRICES keys instead would reject every group
+ * the club creates in the Grafik tab, so this reads the same live rows the
+ * public picker is built from and only falls back when the table is empty —
+ * matching `getScheduleData` above.
+ */
+export async function getValidGroupNames(): Promise<string[]> {
+  try {
+    const rows = await prisma.group.findMany({
+      where: { active: true },
+      select: { name: true },
+    });
+    if (rows.length > 0) return rows.map((g) => g.name);
+  } catch (error) {
+    console.error("Failed to fetch group names, using fallback:", error);
+  }
+  return FALLBACK_GROUPS.map((g) => g.name);
+}

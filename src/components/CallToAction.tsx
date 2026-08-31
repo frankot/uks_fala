@@ -1,11 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   CONTACT_ID,
   CONTACT_FORM_ID,
   scrollToContact,
 } from "@/lib/scroll-to-contact";
+
+const EMPTY_FORM = {
+  name: "",
+  email: "",
+  childAge: "",
+  message: "",
+  // Honeypot — hidden from real users, so a value here means a bot.
+  company: "",
+};
 
 export default function CallToAction() {
   // Arriving from another page lands on the browser's own anchor jump, which leaves
@@ -15,6 +24,36 @@ export default function CallToAction() {
     const frame = requestAnimationFrame(() => scrollToContact("auto"));
     return () => cancelAnimationFrame(frame);
   }, []);
+
+  // Mirrors the submit/status pattern in grafik/SchedulePage.tsx.
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
+    "idle",
+  );
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("sending");
+    setErrorMessage("");
+    try {
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, type: "kontakt" }),
+      });
+      if (res.ok) {
+        setStatus("ok");
+        setForm(EMPTY_FORM);
+      } else {
+        const data = await res.json().catch(() => null);
+        setErrorMessage(data?.error ?? "");
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
 
   return (
     <section className="relative py-24 md:py-32">
@@ -132,73 +171,142 @@ export default function CallToAction() {
                 Odpowiadamy w ciągu 24h w dni robocze.
               </p>
 
-              <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
-                <div>
-                  <label htmlFor="name" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                    Imię i nazwisko
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                    placeholder="Anna Kowalska"
-                  />
-                </div>
+              <div aria-live="polite">
+                {status === "ok" ? (
+                  <div className="mt-8 rounded-xl bg-pool-100 p-6 text-center">
+                    <svg
+                      className="mx-auto mb-3 text-deep-600"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <p className="font-editorial text-xl font-bold text-deep-800">
+                      Wysłano!
+                    </p>
+                    <p className="mt-1 text-[15px] text-deep-600">
+                      Potwierdzenie trafiło na Twój e-mail. Odpiszemy najszybciej
+                      jak to możliwe.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="relative mt-8 space-y-5">
+                    <div>
+                      <label htmlFor="name" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+                        Imię i nazwisko *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        value={form.name}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, name: e.target.value }))
+                        }
+                        className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                        placeholder="Anna Kowalska"
+                      />
+                    </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                    E-mail
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                    placeholder="anna@example.com"
-                  />
-                </div>
+                    <div>
+                      <label htmlFor="email" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+                        E-mail *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        value={form.email}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, email: e.target.value }))
+                        }
+                        className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                        placeholder="anna@example.com"
+                      />
+                    </div>
 
-                <div>
-                  <label htmlFor="child-age" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                    Wiek dziecka
-                  </label>
-                  <input
-                    type="text"
-                    id="child-age"
-                    name="child-age"
-                    className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                    placeholder="np. 6 lat"
-                  />
-                </div>
+                    <div>
+                      <label htmlFor="child-age" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+                        Wiek dziecka
+                      </label>
+                      <input
+                        type="text"
+                        id="child-age"
+                        name="child-age"
+                        value={form.childAge}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, childAge: e.target.value }))
+                        }
+                        className="mt-2 block w-full rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                        placeholder="np. 6 lat"
+                      />
+                    </div>
 
-                <div>
-                  <label htmlFor="message" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
-                    Wiadomość
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={4}
-                    required
-                    className="mt-2 block w-full resize-none rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
-                    placeholder="Chciałabym zapisać dziecko na zajęcia..."
-                  />
-                </div>
+                    <div>
+                      <label htmlFor="message" className="block text-[12px] font-bold uppercase tracking-wider text-sand-500">
+                        Wiadomość *
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows={4}
+                        required
+                        value={form.message}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, message: e.target.value }))
+                        }
+                        className="mt-2 block w-full resize-none rounded-xl border-2 border-sand-200 bg-sand-50 px-4 py-3 text-[15px] text-sand-900 placeholder:text-sand-400 transition-colors focus:border-deep-400 focus:bg-white focus:outline-none"
+                        placeholder="Chciałabym zapisać dziecko na zajęcia..."
+                      />
+                    </div>
 
-                <button
-                  type="submit"
-                  className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-coral-500 text-[15px] font-bold text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20"
-                >
-                  Wyślij wiadomość
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </button>
-              </form>
+                    {/* Honeypot — off-screen and untabbable, so only bots fill it. */}
+                    <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                      <label htmlFor="cta-company">Nie wypełniaj tego pola</label>
+                      <input
+                        id="cta-company"
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={form.company}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, company: e.target.value }))
+                        }
+                      />
+                    </div>
+
+                    {status === "error" && (
+                      <p className="rounded-xl bg-coral-50 px-4 py-3 text-[14px] text-coral-600">
+                        {errorMessage ||
+                          "Coś poszło nie tak. Spróbuj ponownie lub napisz bezpośrednio na biuro@uksfala.com.pl"}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={status === "sending"}
+                      className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-coral-500 text-[15px] font-bold text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {status === "sending" ? "Wysyłanie…" : "Wyślij wiadomość"}
+                      {status !== "sending" && (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5">
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                          <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
             </div>
           </div>
         </div>
