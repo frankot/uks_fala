@@ -62,15 +62,35 @@ export default function Navigation() {
       className={`fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded transition-all duration-300 sm:left-4 sm:right-4 ${
         solidNav
           ? "bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md"
-          : // Frosted rather than tinted at the top of the hero: the wash is
-            // faint enough to keep the photo readable through it, and the heavy
-            // blur — not the colour — is what separates the bar from what is
-            // behind it. Blur is stronger here than in the scrolled state,
-            // which can lean on its own opacity instead.
-            "bg-white/10 backdrop-blur-lg"
+          : // Mobile keeps one even wash. On desktop the header itself stays
+            // clear and the graded layer below supplies the frosting instead.
+            "bg-white/20 backdrop-blur-lg md:bg-transparent md:backdrop-blur-none"
       }`}
     >
-      <div className="mx-auto max-w-[1240px] px-5 sm:px-8">
+      {/*
+        Pre-scroll desktop frosting, strongest under the logo and gone by the
+        right edge so the coral CTA sits on the bare hero.
+
+        `backdrop-filter` takes no gradient, so the blur is painted on a full
+        layer that is then masked: where the mask is transparent the backdrop
+        filter is not applied at all, which fades the blur and the wash together.
+        No `overflow-hidden` on the header — that would clip the dropdowns — so
+        the layer carries the same `rounded` as its parent.
+      */}
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 hidden rounded bg-white/20 backdrop-blur-lg transition-opacity duration-300 md:block ${
+          solidNav ? "opacity-0" : "opacity-100"
+        }`}
+        style={{
+          maskImage:
+            "linear-gradient(to right, #000 0%, #000 25%, transparent 92%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, #000 0%, #000 25%, transparent 92%)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1240px] px-5 sm:px-8">
         <div className="flex h-16 items-center justify-between md:h-[72px]">
           {/* Logo */}
           <Link
