@@ -405,7 +405,7 @@ export default function ONasPage() {
             <div className="relative aspect-4/3 overflow-hidden rounded-3xl bg-deep-50">
               <iframe
                 title="Lokalizacja basenu OSiR Nieporęt"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2432.5!2d21.07!3d52.41!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTLCsDI0JzM2LjAiTiAyMcKwMDQnMTIuMCJF!5e0!3m2!1spl!2spl!4v1"
+                src="https://www.google.com/maps?q=ul.%20Koncertowa%204%2C%2005-126%20Niepor%C4%99t&hl=pl&z=16&output=embed"
                 className="absolute inset-0 h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

@@ -53,23 +53,60 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
+  // Hold the page still behind the open sheet, restoring whatever the body
+  // had before rather than assuming it was scrollable.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileOpen]);
+
+  // The sheet is `md:hidden`, so widening to desktop would hide it while the
+  // scroll lock above stayed on with no control left to release it.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onChange = () => {
+      if (desktop.matches) setMobileOpen(false);
+    };
+    desktop.addEventListener("change", onChange);
+    return () => desktop.removeEventListener("change", onChange);
+  }, [mobileOpen]);
+
   const scrolled = isHome ? scrollY > 40 : true;
 
   const solidNav = scrolled || mobileOpen;
 
   return (
-    <header
-      className={`fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded transition-all duration-300 sm:left-4 sm:right-4 ${
-        solidNav
-          ? "bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md"
-          : // Mobile keeps one even wash. On desktop the header itself stays
-            // clear and the graded layer below supplies the frosting instead.
-            "bg-white/20 backdrop-blur-lg md:bg-transparent md:backdrop-blur-none"
-      }`}
-    >
-      {/*
-        Pre-scroll desktop frosting, strongest under the logo and gone by the
-        right edge so the coral CTA sits on the bare hero.
+    <>
+      <div
+        aria-hidden="true"
+        onClick={() => setMobileOpen(false)}
+        className={`fixed inset-0 z-40 bg-deep-950/25 backdrop-blur-[3px] transition-opacity duration-300 md:hidden ${
+          mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+
+      <header
+        className={`fixed left-3 right-3 top-2 z-50 mx-auto max-w-[1240px] rounded transition-all duration-300 sm:left-4 sm:right-4 ${
+          solidNav
+            ? "bg-white/90 shadow-sm shadow-deep-900/5 backdrop-blur-md"
+            : // Mobile keeps one even wash. On desktop the header itself stays
+              // clear and the graded layer below supplies the frosting instead.
+              "bg-white/20 backdrop-blur-lg md:bg-transparent md:backdrop-blur-none"
+        }`}
+      >
+        {/*
+        Pre-scroll desktop frosting. It exists only so the logo stays legible
+        over a busy hero, so it covers the logo (which ends near 185px) plus a
+        short fade, and everything right of that is bare hero.
+
+        Stops are in pixels, not percentages: the logo is a fixed width, so a
+        percentage fade would cut across it on a narrow desktop and trail far
+        past it on a wide one.
 
         `backdrop-filter` takes no gradient, so the blur is painted on a full
         layer that is then masked: where the mask is transparent the backdrop
@@ -77,259 +114,262 @@ export default function Navigation() {
         No `overflow-hidden` on the header — that would clip the dropdowns — so
         the layer carries the same `rounded` as its parent.
       */}
-      <div
-        aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 hidden rounded bg-white/20 backdrop-blur-lg transition-opacity duration-300 md:block ${
-          solidNav ? "opacity-0" : "opacity-100"
-        }`}
-        style={{
-          maskImage:
-            "linear-gradient(to right, #000 0%, #000 25%, transparent 92%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, #000 0%, #000 25%, transparent 92%)",
-        }}
-      />
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 hidden rounded bg-white/20 backdrop-blur-lg transition-opacity duration-300 md:block ${
+            solidNav ? "opacity-0" : "opacity-100"
+          }`}
+          style={{
+            maskImage:
+              "linear-gradient(to right, #000 0px, #000 200px, transparent 320px)",
+            WebkitMaskImage:
+              "linear-gradient(to right, #000 0px, #000 200px, transparent 320px)",
+          }}
+        />
 
-      <div className="relative mx-auto max-w-[1240px] px-5 sm:px-8">
-        <div className="flex h-16 items-center justify-between md:h-[72px]">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="group flex items-center gap-2.5"
-            aria-label="UKS Fala Nieporęt"
-          >
-            <Image
-              src="/logo-blue/fala-logo-only-transparent.png"
-              alt=""
-              width={43}
-              height={50}
-              priority
-              className="h-12 w-auto transition-transform group-hover:scale-105 md:h-14"
-            />
-            <Image
-              src="/logo-blue/fala-company-name-transparent.png"
-              alt="UKS Fala Nieporęt"
-              width={106}
-              height={40}
-              priority
-              className="h-8 w-auto transition-all md:h-9"
-            />
-          </Link>
-
-          {/* Desktop nav */}
-          <nav
-            className="hidden items-center gap-1 md:flex"
-            aria-label="Nawigacja główna"
-          >
-            {navItems.map((item) =>
-              isDropdown(item) ? (
-                <div key={item.id} className="group relative">
-                  <button
-                    type="button"
-                    className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
-                      solidNav
-                        ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
-                        : "text-white/75 hover:bg-white/10 hover:text-white"
-                    }`}
-                    aria-haspopup="menu"
-                  >
-                    {item.label}
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="transition-transform group-hover:rotate-180"
-                    >
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </button>
-                  <div className="invisible absolute left-0 top-full min-w-48 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                    <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white p-2 shadow-xl shadow-deep-900/10">
-                      {item.links.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className="block rounded-xl px-4 py-2.5 text-[14px] font-medium whitespace-nowrap text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
-                    solidNav
-                      ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
-                      : "text-white/75 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              )
-            )}
-
-            <ContactLink
-              className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
-                solidNav
-                  ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
-                  : "text-white/75 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              Kontakt
-            </ContactLink>
-          </nav>
-
-          {/* Desktop right */}
-          <div className="hidden items-center gap-4 md:flex">
-            <a
-              href="tel:+48530077078"
-              className={`text-[13px] font-semibold tracking-wide transition-colors ${
-                solidNav ? "text-sand-600" : "text-white/65"
-              }`}
-            >
-              +48 530 077 078
-            </a>
+        <div className="relative mx-auto max-w-[1240px] px-5 sm:px-8">
+          <div className="flex h-16 items-center justify-between md:h-[72px]">
+            {/* Logo */}
             <Link
-              href="/grafik"
-              className="inline-flex h-10 items-center rounded-full bg-coral-500 px-6 text-[13px] font-bold uppercase tracking-wider text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20"
+              href="/"
+              className="group flex items-center gap-2.5"
+              aria-label="UKS Fala Nieporęt"
             >
-              Zapisz dziecko
+              <Image
+                src="/logo-blue/fala-logo-only-transparent.png"
+                alt=""
+                width={43}
+                height={50}
+                priority
+                className="h-12 w-auto transition-transform group-hover:scale-105 md:h-14"
+              />
+              <Image
+                src="/logo-blue/fala-company-name-transparent.png"
+                alt="UKS Fala Nieporęt"
+                width={106}
+                height={40}
+                priority
+                className="h-8 w-auto transition-all md:h-9"
+              />
             </Link>
-          </div>
 
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors md:hidden ${
-              solidNav
-                ? "text-sand-800 hover:bg-sand-100"
-                : "text-white hover:bg-white/10"
-            }`}
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-expanded={mobileOpen}
-            aria-label="Menu nawigacji"
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
+            {/* Desktop nav */}
+            <nav
+              className="hidden items-center gap-1 md:flex"
+              aria-label="Nawigacja główna"
             >
-              {mobileOpen ? (
-                <>
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                  <line x1="6" y1="18" x2="18" y2="6" />
-                </>
-              ) : (
-                <>
-                  <line x1="4" y1="7" x2="20" y2="7" />
-                  <line x1="4" y1="12" x2="20" y2="12" />
-                  <line x1="4" y1="17" x2="20" y2="17" />
-                </>
-              )}
-            </svg>
-          </button>
-        </div>
-
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <nav
-            className="border-t border-deep-900/10 pb-5 pt-3 md:hidden"
-            aria-label="Nawigacja mobilna"
-          >
-            <div className="flex flex-col gap-1">
               {navItems.map((item) =>
                 isDropdown(item) ? (
-                  <div key={item.id} className="flex flex-col">
+                  <div key={item.id} className="group relative">
                     <button
                       type="button"
-                      className="flex items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                      onClick={() =>
-                        setOpenMenu((open) => (open === item.id ? null : item.id))
-                      }
-                      aria-expanded={openMenu === item.id}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                        solidNav
+                          ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                          : "text-white/75 hover:bg-white/10 hover:text-white"
+                      }`}
+                      aria-haspopup="menu"
                     >
                       {item.label}
                       <svg
-                        width="16"
-                        height="16"
+                        width="14"
+                        height="14"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="2.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className={`transition-transform ${
-                          openMenu === item.id ? "rotate-180" : ""
-                        }`}
+                        className="transition-transform group-hover:rotate-180"
                       >
                         <polyline points="6 9 12 15 18 9" />
                       </svg>
                     </button>
-                    {openMenu === item.id && (
-                      <div className="ml-4 flex flex-col border-l border-sand-200 pl-3">
+                    <div className="invisible absolute left-0 top-full min-w-48 pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                      <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white p-2 shadow-xl shadow-deep-900/10">
                         {item.links.map((link) => (
                           <Link
                             key={link.href}
                             href={link.href}
-                            className="rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-600 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                            onClick={() => setMobileOpen(false)}
+                            className="block rounded-xl px-4 py-2.5 text-[14px] font-medium whitespace-nowrap text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
                           >
                             {link.label}
                           </Link>
                         ))}
                       </div>
-                    )}
+                    </div>
                   </div>
                 ) : (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                    onClick={() => setMobileOpen(false)}
+                    className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                      solidNav
+                        ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                        : "text-white/75 hover:bg-white/10 hover:text-white"
+                    }`}
                   >
                     {item.label}
                   </Link>
-                )
+                ),
               )}
 
               <ContactLink
-                className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
-                onClick={() => setMobileOpen(false)}
+                className={`rounded-full px-3 py-2 text-[14px] font-medium transition-all ${
+                  solidNav
+                    ? "text-sand-700 hover:bg-sand-100 hover:text-deep-700"
+                    : "text-white/75 hover:bg-white/10 hover:text-white"
+                }`}
               >
                 Kontakt
               </ContactLink>
+            </nav>
 
-              <div className="mt-3 flex flex-col gap-3 px-4">
-                <a
-                  href="tel:+48530077078"
-                  className="text-sm font-medium text-sand-500"
-                >
-                  Tel: +48 530 077 078
-                </a>
+            {/* Desktop right */}
+            <div className="hidden items-center gap-4 md:flex">
+              <a
+                href="tel:+48530077078"
+                className={`text-[13px] font-semibold tracking-wide transition-colors ${
+                  solidNav ? "text-sand-600" : "text-white/65"
+                }`}
+              >
+                +48 530 077 078
+              </a>
+              <Link
+                href="/grafik"
+                className="inline-flex h-10 items-center rounded-full bg-coral-500 px-6 text-[13px] font-bold uppercase tracking-wider text-white transition-all hover:bg-coral-600 hover:shadow-lg hover:shadow-coral-500/20"
+              >
+                Zapisz dziecko
+              </Link>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors md:hidden ${
+                solidNav
+                  ? "text-sand-800 hover:bg-sand-100"
+                  : "text-white hover:bg-white/10"
+              }`}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-expanded={mobileOpen}
+              aria-label="Menu nawigacji"
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                {mobileOpen ? (
+                  <>
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                    <line x1="6" y1="18" x2="18" y2="6" />
+                  </>
+                ) : (
+                  <>
+                    <line x1="4" y1="7" x2="20" y2="7" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="17" x2="20" y2="17" />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile menu */}
+          {mobileOpen && (
+            <nav
+              className="max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain border-t border-deep-900/10 pb-5 pt-3 md:hidden"
+              aria-label="Nawigacja mobilna"
+            >
+              <div className="flex flex-col gap-1">
+                {navItems.map((item) =>
+                  isDropdown(item) ? (
+                    <div key={item.id} className="flex flex-col">
+                      <button
+                        type="button"
+                        className="flex items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                        onClick={() =>
+                          setOpenMenu((open) =>
+                            open === item.id ? null : item.id,
+                          )
+                        }
+                        aria-expanded={openMenu === item.id}
+                      >
+                        {item.label}
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className={`transition-transform ${
+                            openMenu === item.id ? "rotate-180" : ""
+                          }`}
+                        >
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                      {openMenu === item.id && (
+                        <div className="ml-4 flex flex-col border-l border-sand-200 pl-3">
+                          {item.links.map((link) => (
+                            <Link
+                              key={link.href}
+                              href={link.href}
+                              className="rounded-xl px-4 py-2.5 text-[14px] font-medium text-sand-600 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                              onClick={() => setMobileOpen(false)}
+                            >
+                              {link.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ),
+                )}
+
                 <ContactLink
-                  className="inline-flex h-11 items-center justify-center rounded-full bg-coral-500 text-[13px] font-bold uppercase tracking-wider text-white"
+                  className="rounded-xl px-4 py-3 text-[15px] font-medium text-sand-700 transition-colors hover:bg-sand-100 hover:text-deep-700"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Zapisz dziecko
+                  Kontakt
                 </ContactLink>
+
+                <div className="mt-3 flex flex-col gap-3 px-4">
+                  <a
+                    href="tel:+48530077078"
+                    className="text-sm font-medium text-sand-500"
+                  >
+                    Tel: +48 530 077 078
+                  </a>
+                  <ContactLink
+                    className="inline-flex h-11 items-center justify-center rounded-full bg-coral-500 text-[13px] font-bold uppercase tracking-wider text-white"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Zapisz dziecko
+                  </ContactLink>
+                </div>
               </div>
-            </div>
-          </nav>
-        )}
-      </div>
-    </header>
+            </nav>
+          )}
+        </div>
+      </header>
+    </>
   );
 }

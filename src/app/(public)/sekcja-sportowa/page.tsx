@@ -151,28 +151,28 @@ const groups: TrainingGroup[] = [
         day: "Poniedziałek",
         sessions: [
           { time: "6:15 – 7:45", label: "Trening poranny na basenie", type: "pool" },
-          { time: "16:00 – 17:30", label: "Trening pływacki", type: "pool" },
+          { time: "15:30 – 17:00", label: "Trening pływacki", type: "pool" },
         ],
       },
       {
         day: "Wtorek",
         sessions: [
           { time: "6:15 – 7:45", label: "Trening poranny na basenie", type: "pool" },
-          { time: "16:00 – 17:30", label: "Trening ogólnorozwojowy — siłownia", type: "gym" },
+          { time: "15:30 – 17:00", label: "Trening ogólnorozwojowy — siłownia", type: "gym" },
         ],
       },
       {
         day: "Środa",
         sessions: [
           { time: "6:15 – 7:45", label: "Trening poranny na basenie", type: "pool" },
-          { time: "16:00 – 17:30", label: "Trening pływacki", type: "pool" },
+          { time: "15:30 – 17:00", label: "Trening pływacki", type: "pool" },
         ],
       },
       {
         day: "Czwartek",
         sessions: [
           { time: "6:15 – 7:45", label: "Trening poranny na basenie", type: "pool" },
-          { time: "16:00 – 17:30", label: "Trening ogólnorozwojowy — siłownia", type: "gym" },
+          { time: "15:30 – 17:00", label: "Trening ogólnorozwojowy — siłownia", type: "gym" },
         ],
       },
       {
@@ -224,7 +224,7 @@ const groups: TrainingGroup[] = [
         day: "Piątek",
         sessions: [
           { time: "6:15 – 7:45", label: "Trening poranny na basenie", type: "pool" },
-          { time: "15:30 – 17:00", label: "Trening pływacki", type: "pool" },
+          { time: "16:00 – 17:30", label: "Trening pływacki", type: "pool" },
         ],
       },
     ],
@@ -239,10 +239,14 @@ const groups: TrainingGroup[] = [
     days: [
       {
         day: "Poniedziałek",
-        sessions: [{ time: "15:30 – 17:00", label: "Trening pływacki", type: "pool" }],
+        sessions: [{ time: "16:00 – 17:30", label: "Trening pływacki", type: "pool" }],
       },
       {
         day: "Wtorek",
+        sessions: [{ time: "16:00 – 17:30", label: "Trening pływacki", type: "pool" }],
+      },
+      {
+        day: "Środa",
         sessions: [{ time: "16:00 – 17:30", label: "Trening pływacki", type: "pool" }],
       },
       {

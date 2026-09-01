@@ -70,7 +70,7 @@ export default async function CoachDetailPage({
                 alt={coach.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 672px"
-                className="object-cover"
+                className="object-cover object-top"
                 priority
               />
             ) : (
